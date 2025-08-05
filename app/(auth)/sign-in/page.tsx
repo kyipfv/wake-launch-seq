@@ -15,16 +15,26 @@ export default function SignIn() {
     setLoading(true);
     setMessage('');
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) {
-      setMessage(error.message);
+      if (error) {
+        setMessage(error.message);
+        setLoading(false);
+      } else {
+        // Set a timeout to prevent infinite loading
+        setTimeout(() => {
+          setLoading(false);
+        }, 5000);
+      }
+    } catch (err) {
+      console.error('Sign in error:', err);
+      setMessage('An unexpected error occurred. Please try again.');
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   const handleMagicLink = async (e: React.FormEvent) => {

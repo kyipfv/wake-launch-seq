@@ -46,15 +46,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
 
         if (event === 'SIGNED_IN' && session?.user) {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('chrono_window')
-            .eq('id', session.user.id)
-            .single();
+          try {
+            const { data: profile, error } = await supabase
+              .from('profiles')
+              .select('chrono_window')
+              .eq('id', session.user.id)
+              .single();
 
-          if (profile?.chrono_window) {
-            router.push('/home');
-          } else {
+            // If no profile exists or no chronotype, go to onboarding
+            if (error || !profile?.chrono_window) {
+              router.push('/onboarding');
+            } else {
+              router.push('/home');
+            }
+          } catch (err) {
+            // If any error occurs, redirect to onboarding
+            console.error('Profile lookup error:', err);
             router.push('/onboarding');
           }
         }
