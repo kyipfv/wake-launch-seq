@@ -193,11 +193,18 @@ body {
   }
   
   .metric-icon {
-    @apply w-12 h-12 rounded-2xl flex items-center justify-center mb-3;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.75rem;
   }
   
   .visual-card {
-    @apply health-card-large relative overflow-hidden;
+    position: relative;
+    overflow: hidden;
     background: linear-gradient(135deg, var(--card-background) 0%, var(--secondary-background) 100%);
   }
   

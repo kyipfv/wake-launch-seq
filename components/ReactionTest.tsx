@@ -157,7 +157,7 @@ export default function ReactionTest({ onComplete }: { onComplete?: (result: Rea
   };
 
   return (
-    <div className="health-card-large">
+    <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
           Reaction Time Test
@@ -214,12 +214,12 @@ export default function ReactionTest({ onComplete }: { onComplete?: (result: Rea
 
       {result && (
         <div className="text-center space-y-6">
-          <div className="health-card p-6">
-            <div className="health-metric-value mb-1">
+          <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100">
+            <div className="text-4xl font-bold text-gray-900 mb-1">
               {result.median}
             </div>
-            <div className="health-metric-unit mb-1">ms</div>
-            <div className="health-metric-label">Median Reaction Time</div>
+            <div className="text-lg text-gray-600 mb-1">ms</div>
+            <div className="text-sm text-gray-600">Median Reaction Time</div>
           </div>
           
           <div className="text-xs p-3 rounded-xl" style={{ 
