@@ -3,25 +3,107 @@
 @tailwind utilities;
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #ffffff;
+  --background: #f2f2f7;
+  --foreground: #000000;
+  --card-background: #ffffff;
+  --secondary-background: #f8f9fa;
+  --border-color: #e5e5ea;
+  --accent-blue: #007aff;
+  --accent-green: #34c759;
+  --accent-orange: #ff9500;
+  --accent-red: #ff3b30;
+  --text-primary: #000000;
+  --text-secondary: #8e8e93;
+  --text-tertiary: #c7c7cc;
 }
 
-@media (prefers-color-scheme: light) {
+@media (prefers-color-scheme: dark) {
   :root {
-    --background: #ffffff;
-    --foreground: #0a0a0a;
+    --background: #000000;
+    --foreground: #ffffff;
+    --card-background: #1c1c1e;
+    --secondary-background: #2c2c2e;
+    --border-color: #38383a;
+    --accent-blue: #0a84ff;
+    --accent-green: #30d158;
+    --accent-orange: #ff9f0a;
+    --accent-red: #ff453a;
+    --text-primary: #ffffff;
+    --text-secondary: #8e8e93;
+    --text-tertiary: #48484a;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+* {
+  box-sizing: border-box;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+body {
+  color: var(--text-primary);
+  background: var(--background);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif;
+  font-weight: 400;
+  line-height: 1.47;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+}
+
+@layer components {
+  .health-card {
+    @apply bg-white dark:bg-gray-900 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-gray-800;
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+  }
+  
+  .health-card-large {
+    @apply bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800;
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+  }
+  
+  .health-metric-value {
+    @apply text-3xl font-bold tracking-tight;
+    color: var(--text-primary);
+    font-feature-settings: 'tnum';
+  }
+  
+  .health-metric-unit {
+    @apply text-lg font-medium;
+    color: var(--text-secondary);
+  }
+  
+  .health-metric-label {
+    @apply text-sm font-medium;
+    color: var(--text-secondary);
+  }
+  
+  .apple-button-primary {
+    @apply bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-2xl transition-all duration-200 shadow-sm;
+    background: var(--accent-blue);
+    transform: translateY(0);
+  }
+  
+  .apple-button-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+  }
+  
+  .apple-button-secondary {
+    @apply bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 font-semibold py-3 px-6 rounded-2xl transition-all duration-200;
+    background: var(--secondary-background);
+    color: var(--text-primary);
+  }
+  
+  .section-header {
+    @apply text-2xl font-bold mb-1;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+  }
+  
+  .section-subheader {
+    @apply text-base font-medium mb-6;
+    color: var(--text-secondary);
   }
 }

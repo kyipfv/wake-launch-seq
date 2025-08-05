@@ -157,28 +157,32 @@ export default function ReactionTest({ onComplete }: { onComplete?: (result: Rea
   };
 
   return (
-    <div className="bg-gray-800/50 rounded-lg border border-gray-700 p-6">
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold text-white mb-2">Reaction Time Test</h3>
-        <p className="text-gray-300 text-sm">
-          Click the blue circles as quickly as possible. {totalTests} tests total.
+    <div className="health-card-large">
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+          Reaction Time Test
+        </h3>
+        <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+          Tap the blue circles as quickly as possible. {totalTests} tests total.
         </p>
       </div>
 
       {!isRunning && !result && (
         <button
           onClick={startTest}
-          className="w-full bg-primary text-black py-3 px-4 rounded-lg font-semibold hover:bg-blue-400 transition-colors"
+          className="apple-button-primary w-full"
         >
           Start Test
         </button>
       )}
 
       {isRunning && (
-        <div className="space-y-4">
-          <div className="flex justify-between text-sm text-gray-300">
+        <div className="space-y-6">
+          <div className="flex justify-between text-sm" style={{ color: 'var(--text-secondary)' }}>
             <span>Test {currentTest + 1} of {totalTests}</span>
-            <span>{isWaiting ? 'Get ready...' : 'Click the circle!'}</span>
+            <span className="font-medium">
+              {isWaiting ? 'Get ready...' : 'Tap the circle!'}
+            </span>
           </div>
           
           <canvas
@@ -186,36 +190,49 @@ export default function ReactionTest({ onComplete }: { onComplete?: (result: Rea
             width={400}
             height={300}
             onClick={handleCanvasClick}
-            className="w-full bg-gray-900 rounded-lg cursor-crosshair border border-gray-600"
-            style={{ maxWidth: '100%', height: 'auto', aspectRatio: '4/3' }}
+            className="w-full rounded-2xl cursor-crosshair border shadow-inner"
+            style={{ 
+              maxWidth: '100%', 
+              height: 'auto', 
+              aspectRatio: '4/3',
+              background: 'var(--secondary-background)',
+              borderColor: 'var(--border-color)'
+            }}
           />
           
-          <div className="w-full bg-gray-700 rounded-full h-2">
+          <div className="w-full h-2 rounded-full" style={{ background: 'var(--secondary-background)' }}>
             <div 
-              className="bg-primary h-2 rounded-full transition-all duration-300"
-              style={{ width: `${(currentTest / totalTests) * 100}%` }}
+              className="h-2 rounded-full transition-all duration-300"
+              style={{ 
+                width: `${(currentTest / totalTests) * 100}%`,
+                background: 'var(--accent-blue)'
+              }}
             />
           </div>
         </div>
       )}
 
       {result && (
-        <div className="text-center space-y-4">
-          <div className="bg-gray-700/50 rounded-lg p-4">
-            <div className="text-3xl font-bold text-primary mb-2">
-              {result.median}ms
+        <div className="text-center space-y-6">
+          <div className="health-card p-6">
+            <div className="health-metric-value mb-1">
+              {result.median}
             </div>
-            <div className="text-gray-300">Median Reaction Time</div>
+            <div className="health-metric-unit mb-1">ms</div>
+            <div className="health-metric-label">Median Reaction Time</div>
           </div>
           
-          <div className="text-sm text-gray-400">
+          <div className="text-xs p-3 rounded-xl" style={{ 
+            color: 'var(--text-secondary)',
+            background: 'var(--secondary-background)'
+          }}>
             <p>Individual times: {result.reactions.join('ms, ')}ms</p>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <button
               onClick={startTest}
-              className="flex-1 border border-primary text-primary py-2 px-4 rounded-lg hover:bg-primary hover:text-black transition-colors"
+              className="apple-button-secondary flex-1"
             >
               Test Again
             </button>
@@ -223,7 +240,7 @@ export default function ReactionTest({ onComplete }: { onComplete?: (result: Rea
             <button
               onClick={saveResult}
               disabled={saving}
-              className="flex-1 bg-primary text-black py-2 px-4 rounded-lg font-semibold hover:bg-blue-400 transition-colors disabled:opacity-50"
+              className="apple-button-primary flex-1 disabled:opacity-50"
             >
               {saving ? 'Saving...' : 'Save Result'}
             </button>

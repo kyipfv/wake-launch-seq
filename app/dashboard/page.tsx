@@ -69,79 +69,163 @@ export default function Dashboard() {
   const hasCompletedToday = todayMetrics.reaction_ms && todayMetrics.mood_score;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-black">
+    <div className="min-h-screen" style={{ background: 'var(--background)' }}>
       <Nav />
       
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 py-6">
+        {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Mission Control</h1>
-          <p className="text-gray-300">
+          <h1 className="section-header">Summary</h1>
+          <p className="section-subheader">
             {hasCompletedToday 
-              ? "Today's performance logged. Check your trends below." 
-              : "Complete your daily assessments to track performance."
+              ? "Today's metrics have been logged. Review your performance trends below." 
+              : "Complete your daily assessments to track your wake performance."
             }
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
-          {/* Today's Quick Stats */}
-          <div className="bg-gray-800/50 rounded-lg border border-gray-700 p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Today's Performance</h3>
-            <div className="space-y-4">
-              <div className="flex justify-between">
-                <span className="text-gray-300">Reaction Time:</span>
-                <span className="text-primary font-semibold">
-                  {todayMetrics.reaction_ms ? `${todayMetrics.reaction_ms}ms` : '—'}
-                </span>
+        {/* Today's Metrics Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {/* Reaction Time Card */}
+          <div className="health-card">
+            <div className="text-center">
+              <div className="health-metric-label mb-1">Reaction Time</div>
+              <div className="health-metric-value">
+                {todayMetrics.reaction_ms ? todayMetrics.reaction_ms : '—'}
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-300">Alertness:</span>
-                <span className="text-primary font-semibold">
-                  {todayMetrics.mood_score ? `${todayMetrics.mood_score}/10` : '—'}
-                </span>
-              </div>
-              <div className="pt-2 border-t border-gray-600">
-                <div className="text-sm text-gray-400">
-                  {hasCompletedToday ? (
-                    <span className="text-green-400">✓ Daily assessment complete</span>
-                  ) : (
-                    <span className="text-yellow-400">⏳ Pending assessments</span>
-                  )}
-                </div>
+              <div className="health-metric-unit">
+                {todayMetrics.reaction_ms ? 'ms' : 'No data'}
               </div>
             </div>
           </div>
 
-          {/* Tomorrow's Plan */}
-          <PlanCard />
+          {/* Alertness Card */}
+          <div className="health-card">
+            <div className="text-center">
+              <div className="health-metric-label mb-1">Alertness</div>
+              <div className="health-metric-value">
+                {todayMetrics.mood_score ? todayMetrics.mood_score : '—'}
+              </div>
+              <div className="health-metric-unit">
+                {todayMetrics.mood_score ? '/10' : 'No data'}
+              </div>
+            </div>
+          </div>
 
-          {/* Quick Actions */}
-          <div className="bg-gray-800/50 rounded-lg border border-gray-700 p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
-            <div className="space-y-3">
-              <button 
-                onClick={() => document.getElementById('reaction-test')?.scrollIntoView({ behavior: 'smooth' })}
-                className="w-full text-left p-3 bg-gray-700/50 rounded-lg hover:bg-gray-600/50 transition-colors"
-              >
-                <div className="text-white font-medium">Reaction Test</div>
-                <div className="text-gray-400 text-sm">Measure response time</div>
-              </button>
-              
-              <button 
-                onClick={() => document.getElementById('mood-slider')?.scrollIntoView({ behavior: 'smooth' })}
-                className="w-full text-left p-3 bg-gray-700/50 rounded-lg hover:bg-gray-600/50 transition-colors"
-              >
-                <div className="text-white font-medium">Log Alertness</div>
-                <div className="text-gray-400 text-sm">Rate your energy level</div>
-              </button>
-              
-              <button 
-                onClick={() => document.getElementById('charts')?.scrollIntoView({ behavior: 'smooth' })}
-                className="w-full text-left p-3 bg-gray-700/50 rounded-lg hover:bg-gray-600/50 transition-colors"
-              >
-                <div className="text-white font-medium">View Trends</div>
-                <div className="text-gray-400 text-sm">14-day performance chart</div>
-              </button>
+          {/* Status Card */}
+          <div className="health-card">
+            <div className="text-center">
+              <div className="health-metric-label mb-1">Status</div>
+              <div className="text-sm font-medium mt-2">
+                {hasCompletedToday ? (
+                  <span className="text-green-500 flex items-center justify-center gap-1">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                    </svg>
+                    Complete
+                  </span>
+                ) : (
+                  <span className="text-orange-500 flex items-center justify-center gap-1">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11M11,9H13V7H11"/>
+                    </svg>
+                    Pending
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Actions Card */}
+          <div className="health-card">
+            <div className="text-center">
+              <div className="health-metric-label mb-3">Quick Start</div>
+              <div className="space-y-2">
+                <button 
+                  onClick={() => document.getElementById('reaction-test')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="w-full text-xs py-2 px-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                >
+                  Test
+                </button>
+                <button 
+                  onClick={() => document.getElementById('mood-slider')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="w-full text-xs py-2 px-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                >
+                  Log
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {/* Today's Plan - Takes up 2 columns */}
+          <div className="lg:col-span-2">
+            <PlanCard />
+          </div>
+
+          {/* Assessment Tools */}
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
+                Daily Assessments
+              </h3>
+              <div className="space-y-4">
+                <button 
+                  onClick={() => document.getElementById('reaction-test')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="w-full text-left health-card hover:shadow-md transition-all duration-200"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-blue-500">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" 
+                              fill="currentColor"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="font-medium" style={{ color: 'var(--text-primary)' }}>Reaction Test</div>
+                      <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>Measure response time</div>
+                    </div>
+                  </div>
+                </button>
+                
+                <button 
+                  onClick={() => document.getElementById('mood-slider')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="w-full text-left health-card hover:shadow-md transition-all duration-200"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-green-500">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" 
+                              fill="currentColor"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="font-medium" style={{ color: 'var(--text-primary)' }}>Alertness Check</div>
+                      <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>Rate your energy level</div>
+                    </div>
+                  </div>
+                </button>
+                
+                <button 
+                  onClick={() => document.getElementById('charts')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="w-full text-left health-card hover:shadow-md transition-all duration-200"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-purple-500">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" 
+                              fill="currentColor"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="font-medium" style={{ color: 'var(--text-primary)' }}>Performance Trends</div>
+                      <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>View 14-day analysis</div>
+                    </div>
+                  </div>
+                </button>
+              </div>
             </div>
           </div>
         </div>
