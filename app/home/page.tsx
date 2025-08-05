@@ -152,7 +152,7 @@ export default function Home() {
           {healthCards.map((card) => (
             <button
               key={card.id}
-              onClick={() => router.push(card.route)}
+              onClick={() => router.push(card.route as any)}
               className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200 text-left"
             >
               <div className={`w-12 h-12 ${card.color} rounded-xl flex items-center justify-center text-2xl mb-3`}>
