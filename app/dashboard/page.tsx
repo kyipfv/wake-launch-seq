@@ -73,140 +73,100 @@ export default function Dashboard() {
     <div className="min-h-screen" style={{ background: 'var(--background)' }}>
       <Nav />
       
-      <div className="max-w-6xl mx-auto px-4 py-6">
-        {/* Header */}
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
-            Today's Performance
+      {/* Hero Dashboard Section */}
+      <section className="py-20">
+        <div className="max-w-6xl mx-auto px-6 text-center">
+          <div className="apple-eyebrow mb-4">Dashboard</div>
+          <h1 className="apple-large-text mb-6">
+            Your Performance Today
           </h1>
-          <div className="text-lg" style={{ color: 'var(--text-secondary)' }}>
+          <p className="apple-body-large mb-12">
             {new Date().toLocaleDateString('en-US', { 
               weekday: 'long', 
               month: 'long', 
               day: 'numeric' 
             })}
-          </div>
-        </div>
-
-        {/* Visual Performance Overview */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Reaction Time Visual Card */}
-          <div className="visual-card text-center">
-            <div className="flex items-center justify-center mb-4">
-              <ProgressRing 
-                progress={todayMetrics.reaction_ms ? Math.max(0, 100 - (todayMetrics.reaction_ms / 5)) : 0}
-                size={140}
-                strokeWidth={12}
-                color="#007aff"
-                backgroundColor="rgba(0, 122, 255, 0.1)"
-              >
-                <div>
-                  <div className="text-3xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>
-                    {todayMetrics.reaction_ms || '—'}
-                  </div>
-                  <div className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
-                    {todayMetrics.reaction_ms ? 'ms' : 'no data'}
-                  </div>
-                </div>
-              </ProgressRing>
-            </div>
-            
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <div className="w-8 h-8 gradient-bg-blue rounded-full flex items-center justify-center">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
-                Reaction Speed
-              </h3>
-            </div>
-            
-            {!todayMetrics.reaction_ms && (
-              <button 
-                onClick={() => document.getElementById('reaction-test')?.scrollIntoView({ behavior: 'smooth' })}
-                className="apple-button-primary mt-4"
-              >
-                Take Test
-              </button>
-            )}
-          </div>
-
-          {/* Alertness Visual Card */}
-          <div className="visual-card text-center">
-            <div className="flex items-center justify-center mb-4">
-              <ProgressRing 
-                progress={todayMetrics.mood_score ? (todayMetrics.mood_score * 10) : 0}
-                size={140}
-                strokeWidth={12}
-                color="#34c759"
-                backgroundColor="rgba(52, 199, 89, 0.1)"
-              >
-                <div>
-                  <div className="text-3xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>
-                    {todayMetrics.mood_score || '—'}
-                  </div>
-                  <div className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
-                    {todayMetrics.mood_score ? '/10' : 'no data'}
-                  </div>
-                </div>
-              </ProgressRing>
-            </div>
-            
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <div className="w-8 h-8 gradient-bg-green rounded-full flex items-center justify-center">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
-                Alertness Level
-              </h3>
-            </div>
-            
-            {!todayMetrics.mood_score && (
-              <button 
-                onClick={() => document.getElementById('mood-slider')?.scrollIntoView({ behavior: 'smooth' })}
-                className="apple-button-primary mt-4"
-              >
-                Log Mood
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Completion Status */}
-        <div className="health-card mb-8 text-center">
-          <div className="flex items-center justify-center mb-4">
-            {hasCompletedToday ? (
-              <div className="relative">
-                <div className="w-16 h-16 gradient-bg-green rounded-full flex items-center justify-center">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                  </svg>
-                </div>
-                <div className="absolute inset-0 rounded-full border-4 border-green-500 pulse-animation"></div>
-              </div>
-            ) : (
-              <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="#ff9500">
-                  <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11M11,9H13V7H11"/>
-                </svg>
-              </div>
-            )}
-          </div>
-          
-          <h2 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
-            {hasCompletedToday ? 'Daily Assessment Complete!' : 'Complete Your Assessment'}
-          </h2>
-          
-          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-            {hasCompletedToday 
-              ? 'Great job! Your performance metrics have been logged for today.' 
-              : 'Track your wake performance by completing both tests below.'
-            }
           </p>
         </div>
+      </section>
+
+      {/* Performance Metrics - Apple Style */}
+      <section className="py-16">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+            {/* Reaction Speed Card */}
+            <div className="apple-card text-center">
+              <div className="mb-8">
+                <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-2xl">
+                  <div className="text-6xl">⚡</div>
+                </div>
+                <div className="text-5xl font-bold text-gray-900 mb-2">
+                  {todayMetrics.reaction_ms || '—'}
+                  {todayMetrics.reaction_ms && <span className="text-2xl text-gray-600">ms</span>}
+                </div>
+                <div className="text-xl text-gray-600 mb-6">Reaction Speed</div>
+                {!todayMetrics.reaction_ms && (
+                  <button 
+                    onClick={() => document.getElementById('reaction-test')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="apple-button apple-button-primary"
+                  >
+                    Take Test
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Alertness Card */}
+            <div className="apple-card text-center">
+              <div className="mb-8">
+                <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center shadow-2xl">
+                  <div className="text-6xl">😊</div>
+                </div>
+                <div className="text-5xl font-bold text-gray-900 mb-2">
+                  {todayMetrics.mood_score || '—'}
+                  {todayMetrics.mood_score && <span className="text-2xl text-gray-600">/10</span>}
+                </div>
+                <div className="text-xl text-gray-600 mb-6">Alertness Level</div>
+                {!todayMetrics.mood_score && (
+                  <button 
+                    onClick={() => document.getElementById('mood-slider')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="apple-button apple-button-primary"
+                  >
+                    Log Mood
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Status Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          {hasCompletedToday ? (
+            <div>
+              <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center shadow-2xl">
+                <div className="text-4xl">✅</div>
+              </div>
+              <h2 className="apple-medium-text mb-4">Assessment Complete!</h2>
+              <p className="apple-body-large text-gray-600">
+                Your performance metrics have been logged for today.
+              </p>
+            </div>
+          ) : (
+            <div>
+              <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-2xl">
+                <div className="text-4xl">⏳</div>
+              </div>
+              <h2 className="apple-medium-text mb-4">Complete Your Assessment</h2>
+              <p className="apple-body-large text-gray-600 mb-8">
+                Track your wake performance by completing both tests below.
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
