@@ -48,13 +48,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if (event === 'SIGNED_IN' && session?.user) {
           console.log('User signed in, checking profile...');
+          console.log('Session user ID:', session.user.id);
+          console.log('Supabase instance:', !!supabase);
+          
           try {
+            console.log('Starting Supabase query...');
             const { data: profile, error } = await supabase
               .from('profiles')
               .select('chrono_window')
               .eq('id', session.user.id)
               .single();
 
+            console.log('Supabase query completed');
             console.log('Profile lookup result:', { profile, error });
             console.log('Profile chrono_window:', profile?.chrono_window);
             console.log('Current pathname:', pathname);
@@ -72,8 +77,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           } catch (err) {
             // If any error occurs, redirect to onboarding
             console.error('Profile lookup error:', err);
+            console.error('Error details:', {
+              message: err instanceof Error ? err.message : 'Unknown error',
+              stack: err instanceof Error ? err.stack : undefined
+            });
             console.log('Redirecting to onboarding due to error...');
             router.push('/onboarding');
+            console.log('Onboarding redirect called (error case)');
           }
         }
 
