@@ -42,10 +42,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event: any, session: any) => {
+        console.log('Auth state change:', event, session?.user?.id);
         setUser(session?.user ?? null);
         setLoading(false);
 
         if (event === 'SIGNED_IN' && session?.user) {
+          console.log('User signed in, checking profile...');
           try {
             const { data: profile, error } = await supabase
               .from('profiles')
@@ -53,20 +55,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               .eq('id', session.user.id)
               .single();
 
+            console.log('Profile lookup result:', { profile, error });
+
             // If no profile exists or no chronotype, go to onboarding
             if (error || !profile?.chrono_window) {
+              console.log('Redirecting to onboarding...');
               router.push('/onboarding');
             } else {
+              console.log('Redirecting to home...');
               router.push('/home');
             }
           } catch (err) {
             // If any error occurs, redirect to onboarding
             console.error('Profile lookup error:', err);
+            console.log('Redirecting to onboarding due to error...');
             router.push('/onboarding');
           }
         }
 
         if (event === 'SIGNED_OUT') {
+          console.log('User signed out, redirecting to home page...');
           router.push('/');
         }
       }

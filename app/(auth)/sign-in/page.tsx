@@ -15,20 +15,28 @@ export default function SignIn() {
     setLoading(true);
     setMessage('');
 
+    console.log('Starting sign in process...');
+
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
+      console.log('Sign in response:', { data, error });
+
       if (error) {
+        console.error('Sign in error:', error);
         setMessage(error.message);
         setLoading(false);
-      } else {
-        // Set a timeout to prevent infinite loading
+      } else if (data.user) {
+        console.log('Sign in successful, user:', data.user.id);
+        setMessage('Sign in successful! Redirecting...');
+        // Set a longer timeout and try manual redirect if needed
         setTimeout(() => {
-          setLoading(false);
-        }, 5000);
+          console.log('Timeout reached, attempting manual redirect...');
+          window.location.href = '/home';
+        }, 3000);
       }
     } catch (err) {
       console.error('Sign in error:', err);
@@ -159,13 +167,21 @@ export default function SignIn() {
             </div>
           </form>
 
-          <div className="mt-8 text-center">
+          <div className="mt-8 text-center space-y-4">
             <p className="text-gray-400">
               Don't have an account?{' '}
               <Link href="/sign-up" className="text-blue-400 hover:text-blue-300 font-semibold transition-colors duration-200">
                 Start your journey
               </Link>
             </p>
+            
+            {/* Debug bypass button */}
+            <button
+              onClick={() => window.location.href = '/home'}
+              className="text-sm text-gray-500 hover:text-gray-700 underline"
+            >
+              Debug: Skip to Home
+            </button>
           </div>
         </div>
       </div>
