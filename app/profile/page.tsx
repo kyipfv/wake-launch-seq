@@ -103,7 +103,7 @@ export default function ProfilePage() {
           {menuItems.map((item, index) => (
             <button
               key={item.label}
-              onClick={() => item.route !== '#' && router.push(item.route)}
+              onClick={() => item.route !== '#' && router.push(item.route as any)}
               className={`w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors ${
                 index !== menuItems.length - 1 ? 'border-b border-gray-100' : ''
               }`}

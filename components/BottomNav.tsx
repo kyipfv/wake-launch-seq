@@ -28,7 +28,7 @@ export default function BottomNav() {
           return (
             <button
               key={item.route}
-              onClick={() => router.push(item.route)}
+              onClick={() => router.push(item.route as any)}
               className={`flex flex-col items-center justify-center flex-1 py-2 ${
                 isActive ? 'text-blue-600' : 'text-gray-400'
               }`}
