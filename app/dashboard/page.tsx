@@ -168,94 +168,50 @@ export default function Dashboard() {
         </div>
       </section>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* Today's Plan - Takes up 2 columns */}
-          <div className="lg:col-span-2">
-            <PlanCard />
+      {/* Assessment Tools Section */}
+      <section className="py-16">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <div className="apple-eyebrow mb-4">Daily Assessments</div>
+            <h2 className="apple-medium-text mb-6">
+              Track your performance metrics
+            </h2>
           </div>
-
-          {/* Assessment Tools */}
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
-                Daily Assessments
-              </h3>
-              <div className="space-y-4">
-                <button 
-                  onClick={() => document.getElementById('reaction-test')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="w-full text-left health-card hover:shadow-md transition-all duration-200"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-blue-500">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" 
-                              fill="currentColor"/>
-                      </svg>
-                    </div>
-                    <div>
-                      <div className="font-medium" style={{ color: 'var(--text-primary)' }}>Reaction Test</div>
-                      <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>Measure response time</div>
-                    </div>
-                  </div>
-                </button>
-                
-                <button 
-                  onClick={() => document.getElementById('mood-slider')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="w-full text-left health-card hover:shadow-md transition-all duration-200"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-green-500">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" 
-                              fill="currentColor"/>
-                      </svg>
-                    </div>
-                    <div>
-                      <div className="font-medium" style={{ color: 'var(--text-primary)' }}>Alertness Check</div>
-                      <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>Rate your energy level</div>
-                    </div>
-                  </div>
-                </button>
-                
-                <button 
-                  onClick={() => document.getElementById('charts')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="w-full text-left health-card hover:shadow-md transition-all duration-200"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-purple-500">
-                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" 
-                              fill="currentColor"/>
-                      </svg>
-                    </div>
-                    <div>
-                      <div className="font-medium" style={{ color: 'var(--text-primary)' }}>Performance Trends</div>
-                      <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>View 14-day analysis</div>
-                    </div>
-                  </div>
-                </button>
-              </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+            <div id="reaction-test">
+              <ReactionTest onComplete={handleMetricUpdate} />
+            </div>
+            
+            <div id="mood-slider">
+              <MoodSlider onSave={handleMetricUpdate} />
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Assessment Tools */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <div id="reaction-test">
-            <ReactionTest onComplete={handleMetricUpdate} />
+      {/* Performance Chart Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <div className="apple-eyebrow mb-4">Analytics</div>
+            <h2 className="apple-medium-text mb-6">
+              14-day performance trends
+            </h2>
           </div>
           
-          <div id="mood-slider">
-            <MoodSlider onSave={handleMetricUpdate} />
+          <div id="charts">
+            <ChartPanel />
           </div>
         </div>
+      </section>
 
-        {/* Performance Chart */}
-        <div id="charts" className="mb-8">
-          <ChartPanel />
+      {/* Today's Plan Section */}
+      <section className="py-16">
+        <div className="max-w-4xl mx-auto px-6">
+          <PlanCard />
         </div>
-      </div>
+      </section>
     </div>
   );
 }
