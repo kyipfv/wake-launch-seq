@@ -114,129 +114,146 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header - Centered like tinyteams */}
-      <div className="text-center py-16 px-6 bg-gray-50 border-b border-gray-100">
-        <h1 className="text-5xl font-bold text-black mb-4">Wake optimization dashboard</h1>
-        <p className="text-xl text-gray-500 font-normal max-w-2xl mx-auto">
-          Track your cognitive performance and optimize your daily wake routine
-        </p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
+      {/* Modern Hero Section */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 via-purple-600/5 to-cyan-600/5"></div>
+        <div className="relative text-center py-24 px-6">
+          <div className="max-w-4xl mx-auto">
+            <div className="inline-flex items-center px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full border border-gray-200/50 shadow-sm mb-8">
+              <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+              <span className="text-sm font-medium text-gray-700">Live performance tracking</span>
+            </div>
+            <h1 className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent mb-6 tracking-tight">
+              Wake optimization
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-600 font-light max-w-3xl mx-auto leading-relaxed">
+              Track your cognitive performance and optimize your daily wake routine with advanced neural metrics
+            </p>
+          </div>
+        </div>
       </div>
 
-      {/* Main Grid - Two column layout like tinyteams */}
-      <div className="max-w-6xl mx-auto px-6 py-12 pb-32">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Modern Cards Grid */}
+      <div className="max-w-7xl mx-auto px-6 py-16 pb-32">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Main Performance Cards */}
           {featuredCards.map((card) => (
-            <button
+            <div
               key={card.id}
               onClick={() => router.push(card.route as any)}
-              className="bg-white border border-gray-200 rounded-lg p-8 shadow-sm hover:shadow-md transition-all duration-200 text-left group"
+              className="group cursor-pointer bg-white/70 backdrop-blur-sm border border-white/20 rounded-3xl p-8 shadow-lg shadow-gray-900/5 hover:shadow-xl hover:shadow-gray-900/10 transition-all duration-500 hover:-translate-y-1"
             >
-              {/* Logo/Icon area */}
-              <div className="flex items-start gap-4 mb-6">
-                <div className={`w-16 h-16 ${card.color} rounded-xl flex items-center justify-center shadow-sm`}>
-                  <span className="text-white text-2xl">{card.icon}</span>
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold text-black mb-2">{card.title}</h3>
-                  <p className="text-gray-500 text-base leading-relaxed">{card.subtitle}</p>
+              {/* Modern Card Header */}
+              <div className="flex items-start justify-between mb-8">
+                <div className="flex items-start gap-5">
+                  <div className={`w-20 h-20 bg-gradient-to-br ${card.color.replace('bg-', 'from-')} to-${card.color.replace('bg-', '').replace('-500', '-600')} rounded-2xl flex items-center justify-center shadow-lg`}>
+                    <span className="text-white text-3xl filter drop-shadow-sm">{card.icon}</span>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-gray-800 transition-colors">{card.title}</h3>
+                    <p className="text-gray-600 text-lg leading-relaxed">{card.subtitle}</p>
+                  </div>
                 </div>
               </div>
 
-              {/* Metrics */}
-              <div className="mb-6">
-                <div className="flex items-baseline gap-2 mb-2">
-                  <span className="text-sm text-gray-500 font-medium">Current:</span>
-                  <span className="text-lg font-bold text-black">{card.value}</span>
-                  {card.unit && <span className="text-sm text-gray-500">{card.unit}</span>}
+              {/* Modern Metrics Display */}
+              <div className="mb-8 p-6 bg-gradient-to-r from-gray-50/50 to-white/50 rounded-2xl border border-gray-100/50">
+                <div className="flex items-end gap-3 mb-3">
+                  <span className="text-4xl font-black text-gray-900 tracking-tight">{card.value}</span>
+                  {card.unit && <span className="text-lg text-gray-500 font-medium mb-1">{card.unit}</span>}
                 </div>
-                <div className="text-sm text-gray-400">{card.detail}</div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-sm text-gray-500 font-medium">{card.detail}</span>
+                </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex gap-3">
-                <div className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 group-hover:border-gray-400 transition-colors flex items-center gap-2">
-                  <span>View Details</span>
-                  <span className="text-xs">↗</span>
+              {/* Modern Action Buttons */}
+              <div className="flex gap-4">
+                <div className="flex-1 px-6 py-4 bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-2xl font-semibold text-center group-hover:from-gray-800 group-hover:to-gray-700 transition-all duration-300 shadow-lg shadow-gray-900/20">
+                  Start Test
                 </div>
-                <div className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 group-hover:border-gray-400 transition-colors flex items-center gap-2">
-                  <span>Start Test</span>
-                  <span className="text-xs">↗</span>
+                <div className="px-6 py-4 bg-white/80 backdrop-blur-sm border border-gray-200 text-gray-700 rounded-2xl font-semibold hover:bg-white hover:border-gray-300 transition-all duration-300 shadow-sm">
+                  View Details
                 </div>
               </div>
-            </button>
+            </div>
           ))}
 
           {/* Quick Access Cards */}
           {quickAccessCards.map((card) => (
-            <button
+            <div
               key={card.id}
               onClick={() => router.push(card.route as any)}
-              className="bg-white border border-gray-200 rounded-lg p-8 shadow-sm hover:shadow-md transition-all duration-200 text-left group"
+              className="group cursor-pointer bg-white/70 backdrop-blur-sm border border-white/20 rounded-3xl p-8 shadow-lg shadow-gray-900/5 hover:shadow-xl hover:shadow-gray-900/10 transition-all duration-500 hover:-translate-y-1"
             >
-              <div className="flex items-start gap-4 mb-6">
-                <div className={`w-16 h-16 ${card.color} rounded-xl flex items-center justify-center shadow-sm`}>
-                  <span className="text-white text-2xl">{card.icon}</span>
+              <div className="flex items-start gap-5 mb-8">
+                <div className={`w-20 h-20 bg-gradient-to-br ${card.color.replace('bg-', 'from-')} to-${card.color.replace('bg-', '').replace('-500', '-600')} rounded-2xl flex items-center justify-center shadow-lg`}>
+                  <span className="text-white text-3xl filter drop-shadow-sm">{card.icon}</span>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold text-black mb-2">{card.title}</h3>
-                  <p className="text-gray-500 text-base leading-relaxed">{card.subtitle}</p>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-gray-800 transition-colors">{card.title}</h3>
+                  <p className="text-gray-600 text-lg leading-relaxed">{card.subtitle}</p>
                 </div>
               </div>
 
-              <div className="flex gap-3">
-                <div className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 group-hover:border-gray-400 transition-colors flex items-center gap-2">
-                  <span>View</span>
-                  <span className="text-xs">↗</span>
+              <div className="flex gap-4">
+                <div className="flex-1 px-6 py-4 bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-2xl font-semibold text-center group-hover:from-gray-800 group-hover:to-gray-700 transition-all duration-300 shadow-lg shadow-gray-900/20">
+                  Open
                 </div>
-                <div className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 group-hover:border-gray-400 transition-colors flex items-center gap-2">
-                  <span>Configure</span>  
-                  <span className="text-xs">↗</span>
+                <div className="px-6 py-4 bg-white/80 backdrop-blur-sm border border-gray-200 text-gray-700 rounded-2xl font-semibold hover:bg-white hover:border-gray-300 transition-all duration-300 shadow-sm">
+                  Configure
                 </div>
               </div>
-            </button>
+            </div>
           ))}
         </div>
 
-        {/* Progress Summary - Full width */}
-        <div className="mt-12 bg-gray-50 border border-gray-200 rounded-lg p-8">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-black mb-2">Today's Progress</h2>
-            <p className="text-gray-500">
-              {(todayMetrics.reaction_ms && todayMetrics.mood_score) ? 'All goals completed! 🎉' : 
-               `${(todayMetrics.reaction_ms ? 1 : 0) + (todayMetrics.mood_score ? 1 : 0)} of 2 goals completed`}
+        {/* Modern Progress Section */}
+        <div className="mt-20 bg-gradient-to-r from-white/80 to-gray-50/80 backdrop-blur-sm border border-white/20 rounded-3xl p-10 shadow-lg shadow-gray-900/5">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Today's Progress</h2>
+            <p className="text-xl text-gray-600">
+              {(todayMetrics.reaction_ms && todayMetrics.mood_score) ? (
+                <span className="inline-flex items-center gap-2">
+                  <span>All goals completed!</span>
+                  <span className="text-2xl">🎉</span>
+                </span>
+              ) : (
+                `${(todayMetrics.reaction_ms ? 1 : 0) + (todayMetrics.mood_score ? 1 : 0)} of 2 goals completed`
+              )}
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex items-center gap-4 p-4 bg-white rounded-lg border border-gray-200">
-              <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
-                <span className="text-white text-xl">⚡</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="flex items-center gap-6 p-6 bg-white/80 backdrop-blur-sm rounded-2xl border border-white/40 shadow-sm">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/25">
+                <span className="text-white text-2xl filter drop-shadow-sm">⚡</span>
               </div>
               <div className="flex-1">
-                <h4 className="font-semibold text-black">Reaction Test</h4>
-                <p className="text-sm text-gray-500">Neural response measurement</p>
+                <h4 className="text-lg font-bold text-gray-900 mb-1">Reaction Test</h4>
+                <p className="text-gray-600">Neural response measurement</p>
               </div>
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                todayMetrics.reaction_ms ? 'bg-green-500' : 'bg-gray-300'
+              <div className={`w-8 h-8 rounded-2xl flex items-center justify-center shadow-sm ${
+                todayMetrics.reaction_ms ? 'bg-gradient-to-br from-green-500 to-green-600' : 'bg-gray-300'
               }`}>
-                {todayMetrics.reaction_ms && <span className="text-white text-sm">✓</span>}
+                {todayMetrics.reaction_ms && <span className="text-white font-bold">✓</span>}
               </div>
             </div>
             
-            <div className="flex items-center gap-4 p-4 bg-white rounded-lg border border-gray-200">
-              <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
-                <span className="text-white text-xl">🧠</span>
+            <div className="flex items-center gap-6 p-6 bg-white/80 backdrop-blur-sm rounded-2xl border border-white/40 shadow-sm">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/25">
+                <span className="text-white text-2xl filter drop-shadow-sm">🧠</span>
               </div>
               <div className="flex-1">
-                <h4 className="font-semibold text-black">Alertness Check</h4>
-                <p className="text-sm text-gray-500">Cognitive performance index</p>
+                <h4 className="text-lg font-bold text-gray-900 mb-1">Alertness Check</h4>
+                <p className="text-gray-600">Cognitive performance index</p>
               </div>
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                todayMetrics.mood_score ? 'bg-green-500' : 'bg-gray-300'
+              <div className={`w-8 h-8 rounded-2xl flex items-center justify-center shadow-sm ${
+                todayMetrics.mood_score ? 'bg-gradient-to-br from-green-500 to-green-600' : 'bg-gray-300'
               }`}>
-                {todayMetrics.mood_score && <span className="text-white text-sm">✓</span>}
+                {todayMetrics.mood_score && <span className="text-white font-bold">✓</span>}
               </div>
             </div>
           </div>
