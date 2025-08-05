@@ -53,7 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             .single();
 
           if (profile?.chrono_window) {
-            router.push('/dashboard');
+            router.push('/home');
           } else {
             router.push('/onboarding');
           }
@@ -70,7 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!loading && user && pathname === '/') {
-      router.push('/dashboard');
+      router.push('/home');
     }
   }, [user, loading, pathname, router]);
 

@@ -128,7 +128,7 @@ export default function Onboarding() {
     if (error) {
       console.error('Error saving profile:', error);
     } else {
-      router.push('/dashboard');
+      router.push('/home');
     }
     setLoading(false);
   };
