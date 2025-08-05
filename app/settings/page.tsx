@@ -55,7 +55,7 @@ export default function Settings() {
 
     setLoading(true);
     try {
-      // Using OpenWeatherMap Geocoding API (free tier available)
+      // Using OpenWeatherMap Geocoding API
       const response = await fetch(
         `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(cityQuery)}&limit=5&appid=439d4b804bc8187953eb36d2a8c26a02`
       );
@@ -127,104 +127,103 @@ export default function Settings() {
         <p className="text-gray-600">Configure your location</p>
       </div>
 
+      {/* Main Content */}
       <div className="px-4 py-6 pb-24">
-        {/* Settings Card */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
           <div className="mb-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-1">Location Settings</h2>
             <p className="text-sm text-gray-500">Set your city for accurate sunrise calculations</p>
           </div>
 
-            {message && (
-              <div className={`p-4 rounded-2xl mb-6 text-center font-medium ${
-                message.includes('successfully') 
-                  ? 'bg-green-50 text-green-600 border border-green-200' 
-                  : 'bg-red-50 text-red-600 border border-red-200'
-              }`}>
-                {message}
+          {message && (
+            <div className={`p-4 rounded-2xl mb-6 text-center font-medium ${
+              message.includes('successfully') 
+                ? 'bg-green-50 text-green-600 border border-green-200' 
+                : 'bg-red-50 text-red-600 border border-red-200'
+            }`}>
+              {message}
+            </div>
+          )}
+
+          <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Search for your city
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={cityQuery}
+                  onChange={(e) => setCityQuery(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && searchCities()}
+                  placeholder="Enter city name..."
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                />
+                <button
+                  onClick={searchCities}
+                  disabled={loading || cityQuery.length < 2}
+                  className="absolute right-2 top-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white rounded-lg transition-colors duration-200"
+                >
+                  {loading ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    'Search'
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* City Results */}
+            {cities.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-sm text-gray-600">Select your city:</p>
+                {cities.map((city, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleCitySelect(city)}
+                    className="w-full p-4 text-left bg-gray-50 border border-gray-200 rounded-xl hover:border-blue-300 hover:bg-blue-50 transition-all duration-300 text-gray-900 group"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-lg">{city.name}, {city.country}</span>
+                      <span className="text-sm text-gray-500">
+                        {city.lat.toFixed(2)}°, {city.lon.toFixed(2)}°
+                      </span>
+                    </div>
+                  </button>
+                ))}
               </div>
             )}
 
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Search for your city
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={cityQuery}
-                    onChange={(e) => setCityQuery(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && searchCities()}
-                    placeholder="Enter city name..."
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                  />
-                  <button
-                    onClick={searchCities}
-                    disabled={loading || cityQuery.length < 2}
-                    className="absolute right-2 top-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white rounded-lg transition-colors duration-200"
-                  >
-                    {loading ? (
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    ) : (
-                      'Search'
-                    )}
-                  </button>
-                </div>
+            {/* Selected City */}
+            {selectedCity && (
+              <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                <p className="text-sm text-blue-600 mb-2">Selected location:</p>
+                <p className="text-lg font-semibold text-gray-900 mb-1">
+                  {selectedCity.name}{selectedCity.country && `, ${selectedCity.country}`}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Coordinates: {selectedCity.lat.toFixed(4)}°, {selectedCity.lon.toFixed(4)}°
+                </p>
               </div>
+            )}
+          </div>
 
-              {/* City Results */}
-              {cities.length > 0 && (
-                <div className="space-y-2">
-                  <p className="text-sm text-gray-600">Select your city:</p>
-                  {cities.map((city, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleCitySelect(city)}
-                      className="w-full p-4 text-left bg-gray-50 border border-gray-200 rounded-xl hover:border-blue-300 hover:bg-blue-50 transition-all duration-300 text-gray-900 group"
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="text-lg">{city.name}, {city.country}</span>
-                        <span className="text-sm text-gray-500">
-                          {city.lat.toFixed(2)}°, {city.lon.toFixed(2)}°
-                        </span>
-                      </div>
-                    </button>
-                  ))}
+          {/* Action Button */}
+          <div className="mt-6">
+            <button
+              onClick={handleSave}
+              disabled={!selectedCity || saving}
+              className="w-full py-3 px-6 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors duration-200 disabled:bg-gray-300 disabled:text-gray-500"
+            >
+              {saving ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Saving...</span>
                 </div>
+              ) : (
+                'Save Location'
               )}
-
-              {/* Selected City */}
-              {selectedCity && (
-                <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl">
-                  <p className="text-sm text-blue-600 mb-2">Selected location:</p>
-                  <p className="text-lg font-semibold text-gray-900 mb-1">
-                    {selectedCity.name}{selectedCity.country && `, ${selectedCity.country}`}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Coordinates: {selectedCity.lat.toFixed(4)}°, {selectedCity.lon.toFixed(4)}°
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Action Button */}
-            <div className="mt-6">
-              <button
-                onClick={handleSave}
-                disabled={!selectedCity || saving}
-                className="w-full py-3 px-6 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors duration-200 disabled:bg-gray-300 disabled:text-gray-500"
-              >
-                {saving ? (
-                  <div className="flex items-center justify-center space-x-2">
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>Saving...</span>
-                  </div>
-                ) : (
-                  'Save Location'
-                )}
-              </button>
-            </div>
+            </button>
           </div>
         </div>
       </div>
