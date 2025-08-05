@@ -65,7 +65,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               router.push('/onboarding');
               console.log('Onboarding redirect called');
             } else {
-              console.log('Redirecting to home...', { profileId: profile.id, chronoWindow: profile.chrono_window });
+              console.log('Redirecting to home...', { userId: session.user.id, chronoWindow: profile.chrono_window });
               router.push('/home');
               console.log('Home redirect called');
             }
