@@ -32,11 +32,8 @@ export default function SignIn() {
       } else if (data.user) {
         console.log('Sign in successful, user:', data.user.id);
         setMessage('Sign in successful! Redirecting...');
-        // Set a longer timeout and try manual redirect if needed
-        setTimeout(() => {
-          console.log('Timeout reached, attempting manual redirect...');
-          window.location.href = '/home';
-        }, 3000);
+        // Let AuthProvider handle the redirect automatically
+        setLoading(false);
       }
     } catch (err) {
       console.error('Sign in error:', err);
