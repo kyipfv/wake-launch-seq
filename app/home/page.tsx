@@ -24,10 +24,13 @@ export default function Home() {
   const [userName, setUserName] = useState('');
 
   useEffect(() => {
+    console.log('Home page useEffect - user:', user?.id, 'pathname:', window.location.pathname);
     if (!user) {
+      console.log('No user found on home page, redirecting to /');
       router.push('/');
       return;
     }
+    console.log('User found on home page, loading data...');
     loadUserData();
     loadTodayMetrics();
   }, [user, router]);

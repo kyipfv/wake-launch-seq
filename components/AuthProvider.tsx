@@ -56,14 +56,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               .single();
 
             console.log('Profile lookup result:', { profile, error });
+            console.log('Profile chrono_window:', profile?.chrono_window);
+            console.log('Current pathname:', pathname);
 
             // If no profile exists or no chronotype, go to onboarding
             if (error || !profile?.chrono_window) {
-              console.log('Redirecting to onboarding...');
+              console.log('Redirecting to onboarding...', { error: error?.message, hasChronoWindow: !!profile?.chrono_window });
               router.push('/onboarding');
+              console.log('Onboarding redirect called');
             } else {
-              console.log('Redirecting to home...');
+              console.log('Redirecting to home...', { profileId: profile.id, chronoWindow: profile.chrono_window });
               router.push('/home');
+              console.log('Home redirect called');
             }
           } catch (err) {
             // If any error occurs, redirect to onboarding
