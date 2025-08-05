@@ -116,68 +116,246 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header exactly like tinyteams */}
-      <div className="text-center py-16 px-6 bg-gray-50">
-        <h1 className="text-5xl font-bold text-black mb-4">Wake optimization hall of fame</h1>
-        <p className="text-xl text-gray-500 max-w-2xl mx-auto">
-          Directory of the most epic cognitive performance tools
-        </p>
-        
-        {/* Filter buttons like tinyteams */}
-        <div className="flex justify-center gap-4 mt-8">
-          <div className="px-6 py-3 bg-black text-white rounded-lg font-medium">
-            Default
-          </div>
-          <div className="px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg font-medium hover:border-gray-400 transition-colors">
-            Performance ↓
-          </div>
-          <div className="px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg font-medium hover:border-gray-400 transition-colors">
-            Metrics ↓
+      {/* Dashboard Header */}
+      <div className="bg-white border-b border-gray-200 px-6 py-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+              <p className="text-gray-600 mt-1">
+                {new Date().toLocaleDateString('en-US', { 
+                  weekday: 'long', 
+                  month: 'long', 
+                  day: 'numeric',
+                  year: 'numeric'
+                })}
+              </p>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <p className="text-sm text-gray-500">Welcome back,</p>
+                <p className="font-semibold text-gray-900">{userName || 'User'}</p>
+              </div>
+              <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                <span className="text-white font-semibold text-sm">
+                  {userName ? userName[0].toUpperCase() : 'U'}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* 3x2 Grid exactly like tinyteams */}
-      <div className="max-w-6xl mx-auto px-6 pb-32">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {allCards.map((card) => (
-            <button
-              key={card.id}
-              onClick={() => router.push(card.route as any)}
-              className="bg-white rounded-lg p-8 shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 text-left"
-            >
-              {/* Logo and title section */}
-              <div className="flex items-start gap-4 mb-6">
-                <div className={`w-16 h-16 ${card.color} rounded-lg flex items-center justify-center shadow-sm`}>
-                  <span className="text-white text-2xl">{card.icon}</span>
+      <div className="max-w-7xl mx-auto px-6 py-8 pb-32">
+        {/* Key Metrics Row */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Reaction Time</p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {todayMetrics.reaction_ms ? `${todayMetrics.reaction_ms}` : '—'}
+                  <span className="text-lg font-normal text-gray-500 ml-1">
+                    {todayMetrics.reaction_ms ? 'ms' : ''}
+                  </span>
+                </p>
+                <p className="text-sm text-gray-500 mt-1">Today's average</p>
+              </div>
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                <span className="text-blue-600 text-xl">⚡</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Alertness Level</p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {todayMetrics.mood_score ? `${todayMetrics.mood_score}` : '—'}
+                  <span className="text-lg font-normal text-gray-500 ml-1">
+                    {todayMetrics.mood_score ? '/10' : ''}
+                  </span>
+                </p>
+                <p className="text-sm text-gray-500 mt-1">Current rating</p>
+              </div>
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                <span className="text-green-600 text-xl">🧠</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Tests Completed</p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {(todayMetrics.reaction_ms ? 1 : 0) + (todayMetrics.mood_score ? 1 : 0)}
+                  <span className="text-lg font-normal text-gray-500 ml-1">/2</span>
+                </p>
+                <p className="text-sm text-gray-500 mt-1">Today's progress</p>
+              </div>
+              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                <span className="text-purple-600 text-xl">📊</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Streak</p>
+                <p className="text-3xl font-bold text-gray-900">7<span className="text-lg font-normal text-gray-500 ml-1">days</span></p>
+                <p className="text-sm text-gray-500 mt-1">Current streak</p>
+              </div>
+              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                <span className="text-orange-600 text-xl">🔥</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Dashboard Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Quick Actions */}
+          <div className="lg:col-span-2">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <button
+                onClick={() => router.push('/reaction-test' as any)}
+                className="bg-white rounded-lg border border-gray-200 p-6 text-left hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+                    <span className="text-white text-xl">⚡</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">Reaction Test</h3>
+                    <p className="text-sm text-gray-600">Measure response speed</p>
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold text-black mb-2">{card.title}</h3>
-                  <p className="text-gray-500 text-base leading-relaxed">{card.description}</p>
+                <div className="text-sm text-blue-600 font-medium">Start Test →</div>
+              </button>
+
+              <button
+                onClick={() => router.push('/alertness' as any)}
+                className="bg-white rounded-lg border border-gray-200 p-6 text-left hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+                    <span className="text-white text-xl">🧠</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">Alertness Check</h3>
+                    <p className="text-sm text-gray-600">Rate your energy level</p>
+                  </div>
+                </div>
+                <div className="text-sm text-green-600 font-medium">Rate Now →</div>
+              </button>
+
+              <button
+                onClick={() => router.push('/sunrise-plan' as any)}
+                className="bg-white rounded-lg border border-gray-200 p-6 text-left hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center">
+                    <span className="text-white text-xl">☀️</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">Plan Tomorrow</h3>
+                    <p className="text-sm text-gray-600">Optimize wake sequence</p>
+                  </div>
+                </div>
+                <div className="text-sm text-orange-600 font-medium">Plan Now →</div>
+              </button>
+
+              <button
+                onClick={() => router.push('/trends' as any)}
+                className="bg-white rounded-lg border border-gray-200 p-6 text-left hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
+                    <span className="text-white text-xl">📊</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">View Trends</h3>
+                    <p className="text-sm text-gray-600">Analyze performance</p>
+                  </div>
+                </div>
+                <div className="text-sm text-purple-600 font-medium">View Charts →</div>
+              </button>
+            </div>
+          </div>
+
+          {/* Today's Summary */}
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Today's Summary</h2>
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-blue-600 text-2xl">📈</span>
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">Performance Status</h3>
+                <p className="text-sm text-gray-600">
+                  {(todayMetrics.reaction_ms && todayMetrics.mood_score) 
+                    ? 'All assessments complete!' 
+                    : 'Some assessments pending'
+                  }
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <span className="text-blue-600 text-sm">⚡</span>
+                    </div>
+                    <span className="text-sm font-medium text-gray-900">Reaction Test</span>
+                  </div>
+                  <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    todayMetrics.reaction_ms 
+                      ? 'bg-green-100 text-green-800' 
+                      : 'bg-gray-100 text-gray-600'
+                  }`}>
+                    {todayMetrics.reaction_ms ? 'Complete' : 'Pending'}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                      <span className="text-green-600 text-sm">🧠</span>
+                    </div>
+                    <span className="text-sm font-medium text-gray-900">Alertness Check</span>
+                  </div>
+                  <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    todayMetrics.mood_score 
+                      ? 'bg-green-100 text-green-800' 
+                      : 'bg-gray-100 text-gray-600'
+                  }`}>
+                    {todayMetrics.mood_score ? 'Complete' : 'Pending'}
+                  </div>
                 </div>
               </div>
 
-              {/* Team and metric info */}
-              <div className="mb-6">
-                <div className="flex items-center gap-8 text-sm">
-                  <span className="text-gray-700 font-medium">{card.team}</span>
-                  <span className="text-gray-700 font-medium">{card.metric}</span>
+              <div className="mt-6 pt-4 border-t border-gray-100">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium text-gray-700">Daily Progress</span>
+                  <span className="text-sm font-medium text-gray-900">
+                    {Math.round(((todayMetrics.reaction_ms ? 1 : 0) + (todayMetrics.mood_score ? 1 : 0)) / 2 * 100)}%
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div 
+                    className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                    style={{ 
+                      width: `${((todayMetrics.reaction_ms ? 1 : 0) + (todayMetrics.mood_score ? 1 : 0)) * 50}%` 
+                    }}
+                  ></div>
                 </div>
               </div>
-
-              {/* Action buttons */}
-              <div className="flex gap-3">
-                <div className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:border-gray-400 transition-colors flex items-center gap-2">
-                  <span>View Jobs</span>
-                  <span className="text-xs">↗</span>
-                </div>
-                <div className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:border-gray-400 transition-colors flex items-center gap-2">
-                  <span>View Website</span>
-                  <span className="text-xs">↗</span>
-                </div>
-              </div>
-            </button>
-          ))}
+            </div>
+          </div>
         </div>
       </div>
 
