@@ -128,23 +128,52 @@ export default function ProfilePage() {
         {/* Sign Out Button */}
         <button
           onClick={() => signOut()}
-          className="mt-6 w-full bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:bg-red-50 hover:scale-105 transition-all duration-200"
+          style={{
+            marginTop: '24px',
+            width: '100%',
+            backgroundColor: 'white',
+            borderRadius: '16px',
+            padding: '24px',
+            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+            border: '1px solid #f3f4f6',
+            transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+            cursor: 'pointer'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#fef2f2';
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'white';
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)';
+          }}
         >
-          <div className="flex items-center justify-center gap-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg">
-              <span className="text-2xl text-white">🚪</span>
+          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px'}}>
+            <div style={{
+              width: '64px',
+              height: '64px',
+              background: 'linear-gradient(135deg, #ef4444 0%, #ec4899 100%)',
+              borderRadius: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 14px 0 rgba(239, 68, 68, 0.25)'
+            }}>
+              <span style={{fontSize: '24px', color: 'white'}}>🚪</span>
             </div>
-            <div className="text-left">
-              <span className="text-lg font-bold text-red-600">Sign Out</span>
-              <p className="text-sm text-gray-500 font-medium">End your session</p>
+            <div style={{textAlign: 'left'}}>
+              <span style={{fontSize: '18px', fontWeight: '700', color: '#dc2626'}}>Sign Out</span>
+              <p style={{fontSize: '14px', color: '#6b7280', fontWeight: '500', margin: '4px 0 0 0'}}>End your session</p>
             </div>
           </div>
         </button>
 
         {/* App Version */}
-        <div className="mt-8 text-center">
-          <p className="text-xs text-gray-400">Wake Launch Sequence</p>
-          <p className="text-xs text-gray-400">Version 1.0.0</p>
+        <div style={{marginTop: '32px', textAlign: 'center'}}>
+          <p style={{fontSize: '12px', color: '#9ca3af'}}>Wake Launch Sequence</p>
+          <p style={{fontSize: '12px', color: '#9ca3af'}}>Version 1.0.0</p>
         </div>
       </div>
 

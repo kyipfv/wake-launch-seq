@@ -9,71 +9,166 @@ export default function SunrisePlanPage() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{minHeight: '100vh', backgroundColor: '#f9fafb'}}>
       {/* Header */}
-      <div className="bg-white px-6 pt-16 pb-8">
-        <div className="flex items-center gap-4 mb-6">
-          <button 
-            onClick={() => router.push('/home')}
-            className="p-3 -ml-3 hover:bg-gray-100 rounded-full transition-all duration-200 hover:scale-105"
-          >
-            <ArrowLeft className="w-6 h-6 text-gray-900" />
-          </button>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Sunrise Plan</h1>
-            <p className="text-gray-500 text-lg font-medium mt-1">Tomorrow's wake optimization</p>
+      <div style={{
+        backgroundColor: 'white',
+        borderBottom: '1px solid #e5e7eb',
+        padding: '24px 24px 32px 24px',
+        paddingTop: '64px'
+      }}>
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto'
+        }}>
+          <div style={{display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px'}}>
+            <button 
+              onClick={() => router.push('/home')}
+              style={{
+                padding: '12px',
+                marginLeft: '-12px',
+                backgroundColor: 'transparent',
+                border: 'none',
+                borderRadius: '50%',
+                transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#f3f4f6';
+                e.currentTarget.style.transform = 'scale(1.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
+              <ArrowLeft style={{width: '24px', height: '24px', color: '#111827'}} />
+            </button>
+            <div>
+              <h1 style={{fontSize: '28px', fontWeight: '700', color: '#111827', margin: '0'}}>Sunrise Plan</h1>
+              <p style={{color: '#6b7280', fontSize: '16px', fontWeight: '500', marginTop: '4px', margin: '4px 0 0 0'}}>Tomorrow's wake optimization</p>
+            </div>
           </div>
-        </div>
-        
-        {/* Icon Display */}
-        <div className="flex items-center justify-center mb-2">
-          <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-3xl flex items-center justify-center shadow-lg">
-            <span className="text-4xl text-white">☀️</span>
+          
+          {/* Icon Display */}
+          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px'}}>
+            <div style={{
+              width: '80px',
+              height: '80px',
+              background: 'linear-gradient(135deg, #f59e0b 0%, #eab308 100%)',
+              borderRadius: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 10px 25px -3px rgba(245, 158, 11, 0.3), 0 4px 6px -2px rgba(245, 158, 11, 0.05)'
+            }}>
+              <span style={{fontSize: '40px', color: 'white'}}>☀️</span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="px-6 pb-32">
+      <div style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '32px 24px 128px 24px'
+      }}>
         {/* Plan Card - Updated Style */}
-        <div className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '16px',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+          border: '1px solid #f3f4f6',
+          overflow: 'hidden'
+        }}>
           <PlanCard />
         </div>
 
         {/* Light Exposure Guide */}
-        <div className="mt-6 bg-white rounded-3xl p-8 shadow-sm border border-gray-100 relative overflow-hidden">
+        <div style={{
+          marginTop: '24px',
+          backgroundColor: 'white',
+          borderRadius: '16px',
+          padding: '32px',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+          border: '1px solid #f3f4f6',
+          position: 'relative',
+          overflow: 'hidden',
+          background: 'linear-gradient(135deg, #ffffff 0%, #fef3c7 100%)'
+        }}>
           {/* Background gradient */}
-          <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500 opacity-5 rounded-full -translate-y-4 translate-x-4"></div>
+          <div style={{
+            position: 'absolute',
+            top: '0',
+            right: '0',
+            width: '96px',
+            height: '96px',
+            backgroundColor: '#f59e0b',
+            opacity: '0.03',
+            borderRadius: '50%',
+            transform: 'translate(16px, -16px)'
+          }}></div>
           
-          <div className="relative z-10">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-gray-900">Light Exposure Guide</h3>
-              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-                <span className="text-lg">💡</span>
+          <div style={{position: 'relative', zIndex: '10'}}>
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px'}}>
+              <h3 style={{fontSize: '20px', fontWeight: '700', color: '#111827'}}>Light Exposure Guide</h3>
+              <div style={{
+                width: '48px',
+                height: '48px',
+                background: 'linear-gradient(135deg, #fed7aa 0%, #fdba74 100%)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <span style={{fontSize: '18px'}}>💡</span>
               </div>
             </div>
             
-            <div className="space-y-6">
-              <div className="p-6 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-2xl border border-orange-100">
-                <div className="flex items-start gap-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                    <Sun className="w-8 h-8 text-white" />
+            <div style={{display: 'flex', flexDirection: 'column', gap: '24px'}}>
+              <div style={{
+                padding: '24px',
+                background: 'linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%)',
+                borderRadius: '16px',
+                border: '1px solid #fed7aa'
+              }}>
+                <div style={{display: 'flex', alignItems: 'flex-start', gap: '16px'}}>
+                  <div style={{
+                    width: '64px',
+                    height: '64px',
+                    background: 'linear-gradient(135deg, #f59e0b 0%, #eab308 100%)',
+                    borderRadius: '16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: '0',
+                    boxShadow: '0 4px 14px 0 rgba(245, 158, 11, 0.25)'
+                  }}>
+                    <Sun style={{width: '32px', height: '32px', color: 'white'}} />
                   </div>
-                  <div className="flex-1">
-                    <h4 className="text-lg font-bold text-gray-900 mb-2">Outdoor Light</h4>
-                    <p className="text-base text-gray-600 mb-4 font-medium">Best option for circadian alignment</p>
-                    <div className="bg-white/80 rounded-xl p-4">
-                      <ul className="text-sm text-gray-700 space-y-2 font-medium">
-                        <li className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                  <div style={{flex: '1'}}>
+                    <h4 style={{fontSize: '18px', fontWeight: '700', color: '#111827', marginBottom: '8px'}}>Outdoor Light</h4>
+                    <p style={{fontSize: '16px', color: '#6b7280', marginBottom: '16px', fontWeight: '500'}}>Best option for circadian alignment</p>
+                    <div style={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                      borderRadius: '12px',
+                      padding: '16px'
+                    }}>
+                      <ul style={{fontSize: '14px', color: '#374151', fontWeight: '500', listStyle: 'none', padding: '0', margin: '0'}}>
+                        <li style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px'}}>
+                          <div style={{width: '8px', height: '8px', backgroundColor: '#f59e0b', borderRadius: '50%'}}></div>
                           10,000+ lux natural light
                         </li>
-                        <li className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                        <li style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px'}}>
+                          <div style={{width: '8px', height: '8px', backgroundColor: '#f59e0b', borderRadius: '50%'}}></div>
                           Full spectrum exposure
                         </li>
-                        <li className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                        <li style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                          <div style={{width: '8px', height: '8px', backgroundColor: '#f59e0b', borderRadius: '50%'}}></div>
                           10-15 minutes minimum
                         </li>
                       </ul>
@@ -82,26 +177,45 @@ export default function SunrisePlanPage() {
                 </div>
               </div>
 
-              <div className="p-6 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl border border-blue-100">
-                <div className="flex items-start gap-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                    <span className="text-3xl text-white">💡</span>
+              <div style={{
+                padding: '24px',
+                background: 'linear-gradient(135deg, #eff6ff 0%, #bfdbfe 100%)',
+                borderRadius: '16px',
+                border: '1px solid #bfdbfe'
+              }}>
+                <div style={{display: 'flex', alignItems: 'flex-start', gap: '16px'}}>
+                  <div style={{
+                    width: '64px',
+                    height: '64px',
+                    background: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
+                    borderRadius: '16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: '0',
+                    boxShadow: '0 4px 14px 0 rgba(59, 130, 246, 0.25)'
+                  }}>
+                    <span style={{fontSize: '28px', color: 'white'}}>💡</span>
                   </div>
-                  <div className="flex-1">
-                    <h4 className="text-lg font-bold text-gray-900 mb-2">Light Therapy Box</h4>
-                    <p className="text-base text-gray-600 mb-4 font-medium">Indoor alternative</p>
-                    <div className="bg-white/80 rounded-xl p-4">
-                      <ul className="text-sm text-gray-700 space-y-2 font-medium">
-                        <li className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <div style={{flex: '1'}}>
+                    <h4 style={{fontSize: '18px', fontWeight: '700', color: '#111827', marginBottom: '8px'}}>Light Therapy Box</h4>
+                    <p style={{fontSize: '16px', color: '#6b7280', marginBottom: '16px', fontWeight: '500'}}>Indoor alternative</p>
+                    <div style={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                      borderRadius: '12px',
+                      padding: '16px'
+                    }}>
+                      <ul style={{fontSize: '14px', color: '#374151', fontWeight: '500', listStyle: 'none', padding: '0', margin: '0'}}>
+                        <li style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px'}}>
+                          <div style={{width: '8px', height: '8px', backgroundColor: '#3b82f6', borderRadius: '50%'}}></div>
                           10,000 lux brightness
                         </li>
-                        <li className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <li style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px'}}>
+                          <div style={{width: '8px', height: '8px', backgroundColor: '#3b82f6', borderRadius: '50%'}}></div>
                           12-16 inches from face
                         </li>
-                        <li className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <li style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                          <div style={{width: '8px', height: '8px', backgroundColor: '#3b82f6', borderRadius: '50%'}}></div>
                           20-30 minutes duration
                         </li>
                       </ul>
@@ -114,18 +228,50 @@ export default function SunrisePlanPage() {
         </div>
 
         {/* Location Settings Prompt */}
-        <div className="mt-6 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-3xl p-6 shadow-sm">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg">
-              <MapPin className="w-8 h-8 text-white" />
+        <div style={{
+          marginTop: '24px',
+          background: 'linear-gradient(135deg, #faf5ff 0%, #fce7f3 100%)',
+          border: '1px solid #d8b4fe',
+          borderRadius: '16px',
+          padding: '24px',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
+        }}>
+          <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+            <div style={{
+              width: '64px',
+              height: '64px',
+              background: 'linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)',
+              borderRadius: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 14px 0 rgba(139, 92, 246, 0.25)'
+            }}>
+              <MapPin style={{width: '32px', height: '32px', color: 'white'}} />
             </div>
-            <div className="flex-1">
-              <p className="text-base font-bold text-gray-900">Set your location</p>
-              <p className="text-sm text-gray-600 font-medium mt-1">Get accurate sunrise times for your city</p>
+            <div style={{flex: '1'}}>
+              <p style={{fontSize: '16px', fontWeight: '700', color: '#111827', margin: '0'}}>Set your location</p>
+              <p style={{fontSize: '14px', color: '#6b7280', fontWeight: '500', marginTop: '4px', margin: '4px 0 0 0'}}>Get accurate sunrise times for your city</p>
             </div>
             <button 
               onClick={() => router.push('/settings')}
-              className="px-6 py-3 bg-purple-600 text-white font-semibold rounded-2xl hover:bg-purple-700 transition-colors shadow-md"
+              style={{
+                padding: '12px 24px',
+                backgroundColor: '#8b5cf6',
+                color: 'white',
+                fontWeight: '600',
+                borderRadius: '16px',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s ease',
+                boxShadow: '0 4px 14px 0 rgba(139, 92, 246, 0.25)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#7c3aed';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#8b5cf6';
+              }}
             >
               Settings
             </button>

@@ -145,35 +145,96 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{minHeight: '100vh', backgroundColor: '#f9fafb'}}>
       {/* Header */}
-      <div className="bg-white px-6 pt-16 pb-8">
-        <div className="flex items-center gap-4 mb-6">
-          <button 
-            onClick={() => router.push('/profile')}
-            className="p-3 -ml-3 hover:bg-gray-100 rounded-full transition-all duration-200 hover:scale-105"
-          >
-            <ArrowLeft className="w-6 h-6 text-gray-900" />
-          </button>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-            <p className="text-gray-500 text-lg font-medium mt-1">Configure your location</p>
+      <div style={{
+        backgroundColor: 'white',
+        borderBottom: '1px solid #e5e7eb',
+        padding: '24px 24px 32px 24px',
+        paddingTop: '64px'
+      }}>
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto'
+        }}>
+          <div style={{display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px'}}>
+            <button 
+              onClick={() => router.push('/profile')}
+              style={{
+                padding: '12px',
+                marginLeft: '-12px',
+                backgroundColor: 'transparent',
+                border: 'none',
+                borderRadius: '50%',
+                transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#f3f4f6';
+                e.currentTarget.style.transform = 'scale(1.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
+              <ArrowLeft style={{width: '24px', height: '24px', color: '#111827'}} />
+            </button>
+            <div>
+              <h1 style={{fontSize: '28px', fontWeight: '700', color: '#111827', margin: '0'}}>Settings</h1>
+              <p style={{color: '#6b7280', fontSize: '16px', fontWeight: '500', marginTop: '4px', margin: '4px 0 0 0'}}>Configure your location</p>
+            </div>
           </div>
-        </div>
-        
-        {/* Icon Display */}
-        <div className="flex items-center justify-center mb-2">
-          <div className="w-20 h-20 bg-gradient-to-br from-gray-500 to-slate-600 rounded-3xl flex items-center justify-center shadow-lg">
-            <span className="text-4xl text-white">⚙️</span>
+          
+          {/* Icon Display */}
+          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px'}}>
+            <div style={{
+              width: '80px',
+              height: '80px',
+              background: 'linear-gradient(135deg, #6b7280 0%, #475569 100%)',
+              borderRadius: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 10px 25px -3px rgba(107, 114, 128, 0.3), 0 4px 6px -2px rgba(107, 114, 128, 0.05)'
+            }}>
+              <span style={{fontSize: '40px', color: 'white'}}>⚙️</span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="px-6 pb-32">
-        <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 relative overflow-hidden">
+      <div style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '32px 24px 128px 24px'
+      }}>
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '16px',
+          padding: '32px',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+          border: '1px solid #f3f4f6',
+          position: 'relative',
+          overflow: 'hidden',
+          background: 'linear-gradient(135deg, #ffffff 0%, #eff6ff 100%)'
+        }}>
           {/* Background gradient */}
-          <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500 opacity-5 rounded-full -translate-y-4 translate-x-4"></div>
+          <div style={{
+            position: 'absolute',
+            top: '0',
+            right: '0',
+            width: '96px',
+            height: '96px',
+            backgroundColor: '#3b82f6',
+            opacity: '0.03',
+            borderRadius: '50%',
+            transform: 'translate(16px, -16px)'
+          }}></div>
           
           <div className="mb-8 relative z-10">
             <div className="flex items-center justify-between mb-4">

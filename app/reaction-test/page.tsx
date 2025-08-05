@@ -11,55 +11,127 @@ export default function ReactionTestPage() {
   const [testComplete, setTestComplete] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{minHeight: '100vh', backgroundColor: '#f9fafb'}}>
       {/* Header */}
-      <div className="bg-white px-6 pt-16 pb-8">
-        <div className="flex items-center gap-4 mb-6">
-          <button 
-            onClick={() => router.push('/home')}
-            className="p-3 -ml-3 hover:bg-gray-100 rounded-full transition-all duration-200 hover:scale-105"
-          >
-            <ArrowLeft className="w-6 h-6 text-gray-900" />
-          </button>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Reaction Time</h1>
-            <p className="text-gray-500 text-lg font-medium mt-1">Test your response speed</p>
+      <div style={{
+        backgroundColor: 'white',
+        borderBottom: '1px solid #e5e7eb',
+        padding: '24px 24px 32px 24px',
+        paddingTop: '64px'
+      }}>
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto'
+        }}>
+          <div style={{display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px'}}>
+            <button 
+              onClick={() => router.push('/home')}
+              style={{
+                padding: '12px',
+                marginLeft: '-12px',
+                backgroundColor: 'transparent',
+                border: 'none',
+                borderRadius: '50%',
+                transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#f3f4f6';
+                e.currentTarget.style.transform = 'scale(1.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
+              <ArrowLeft style={{width: '24px', height: '24px', color: '#111827'}} />
+            </button>
+            <div>
+              <h1 style={{fontSize: '28px', fontWeight: '700', color: '#111827', margin: '0'}}>Reaction Time</h1>
+              <p style={{color: '#6b7280', fontSize: '16px', fontWeight: '500', marginTop: '4px', margin: '4px 0 0 0'}}>Test your response speed</p>
+            </div>
           </div>
-        </div>
-        
-        {/* Icon Display */}
-        <div className="flex items-center justify-center mb-2">
-          <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-3xl flex items-center justify-center shadow-lg">
-            <span className="text-4xl text-white">⚡</span>
+          
+          {/* Icon Display */}
+          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px'}}>
+            <div style={{
+              width: '80px',
+              height: '80px',
+              background: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
+              borderRadius: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 10px 25px -3px rgba(59, 130, 246, 0.3), 0 4px 6px -2px rgba(59, 130, 246, 0.05)'
+            }}>
+              <span style={{fontSize: '40px', color: 'white'}}>⚡</span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="px-6 pb-32">
+      <div style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '32px 24px 128px 24px'
+      }}>
         {/* Instructions Card */}
         {!testComplete && (
-          <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 mb-6 relative overflow-hidden">
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '16px',
+            padding: '32px',
+            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+            border: '1px solid #f3f4f6',
+            marginBottom: '24px',
+            position: 'relative',
+            overflow: 'hidden',
+            background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)'
+          }}>
             {/* Background gradient */}
-            <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500 opacity-5 rounded-full -translate-y-4 translate-x-4"></div>
+            <div style={{
+              position: 'absolute',
+              top: '0',
+              right: '0',
+              width: '96px',
+              height: '96px',
+              backgroundColor: '#3b82f6',
+              opacity: '0.03',
+              borderRadius: '50%',
+              transform: 'translate(16px, -16px)'
+            }}></div>
             
-            <div className="flex items-start gap-6 relative z-10">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                <span className="text-3xl text-white">ℹ️</span>
+            <div style={{display: 'flex', alignItems: 'flex-start', gap: '24px', position: 'relative', zIndex: '10'}}>
+              <div style={{
+                width: '64px',
+                height: '64px',
+                background: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
+                borderRadius: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: '0',
+                boxShadow: '0 4px 14px 0 rgba(59, 130, 246, 0.25)'
+              }}>
+                <span style={{fontSize: '28px', color: 'white'}}>ℹ️</span>
               </div>
               <div>
-                <h2 className="text-xl font-bold text-gray-900 mb-4">How it works</h2>
-                <ul className="text-base text-gray-600 space-y-2 font-medium">
-                  <li className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <h2 style={{fontSize: '20px', fontWeight: '700', color: '#111827', marginBottom: '16px'}}>How it works</h2>
+                <ul style={{fontSize: '16px', color: '#6b7280', fontWeight: '500', listStyle: 'none', padding: '0', margin: '0'}}>
+                  <li style={{display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px'}}>
+                    <div style={{width: '8px', height: '8px', backgroundColor: '#3b82f6', borderRadius: '50%'}}></div>
                     Tap the blue circles as quickly as possible
                   </li>
-                  <li className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <li style={{display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px'}}>
+                    <div style={{width: '8px', height: '8px', backgroundColor: '#3b82f6', borderRadius: '50%'}}></div>
                     Complete 10 tests for accurate results
                   </li>
-                  <li className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <li style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+                    <div style={{width: '8px', height: '8px', backgroundColor: '#3b82f6', borderRadius: '50%'}}></div>
                     Your median time will be recorded
                   </li>
                 </ul>
@@ -69,38 +141,106 @@ export default function ReactionTestPage() {
         )}
 
         {/* Test Component */}
-        <div className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '16px',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+          border: '1px solid #f3f4f6',
+          overflow: 'hidden'
+        }}>
           <ReactionTest onComplete={() => setTestComplete(true)} />
         </div>
 
         {/* Results History */}
         {testComplete && (
-          <div className="mt-6 bg-white rounded-3xl p-8 shadow-sm border border-gray-100 relative overflow-hidden">
+          <div style={{
+            marginTop: '24px',
+            backgroundColor: 'white',
+            borderRadius: '16px',
+            padding: '32px',
+            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+            border: '1px solid #f3f4f6',
+            position: 'relative',
+            overflow: 'hidden',
+            background: 'linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)'
+          }}>
             {/* Background gradient */}
-            <div className="absolute top-0 right-0 w-20 h-20 bg-green-500 opacity-5 rounded-full -translate-y-4 translate-x-4"></div>
+            <div style={{
+              position: 'absolute',
+              top: '0',
+              right: '0',
+              width: '80px',
+              height: '80px',
+              backgroundColor: '#10b981',
+              opacity: '0.03',
+              borderRadius: '50%',
+              transform: 'translate(16px, -16px)'
+            }}></div>
             
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900">Recent Results</h3>
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                  <span className="text-lg">📊</span>
+            <div style={{position: 'relative', zIndex: '10'}}>
+              <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px'}}>
+                <h3 style={{fontSize: '20px', fontWeight: '700', color: '#111827'}}>Recent Results</h3>
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  background: 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <span style={{fontSize: '18px'}}>📊</span>
                 </div>
               </div>
               
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-6 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors">
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-md">
-                      <span className="text-xl text-white">⚡</span>
+              <div>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '24px',
+                  backgroundColor: '#f9fafb',
+                  borderRadius: '16px',
+                  transition: 'background-color 0.2s ease',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f3f4f6';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f9fafb';
+                }}
+                >
+                  <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+                    <div style={{
+                      width: '56px',
+                      height: '56px',
+                      background: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
+                      borderRadius: '12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 4px 14px 0 rgba(59, 130, 246, 0.25)'
+                    }}>
+                      <span style={{fontSize: '20px', color: 'white'}}>⚡</span>
                     </div>
                     <div>
-                      <p className="text-base font-semibold text-gray-900">Today</p>
-                      <p className="text-sm text-gray-500 font-medium">Just now</p>
+                      <p style={{fontSize: '16px', fontWeight: '600', color: '#111827', margin: '0'}}>Today</p>
+                      <p style={{fontSize: '14px', color: '#6b7280', fontWeight: '500', margin: '4px 0 0 0'}}>Just now</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-2xl font-bold text-gray-900">247ms</p>
-                    <p className="text-sm text-green-600 font-semibold flex items-center gap-1">
+                  <div style={{textAlign: 'right'}}>
+                    <p style={{fontSize: '24px', fontWeight: '700', color: '#111827', margin: '0'}}>247ms</p>
+                    <p style={{
+                      fontSize: '14px',
+                      color: '#16a34a',
+                      fontWeight: '600',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      margin: '4px 0 0 0',
+                      justifyContent: 'flex-end'
+                    }}>
                       <span>↓</span> 12ms improvement
                     </p>
                   </div>
