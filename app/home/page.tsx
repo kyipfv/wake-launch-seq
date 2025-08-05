@@ -37,14 +37,9 @@ export default function Home() {
 
   const loadUserData = async () => {
     if (!user) return;
-    const { data } = await supabase
-      .from('profiles')
-      .select('email')
-      .eq('id', user.id)
-      .single();
-    
-    if (data) {
-      setUserName(data.email.split('@')[0]);
+    // Use email directly from auth session instead of querying database
+    if (user.email) {
+      setUserName(user.email.split('@')[0]);
     }
   };
 

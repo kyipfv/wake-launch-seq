@@ -55,24 +55,57 @@ export default function Settings() {
 
     setLoading(true);
     try {
-      // Using OpenWeatherMap Geocoding API
+      // Try OpenWeatherMap API first, fallback to manual entry if it fails
       const response = await fetch(
         `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(cityQuery)}&limit=5&appid=439d4b804bc8187953eb36d2a8c26a02`
       );
       
       if (response.ok) {
         const data = await response.json();
-        const formattedCities: City[] = data.map((city: any) => ({
-          name: city.name,
-          country: city.country,
-          lat: city.lat,
-          lon: city.lon
-        }));
-        setCities(formattedCities);
+        console.log('API response:', data);
+        
+        if (data && data.length > 0) {
+          const formattedCities: City[] = data.map((city: any) => ({
+            name: city.name,
+            country: city.country,
+            lat: city.lat,
+            lon: city.lon
+          }));
+          setCities(formattedCities);
+        } else {
+          // No results found, provide some common cities as fallback
+          setMessage('No results found. Here are some popular options:');
+          setCities([
+            { name: 'New York', country: 'US', lat: 40.7128, lon: -74.0060 },
+            { name: 'London', country: 'GB', lat: 51.5074, lon: -0.1278 },
+            { name: 'Tokyo', country: 'JP', lat: 35.6762, lon: 139.6503 },
+            { name: 'Sydney', country: 'AU', lat: -33.8688, lon: 151.2093 },
+            { name: 'Los Angeles', country: 'US', lat: 34.0522, lon: -118.2437 }
+          ]);
+        }
+      } else {
+        console.error('API response not ok:', response.status, response.statusText);
+        // Fallback: provide common cities
+        setMessage('Location service unavailable. Choose from these options:');
+        setCities([
+          { name: 'New York', country: 'US', lat: 40.7128, lon: -74.0060 },
+          { name: 'London', country: 'GB', lat: 51.5074, lon: -0.1278 },
+          { name: 'Tokyo', country: 'JP', lat: 35.6762, lon: 139.6503 },
+          { name: 'Sydney', country: 'AU', lat: -33.8688, lon: 151.2093 },
+          { name: 'Los Angeles', country: 'US', lat: 34.0522, lon: -118.2437 }
+        ]);
       }
     } catch (error) {
       console.error('Error searching cities:', error);
-      setMessage('Error searching cities. Please try again.');
+      // Fallback: provide common cities
+      setMessage('Location service unavailable. Choose from these options:');
+      setCities([
+        { name: 'New York', country: 'US', lat: 40.7128, lon: -74.0060 },
+        { name: 'London', country: 'GB', lat: 51.5074, lon: -0.1278 },
+        { name: 'Tokyo', country: 'JP', lat: 35.6762, lon: 139.6503 },
+        { name: 'Sydney', country: 'AU', lat: -33.8688, lon: 151.2093 },
+        { name: 'Los Angeles', country: 'US', lat: 34.0522, lon: -118.2437 }
+      ]);
     }
     setLoading(false);
   };
