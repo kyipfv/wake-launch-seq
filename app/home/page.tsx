@@ -216,80 +216,221 @@ export default function Home() {
             <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px'}}>
               <button
                 onClick={() => router.push('/reaction-test' as any)}
-                className="bg-white rounded-lg border border-gray-200 p-6 text-left hover:shadow-md transition-shadow"
+                style={{
+                  backgroundColor: 'white',
+                  borderRadius: '12px',
+                  border: '1px solid #e5e7eb',
+                  padding: '20px',
+                  textAlign: 'left',
+                  boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+                  transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                  cursor: 'pointer',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)';
+                }}
               >
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
-                    <span className="text-white text-xl">⚡</span>
+                <div style={{display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px'}}>
+                  <div style={{
+                    width: '52px',
+                    height: '52px',
+                    background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                    borderRadius: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 14px 0 rgba(59, 130, 246, 0.25)'
+                  }}>
+                    <span style={{color: 'white', fontSize: '24px'}}>⚡</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">Reaction Test</h3>
-                    <p className="text-sm text-gray-600">Measure response speed</p>
+                    <h3 style={{fontWeight: '600', color: '#111827', margin: '0 0 4px 0', fontSize: '16px'}}>Reaction Test</h3>
+                    <p style={{fontSize: '14px', color: '#6b7280', margin: '0'}}>Measure response speed</p>
                   </div>
                 </div>
-                <div className="text-sm text-blue-600 font-medium">Start Test →</div>
+                <div style={{fontSize: '14px', color: '#3b82f6', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '4px'}}>
+                  Start Test
+                  <span style={{fontSize: '12px'}}>→</span>
+                </div>
               </button>
 
               <button
                 onClick={() => router.push('/alertness' as any)}
-                className="bg-white rounded-lg border border-gray-200 p-6 text-left hover:shadow-md transition-shadow"
+                style={{
+                  backgroundColor: 'white',
+                  borderRadius: '12px',
+                  border: '1px solid #e5e7eb',
+                  padding: '20px',
+                  textAlign: 'left',
+                  boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+                  transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                  cursor: 'pointer',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)';
+                }}
               >
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
-                    <span className="text-white text-xl">🧠</span>
+                <div style={{display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px'}}>
+                  <div style={{
+                    width: '52px',
+                    height: '52px',
+                    background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)',
+                    borderRadius: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 14px 0 rgba(16, 185, 129, 0.25)'
+                  }}>
+                    <span style={{color: 'white', fontSize: '24px'}}>🧠</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">Alertness Check</h3>
-                    <p className="text-sm text-gray-600">Rate your energy level</p>
+                    <h3 style={{fontWeight: '600', color: '#111827', margin: '0 0 4px 0', fontSize: '16px'}}>Alertness Check</h3>
+                    <p style={{fontSize: '14px', color: '#6b7280', margin: '0'}}>Rate your energy level</p>
                   </div>
                 </div>
-                <div className="text-sm text-green-600 font-medium">Rate Now →</div>
+                <div style={{fontSize: '14px', color: '#10b981', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '4px'}}>
+                  Rate Now
+                  <span style={{fontSize: '12px'}}>→</span>
+                </div>
               </button>
 
               <button
                 onClick={() => router.push('/sunrise-plan' as any)}
-                className="bg-white rounded-lg border border-gray-200 p-6 text-left hover:shadow-md transition-shadow"
+                style={{
+                  backgroundColor: 'white',
+                  borderRadius: '12px',
+                  border: '1px solid #e5e7eb',
+                  padding: '20px',
+                  textAlign: 'left',
+                  boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+                  transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                  cursor: 'pointer',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)';
+                }}
               >
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center">
-                    <span className="text-white text-xl">☀️</span>
+                <div style={{display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px'}}>
+                  <div style={{
+                    width: '52px',
+                    height: '52px',
+                    background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                    borderRadius: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 14px 0 rgba(245, 158, 11, 0.25)'
+                  }}>
+                    <span style={{color: 'white', fontSize: '24px'}}>☀️</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">Plan Tomorrow</h3>
-                    <p className="text-sm text-gray-600">Optimize wake sequence</p>
+                    <h3 style={{fontWeight: '600', color: '#111827', margin: '0 0 4px 0', fontSize: '16px'}}>Plan Tomorrow</h3>
+                    <p style={{fontSize: '14px', color: '#6b7280', margin: '0'}}>Optimize wake sequence</p>
                   </div>
                 </div>
-                <div className="text-sm text-orange-600 font-medium">Plan Now →</div>
+                <div style={{fontSize: '14px', color: '#f59e0b', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '4px'}}>
+                  Plan Now
+                  <span style={{fontSize: '12px'}}>→</span>
+                </div>
               </button>
 
               <button
                 onClick={() => router.push('/trends' as any)}
-                className="bg-white rounded-lg border border-gray-200 p-6 text-left hover:shadow-md transition-shadow"
+                style={{
+                  backgroundColor: 'white',
+                  borderRadius: '12px',
+                  border: '1px solid #e5e7eb',
+                  padding: '20px',
+                  textAlign: 'left',
+                  boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+                  transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                  cursor: 'pointer',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)';
+                }}
               >
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
-                    <span className="text-white text-xl">📊</span>
+                <div style={{display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px'}}>
+                  <div style={{
+                    width: '52px',
+                    height: '52px',
+                    background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                    borderRadius: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 14px 0 rgba(139, 92, 246, 0.25)'
+                  }}>
+                    <span style={{color: 'white', fontSize: '24px'}}>📊</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">View Trends</h3>
-                    <p className="text-sm text-gray-600">Analyze performance</p>
+                    <h3 style={{fontWeight: '600', color: '#111827', margin: '0 0 4px 0', fontSize: '16px'}}>View Trends</h3>
+                    <p style={{fontSize: '14px', color: '#6b7280', margin: '0'}}>Analyze performance</p>
                   </div>
                 </div>
-                <div className="text-sm text-purple-600 font-medium">View Charts →</div>
+                <div style={{fontSize: '14px', color: '#8b5cf6', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '4px'}}>
+                  View Charts
+                  <span style={{fontSize: '12px'}}>→</span>
+                </div>
               </button>
             </div>
           </div>
 
           {/* Today's Summary */}
-          <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Today's Summary</h2>
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-blue-600 text-2xl">📈</span>
+          <div style={{flex: '1', minWidth: '320px'}}>
+            <h2 style={{fontSize: '18px', fontWeight: '600', color: '#111827', marginBottom: '16px'}}>Today's Summary</h2>
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '16px',
+              border: '1px solid #e5e7eb',
+              padding: '24px',
+              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+              background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)'
+            }}>
+              <div style={{textAlign: 'center', marginBottom: '24px'}}>
+                <div style={{
+                  width: '64px',
+                  height: '64px',
+                  background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 16px auto',
+                  boxShadow: '0 4px 14px 0 rgba(59, 130, 246, 0.15)'
+                }}>
+                  <span style={{color: '#3b82f6', fontSize: '28px'}}>📈</span>
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Performance Status</h3>
-                <p className="text-sm text-gray-600">
+                <h3 style={{fontWeight: '600', color: '#111827', marginBottom: '8px', fontSize: '16px'}}>Performance Status</h3>
+                <p style={{fontSize: '14px', color: '#6b7280'}}>
                   {(todayMetrics.reaction_ms && todayMetrics.mood_score) 
                     ? 'All assessments complete!' 
                     : 'Some assessments pending'
@@ -297,54 +438,83 @@ export default function Home() {
                 </p>
               </div>
 
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <span className="text-blue-600 text-sm">⚡</span>
+              <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                  <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+                    <div style={{
+                      width: '36px',
+                      height: '36px',
+                      background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+                      borderRadius: '10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <span style={{color: '#3b82f6', fontSize: '16px'}}>⚡</span>
                     </div>
-                    <span className="text-sm font-medium text-gray-900">Reaction Test</span>
+                    <span style={{fontSize: '14px', fontWeight: '500', color: '#111827'}}>Reaction Test</span>
                   </div>
-                  <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    todayMetrics.reaction_ms 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-gray-100 text-gray-600'
-                  }`}>
+                  <div style={{
+                    padding: '6px 12px',
+                    borderRadius: '20px',
+                    fontSize: '12px',
+                    fontWeight: '500',
+                    backgroundColor: todayMetrics.reaction_ms ? '#dcfce7' : '#f3f4f6',
+                    color: todayMetrics.reaction_ms ? '#166534' : '#6b7280'
+                  }}>
                     {todayMetrics.reaction_ms ? 'Complete' : 'Pending'}
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                      <span className="text-green-600 text-sm">🧠</span>
+                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                  <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+                    <div style={{
+                      width: '36px',
+                      height: '36px',
+                      background: 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)',
+                      borderRadius: '10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <span style={{color: '#16a34a', fontSize: '16px'}}>🧠</span>
                     </div>
-                    <span className="text-sm font-medium text-gray-900">Alertness Check</span>
+                    <span style={{fontSize: '14px', fontWeight: '500', color: '#111827'}}>Alertness Check</span>
                   </div>
-                  <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    todayMetrics.mood_score 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-gray-100 text-gray-600'
-                  }`}>
+                  <div style={{
+                    padding: '6px 12px',
+                    borderRadius: '20px',
+                    fontSize: '12px',
+                    fontWeight: '500',
+                    backgroundColor: todayMetrics.mood_score ? '#dcfce7' : '#f3f4f6',
+                    color: todayMetrics.mood_score ? '#166534' : '#6b7280'
+                  }}>
                     {todayMetrics.mood_score ? 'Complete' : 'Pending'}
                   </div>
                 </div>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-gray-100">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-gray-700">Daily Progress</span>
-                  <span className="text-sm font-medium text-gray-900">
+              <div style={{marginTop: '24px', paddingTop: '16px', borderTop: '1px solid #f3f4f6'}}>
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px'}}>
+                  <span style={{fontSize: '14px', fontWeight: '500', color: '#374151'}}>Daily Progress</span>
+                  <span style={{fontSize: '14px', fontWeight: '600', color: '#111827'}}>
                     {Math.round(((todayMetrics.reaction_ms ? 1 : 0) + (todayMetrics.mood_score ? 1 : 0)) / 2 * 100)}%
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-blue-500 h-2 rounded-full transition-all duration-300"
-                    style={{ 
-                      width: `${((todayMetrics.reaction_ms ? 1 : 0) + (todayMetrics.mood_score ? 1 : 0)) * 50}%` 
-                    }}
-                  ></div>
+                <div style={{
+                  width: '100%',
+                  backgroundColor: '#e5e7eb',
+                  borderRadius: '10px',
+                  height: '8px',
+                  overflow: 'hidden'
+                }}>
+                  <div style={{
+                    background: 'linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%)',
+                    height: '100%',
+                    borderRadius: '10px',
+                    transition: 'all 0.3s ease',
+                    width: `${((todayMetrics.reaction_ms ? 1 : 0) + (todayMetrics.mood_score ? 1 : 0)) * 50}%`
+                  }}></div>
                 </div>
               </div>
             </div>
