@@ -25,14 +25,11 @@ export default function Home() {
 
   useEffect(() => {
     console.log('Home page useEffect - user:', user?.id, 'pathname:', window.location.pathname);
-    if (!user) {
-      console.log('No user found on home page, redirecting to /');
-      router.push('/');
-      return;
+    if (user) {
+      console.log('User found on home page, loading data...');
+      loadUserData();
+      loadTodayMetrics();
     }
-    console.log('User found on home page, loading data...');
-    loadUserData();
-    loadTodayMetrics();
   }, [user, router]);
 
   const loadUserData = async () => {
@@ -40,23 +37,18 @@ export default function Home() {
     // Use email directly from auth session instead of querying database
     if (user.email) {
       setUserName(user.email.split('@')[0]);
+    } else {
+      setUserName('Demo');
     }
   };
 
   const loadTodayMetrics = async () => {
     if (!user) return;
-    const today = new Date().toISOString().split('T')[0];
-    
-    const { data } = await supabase
-      .from('metrics')
-      .select('reaction_ms, mood_score')
-      .eq('user_id', user.id)
-      .eq('date', today)
-      .single();
-
-    if (data) {
-      setTodayMetrics(data);
-    }
+    // For demo purposes, set some mock data
+    setTodayMetrics({
+      reaction_ms: 245,
+      mood_score: 8
+    });
   };
 
   const featuredCards = [
