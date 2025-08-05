@@ -114,128 +114,130 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100"
-         data-version="apple-health-design">
-      {/* Header */}
-      <div className="px-4 pt-12 pb-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-black mb-1">Summary</h1>
-            <p className="text-gray-600 text-base font-medium">
-              {new Date().toLocaleDateString('en-US', { 
-                weekday: 'long', 
-                month: 'long', 
-                day: 'numeric' 
-              })}
-            </p>
-          </div>
-          <div className="w-9 h-9 bg-gray-500 rounded-full flex items-center justify-center">
-            <span className="text-white font-medium text-sm">
-              {userName ? userName[0].toUpperCase() : 'U'}
-            </span>
-          </div>
-        </div>
+    <div className="min-h-screen bg-white">
+      {/* Header - Centered like tinyteams */}
+      <div className="text-center py-16 px-6 bg-gray-50 border-b border-gray-100">
+        <h1 className="text-5xl font-bold text-black mb-4">Wake optimization dashboard</h1>
+        <p className="text-xl text-gray-500 font-normal max-w-2xl mx-auto">
+          Track your cognitive performance and optimize your daily wake routine
+        </p>
       </div>
 
-      <div className="px-4 pb-24 space-y-3">
-        {/* Featured Large Cards */}
-        {featuredCards.map((card) => (
-          <button
-            key={card.id}
-            onClick={() => router.push(card.route as any)}
-            className="w-full bg-white rounded-xl p-4 shadow-sm active:scale-[0.98] transition-transform duration-150 text-left"
-          >
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <div className={`w-7 h-7 ${card.color} rounded-md flex items-center justify-center`}>
-                  <span className="text-white text-base">{card.icon}</span>
+      {/* Main Grid - Two column layout like tinyteams */}
+      <div className="max-w-6xl mx-auto px-6 py-12 pb-32">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Main Performance Cards */}
+          {featuredCards.map((card) => (
+            <button
+              key={card.id}
+              onClick={() => router.push(card.route as any)}
+              className="bg-white border border-gray-200 rounded-lg p-8 shadow-sm hover:shadow-md transition-all duration-200 text-left group"
+            >
+              {/* Logo/Icon area */}
+              <div className="flex items-start gap-4 mb-6">
+                <div className={`w-16 h-16 ${card.color} rounded-xl flex items-center justify-center shadow-sm`}>
+                  <span className="text-white text-2xl">{card.icon}</span>
                 </div>
-                <div>
-                  <p className="font-semibold text-black text-base leading-tight">{card.title}</p>
-                  <p className="text-gray-500 text-sm">{card.subtitle}</p>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-black mb-2">{card.title}</h3>
+                  <p className="text-gray-500 text-base leading-relaxed">{card.subtitle}</p>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="text-xs text-gray-400 uppercase tracking-wide font-medium">{card.detail}</p>
-              </div>
-            </div>
-            
-            <div className="flex items-baseline">
-              <span className="text-3xl font-bold text-black">{card.value}</span>
-              {card.unit && <span className="text-lg text-gray-500 ml-1">{card.unit}</span>}
-            </div>
-          </button>
-        ))}
 
-        {/* Quick Access Grid */}
-        <div className="grid grid-cols-2 gap-3 mt-4">
+              {/* Metrics */}
+              <div className="mb-6">
+                <div className="flex items-baseline gap-2 mb-2">
+                  <span className="text-sm text-gray-500 font-medium">Current:</span>
+                  <span className="text-lg font-bold text-black">{card.value}</span>
+                  {card.unit && <span className="text-sm text-gray-500">{card.unit}</span>}
+                </div>
+                <div className="text-sm text-gray-400">{card.detail}</div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <div className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 group-hover:border-gray-400 transition-colors flex items-center gap-2">
+                  <span>View Details</span>
+                  <span className="text-xs">↗</span>
+                </div>
+                <div className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 group-hover:border-gray-400 transition-colors flex items-center gap-2">
+                  <span>Start Test</span>
+                  <span className="text-xs">↗</span>
+                </div>
+              </div>
+            </button>
+          ))}
+
+          {/* Quick Access Cards */}
           {quickAccessCards.map((card) => (
             <button
               key={card.id}
               onClick={() => router.push(card.route as any)}
-              className="bg-white rounded-xl p-4 shadow-sm active:scale-95 transition-transform duration-150 text-left h-20 flex flex-col justify-between"
+              className="bg-white border border-gray-200 rounded-lg p-8 shadow-sm hover:shadow-md transition-all duration-200 text-left group"
             >
-              <div className="flex items-center justify-between">
-                <div className={`w-6 h-6 ${card.color} rounded-md flex items-center justify-center`}>
-                  <span className="text-white text-sm">{card.icon}</span>
+              <div className="flex items-start gap-4 mb-6">
+                <div className={`w-16 h-16 ${card.color} rounded-xl flex items-center justify-center shadow-sm`}>
+                  <span className="text-white text-2xl">{card.icon}</span>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-black mb-2">{card.title}</h3>
+                  <p className="text-gray-500 text-base leading-relaxed">{card.subtitle}</p>
                 </div>
               </div>
-              <div>
-                <p className="font-semibold text-black text-sm leading-tight">{card.title}</p>
-                <p className="text-gray-500 text-xs">{card.subtitle}</p>
+
+              <div className="flex gap-3">
+                <div className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 group-hover:border-gray-400 transition-colors flex items-center gap-2">
+                  <span>View</span>
+                  <span className="text-xs">↗</span>
+                </div>
+                <div className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 group-hover:border-gray-400 transition-colors flex items-center gap-2">
+                  <span>Configure</span>  
+                  <span className="text-xs">↗</span>
+                </div>
               </div>
             </button>
           ))}
         </div>
 
-        {/* Today's Progress Summary */}
-        <div className="bg-white rounded-xl p-4 shadow-sm mt-4">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-base font-semibold text-black">Today's Goals</h3>
-            <div className="text-sm font-medium text-gray-500">
-              {(todayMetrics.reaction_ms && todayMetrics.mood_score) ? '2 of 2' : 
-               (todayMetrics.reaction_ms || todayMetrics.mood_score) ? '1 of 2' : '0 of 2'}
-            </div>
+        {/* Progress Summary - Full width */}
+        <div className="mt-12 bg-gray-50 border border-gray-200 rounded-lg p-8">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-black mb-2">Today's Progress</h2>
+            <p className="text-gray-500">
+              {(todayMetrics.reaction_ms && todayMetrics.mood_score) ? 'All goals completed! 🎉' : 
+               `${(todayMetrics.reaction_ms ? 1 : 0) + (todayMetrics.mood_score ? 1 : 0)} of 2 goals completed`}
+            </p>
           </div>
           
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-5 h-5 bg-blue-500 rounded-sm flex items-center justify-center">
-                  <span className="text-white text-xs">⚡</span>
-                </div>
-                <span className="text-black font-medium text-sm">Reaction Test</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex items-center gap-4 p-4 bg-white rounded-lg border border-gray-200">
+              <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+                <span className="text-white text-xl">⚡</span>
               </div>
-              <div className={`w-4 h-4 rounded-full flex items-center justify-center ${
+              <div className="flex-1">
+                <h4 className="font-semibold text-black">Reaction Test</h4>
+                <p className="text-sm text-gray-500">Neural response measurement</p>
+              </div>
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
                 todayMetrics.reaction_ms ? 'bg-green-500' : 'bg-gray-300'
               }`}>
-                {todayMetrics.reaction_ms && <span className="text-white text-xs">✓</span>}
+                {todayMetrics.reaction_ms && <span className="text-white text-sm">✓</span>}
               </div>
             </div>
             
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-5 h-5 bg-green-500 rounded-sm flex items-center justify-center">
-                  <span className="text-white text-xs">🧠</span>
-                </div>
-                <span className="text-black font-medium text-sm">Alertness Check</span>
+            <div className="flex items-center gap-4 p-4 bg-white rounded-lg border border-gray-200">
+              <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+                <span className="text-white text-xl">🧠</span>
               </div>
-              <div className={`w-4 h-4 rounded-full flex items-center justify-center ${
+              <div className="flex-1">
+                <h4 className="font-semibold text-black">Alertness Check</h4>
+                <p className="text-sm text-gray-500">Cognitive performance index</p>
+              </div>
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
                 todayMetrics.mood_score ? 'bg-green-500' : 'bg-gray-300'
               }`}>
-                {todayMetrics.mood_score && <span className="text-white text-xs">✓</span>}
+                {todayMetrics.mood_score && <span className="text-white text-sm">✓</span>}
               </div>
-            </div>
-          </div>
-          
-          <div className="mt-3 pt-3 border-t border-gray-100">
-            <div className="w-full bg-gray-200 rounded-full h-1">
-              <div 
-                className="bg-blue-500 h-1 rounded-full transition-all duration-300"
-                style={{ 
-                  width: `${((todayMetrics.reaction_ms ? 1 : 0) + (todayMetrics.mood_score ? 1 : 0)) * 50}%` 
-                }}
-              ></div>
             </div>
           </div>
         </div>
