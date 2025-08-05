@@ -47,7 +47,18 @@ export default function Nav() {
                 background: 'var(--card-background)',
                 borderColor: 'var(--border-color)'
               }}>
-                <div className="p-2">
+                <div className="p-2 space-y-1">
+                  <a
+                    href="/settings"
+                    className="block px-3 py-2 rounded-xl text-sm font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+                    style={{ color: 'var(--text-primary)' }}
+                    onClick={() => setShowMenu(false)}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span>⚙️</span>
+                      <span>Settings</span>
+                    </div>
+                  </a>
                   <button
                     onClick={() => {
                       signOut();
@@ -56,7 +67,10 @@ export default function Nav() {
                     className="w-full text-left px-3 py-2 rounded-xl text-sm font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
                     style={{ color: 'var(--text-primary)' }}
                   >
-                    Sign Out
+                    <div className="flex items-center gap-2">
+                      <span>🚪</span>
+                      <span>Sign Out</span>
+                    </div>
                   </button>
                 </div>
               </div>

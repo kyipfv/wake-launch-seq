@@ -9,6 +9,9 @@ export interface Profile {
   id: string;
   email: string;
   chrono_window: string;
+  city_name?: string;
+  city_lat?: number;
+  city_lon?: number;
   created_at: string;
 }
 

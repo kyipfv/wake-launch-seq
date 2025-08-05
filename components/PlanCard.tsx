@@ -16,13 +16,28 @@ export default function PlanCard() {
   const [plan, setPlan] = useState<Plan | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [userCity, setUserCity] = useState<string>('');
   const { user } = useAuth();
 
   useEffect(() => {
     if (user) {
       loadTomorrowsPlan();
+      loadUserCity();
     }
   }, [user]);
+
+  const loadUserCity = async () => {
+    if (!user) return;
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('city_name')
+      .eq('id', user.id)
+      .single();
+    
+    if (profile?.city_name) {
+      setUserCity(profile.city_name);
+    }
+  };
 
   const loadTomorrowsPlan = async () => {
     if (!user) return;
@@ -49,10 +64,10 @@ export default function PlanCard() {
         return;
       }
 
-      // Get user's chronotype
+      // Get user's chronotype and location
       const { data: profile } = await supabase
         .from('profiles')
-        .select('chrono_window')
+        .select('chrono_window, city_name, city_lat, city_lon')
         .eq('id', user.id)
         .single();
 
@@ -62,13 +77,18 @@ export default function PlanCard() {
         return;
       }
 
-      // Get location and calculate sunrise
+      // Get location - prioritize user's saved city, then geolocation, then default
       let location: Location;
-      try {
-        location = await getCurrentLocation();
-      } catch (geoError) {
-        // Fallback to a default location (e.g., New York)
-        location = { latitude: 40.7128, longitude: -74.0060 };
+      if (profile.city_lat && profile.city_lon) {
+        location = { latitude: profile.city_lat, longitude: profile.city_lon };
+      } else {
+        try {
+          location = await getCurrentLocation();
+        } catch (geoError) {
+          // Fallback to a default location (e.g., New York)
+          location = { latitude: 40.7128, longitude: -74.0060 };
+          setError('Please set your city in settings for accurate sunrise times');
+        }
       }
 
       const sunriseTime = getSunrise(tomorrow, location);
@@ -154,6 +174,7 @@ export default function PlanCard() {
             month: 'short', 
             day: 'numeric' 
           })}
+          {userCity && ` • ${userCity}`}
         </p>
       </div>
 
