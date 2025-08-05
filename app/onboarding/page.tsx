@@ -136,53 +136,97 @@ export default function Onboarding() {
   const isComplete = Object.keys(answers).length === questions.length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-black flex items-center justify-center p-4">
-      <div className="max-w-2xl w-full">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Chronotype Analysis</h1>
-          <p className="text-gray-300">Determining your optimal wake window</p>
-          <div className="mt-4 w-full bg-gray-700 rounded-full h-2">
-            <div 
-              className="bg-primary h-2 rounded-full transition-all duration-300"
-              style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
-            />
-          </div>
-          <p className="text-sm text-gray-400 mt-2">
-            {currentQuestion + 1} of {questions.length}
-          </p>
-        </div>
+    <div className="min-h-screen bg-black relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-600/20 via-purple-700/20 to-blue-500/20"></div>
+        <div className="absolute top-1/3 left-1/3 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/3 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.5s' }}></div>
+      </div>
 
-        <div className="bg-gray-800/50 p-8 rounded-lg border border-gray-700">
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold text-white mb-4">
-              {questions[currentQuestion]?.question}
-            </h2>
-          </div>
-
-          <div className="space-y-3">
-            {questions[currentQuestion]?.options.map((option) => (
-              <button
-                key={option.value}
-                onClick={() => handleAnswer(option.value)}
-                className="w-full p-4 text-left border border-gray-600 rounded-lg hover:border-primary hover:bg-gray-700/50 transition-colors text-white"
-              >
-                {option.text}
-              </button>
-            ))}
-          </div>
-
-          {isComplete && (
-            <div className="mt-8 text-center">
-              <p className="text-gray-300 mb-4">Analysis complete! Ready to optimize your wake sequence.</p>
-              <button
-                onClick={handleComplete}
-                disabled={loading}
-                className="bg-primary text-black px-8 py-3 rounded-lg font-semibold hover:bg-blue-400 transition-colors disabled:opacity-50"
-              >
-                {loading ? 'Initializing...' : 'Launch Dashboard'}
-              </button>
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+        <div className="w-full max-w-2xl">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center justify-center w-24 h-24 mb-8 rounded-full bg-gradient-to-r from-orange-400 to-blue-500 shadow-2xl">
+              <div className="text-4xl">🧠</div>
             </div>
-          )}
+            <h1 className="text-5xl font-bold text-white mb-4">Chronotype Analysis</h1>
+            <p className="text-gray-400 text-xl mb-8">Determining your optimal wake window</p>
+            
+            {/* Progress Bar */}
+            <div className="w-full max-w-md mx-auto">
+              <div className="flex justify-between mb-2">
+                <span className="text-sm text-gray-400">Progress</span>
+                <span className="text-sm text-orange-400 font-semibold">
+                  {currentQuestion + 1} of {questions.length}
+                </span>
+              </div>
+              <div className="w-full bg-gray-800 rounded-full h-3 shadow-inner">
+                <div 
+                  className="bg-gradient-to-r from-orange-400 to-blue-500 h-3 rounded-full transition-all duration-500 ease-out shadow-lg"
+                  style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Question Card */}
+          <div className="bg-gray-900/90 backdrop-blur-xl rounded-3xl p-8 md:p-10 shadow-2xl border border-gray-800">
+            <div className="mb-8">
+              <div className="inline-flex items-center justify-center w-12 h-12 mb-4 rounded-2xl bg-gradient-to-r from-orange-400/20 to-blue-500/20 border border-orange-400/30">
+                <div className="text-2xl">❓</div>
+              </div>
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-6 leading-tight">
+                {questions[currentQuestion]?.question}
+              </h2>
+            </div>
+
+            <div className="space-y-4">
+              {questions[currentQuestion]?.options.map((option, index) => (
+                <button
+                  key={option.value}
+                  onClick={() => handleAnswer(option.value)}
+                  className="w-full p-5 text-left bg-gray-800/60 border border-gray-700 rounded-2xl hover:border-orange-400/50 hover:bg-gray-800/80 transition-all duration-300 text-white text-lg group transform hover:scale-105"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <div className="flex items-center space-x-4">
+                    <div className="w-6 h-6 rounded-full border-2 border-gray-600 group-hover:border-orange-400 transition-colors duration-300 flex items-center justify-center">
+                      <div className="w-2 h-2 rounded-full bg-transparent group-hover:bg-orange-400 transition-colors duration-300"></div>
+                    </div>
+                    <span className="group-hover:text-orange-100 transition-colors duration-300">
+                      {option.text}
+                    </span>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {isComplete && (
+              <div className="mt-12 p-8 bg-gradient-to-r from-orange-500/10 to-blue-500/10 rounded-2xl border border-orange-400/30 text-center">
+                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-r from-green-400 to-green-600 flex items-center justify-center shadow-2xl">
+                  <div className="text-3xl">✨</div>
+                </div>
+                <p className="text-gray-300 text-xl mb-6 font-medium">
+                  Analysis complete! Ready to optimize your wake sequence.
+                </p>
+                <button
+                  onClick={handleComplete}
+                  disabled={loading}
+                  className="py-4 px-8 bg-gradient-to-r from-orange-500 to-blue-600 text-white text-lg font-bold rounded-2xl hover:shadow-2xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:transform-none"
+                >
+                  {loading ? (
+                    <div className="flex items-center justify-center space-x-3">
+                      <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Initializing Dashboard...</span>
+                    </div>
+                  ) : (
+                    'Launch Dashboard 🚀'
+                  )}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

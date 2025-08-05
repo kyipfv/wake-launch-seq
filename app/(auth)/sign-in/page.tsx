@@ -54,82 +54,110 @@ export default function SignIn() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-black flex items-center justify-center p-4">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-white">Mission Control</h2>
-          <p className="mt-2 text-gray-300">Access your launch sequence</p>
+    <div className="min-h-screen bg-black relative overflow-hidden flex items-center justify-center p-4">
+      {/* Animated Background */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-700/20 to-cyan-500/20"></div>
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+      </div>
+
+      <div className="relative z-10 w-full max-w-md">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 shadow-2xl">
+            <div className="text-3xl">⚡</div>
+          </div>
+          <h1 className="text-4xl font-bold text-white mb-3">Welcome Back</h1>
+          <p className="text-gray-400 text-lg">Continue your optimization journey</p>
         </div>
 
-        <form className="mt-8 space-y-6 bg-gray-800/50 p-8 rounded-lg border border-gray-700">
+        {/* Form Card */}
+        <div className="bg-gray-900/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-gray-800">
           {message && (
-            <div className={`p-3 rounded ${message.includes('Check your email') 
-              ? 'bg-green-900/50 text-green-200 border border-green-700' 
-              : 'bg-red-900/50 text-red-200 border border-red-700'
+            <div className={`p-4 rounded-2xl mb-6 text-center font-medium ${message.includes('Check your email') 
+              ? 'bg-green-500/20 text-green-300 border border-green-500/30' 
+              : 'bg-red-500/20 text-red-300 border border-red-500/30'
             }`}>
               {message}
             </div>
           )}
 
-          <div>
-            <label htmlFor="email" className="sr-only">
-              Email address
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              className="relative block w-full px-3 py-2 border border-gray-600 bg-gray-700 placeholder-gray-400 text-white rounded-md focus:outline-none focus:ring-primary focus:border-primary"
-              placeholder="Email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
+          <form className="space-y-6" onSubmit={handleSignIn}>
+            <div className="space-y-4">
+              <div>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  className="w-full px-6 py-4 bg-gray-800/80 border border-gray-700 rounded-2xl text-white placeholder-gray-400 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  placeholder="Email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
 
-          <div>
-            <label htmlFor="password" className="sr-only">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              className="relative block w-full px-3 py-2 border border-gray-600 bg-gray-700 placeholder-gray-400 text-white rounded-md focus:outline-none focus:ring-primary focus:border-primary"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
+              <div>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  className="w-full px-6 py-4 bg-gray-800/80 border border-gray-700 rounded-2xl text-white placeholder-gray-400 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+            </div>
 
-          <div className="space-y-4">
-            <button
-              type="submit"
-              onClick={handleSignIn}
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-black bg-primary hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
-            >
-              {loading ? 'Signing in...' : 'Sign in'}
-            </button>
+            <div className="space-y-4">
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-4 px-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-lg font-semibold rounded-2xl hover:shadow-2xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:transform-none"
+              >
+                {loading ? (
+                  <div className="flex items-center justify-center space-x-2">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Signing in...</span>
+                  </div>
+                ) : (
+                  'Sign In'
+                )}
+              </button>
 
-            <button
-              type="button"
-              onClick={handleMagicLink}
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-primary text-sm font-medium rounded-md text-primary hover:bg-primary hover:text-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
-            >
-              {loading ? 'Sending...' : 'Send Magic Link'}
-            </button>
-          </div>
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-700"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-4 bg-gray-900/80 text-gray-400">or</span>
+                </div>
+              </div>
 
-          <div className="text-center">
-            <Link href="/sign-up" className="text-primary hover:text-blue-400">
-              Need an account? Start your sequence
-            </Link>
+              <button
+                type="button"
+                onClick={handleMagicLink}
+                disabled={loading}
+                className="w-full py-4 px-6 border-2 border-gray-600 text-gray-300 text-lg font-semibold rounded-2xl hover:bg-gray-800 hover:border-gray-500 transition-all duration-300 disabled:opacity-50"
+              >
+                {loading ? 'Sending...' : 'Send Magic Link'}
+              </button>
+            </div>
+          </form>
+
+          <div className="mt-8 text-center">
+            <p className="text-gray-400">
+              Don't have an account?{' '}
+              <Link href="/sign-up" className="text-blue-400 hover:text-blue-300 font-semibold transition-colors duration-200">
+                Start your journey
+              </Link>
+            </p>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

@@ -33,75 +33,94 @@ export default function SignUp() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-black flex items-center justify-center p-4">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-white">Launch Sequence</h2>
-          <p className="mt-2 text-gray-300">Initialize your bio-hacker profile</p>
+    <div className="min-h-screen bg-black relative overflow-hidden flex items-center justify-center p-4">
+      {/* Animated Background */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-700/20 to-cyan-500/20"></div>
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/3 left-1/4 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+      </div>
+
+      <div className="relative z-10 w-full max-w-md">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-full bg-gradient-to-r from-purple-400 to-cyan-500 shadow-2xl">
+            <div className="text-3xl">🚀</div>
+          </div>
+          <h1 className="text-4xl font-bold text-white mb-3">Launch Sequence</h1>
+          <p className="text-gray-400 text-lg">Initialize your bio-hacker profile</p>
         </div>
 
-        <form className="mt-8 space-y-6 bg-gray-800/50 p-8 rounded-lg border border-gray-700">
+        {/* Form Card */}
+        <div className="bg-gray-900/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-gray-800">
           {message && (
-            <div className={`p-3 rounded ${message.includes('Check your email') 
-              ? 'bg-green-900/50 text-green-200 border border-green-700' 
-              : 'bg-red-900/50 text-red-200 border border-red-700'
+            <div className={`p-4 rounded-2xl mb-6 text-center font-medium ${message.includes('Check your email') 
+              ? 'bg-green-500/20 text-green-300 border border-green-500/30' 
+              : 'bg-red-500/20 text-red-300 border border-red-500/30'
             }`}>
               {message}
             </div>
           )}
 
-          <div>
-            <label htmlFor="email" className="sr-only">
-              Email address
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              className="relative block w-full px-3 py-2 border border-gray-600 bg-gray-700 placeholder-gray-400 text-white rounded-md focus:outline-none focus:ring-primary focus:border-primary"
-              placeholder="Email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+          <form className="space-y-6" onSubmit={handleSignUp}>
+            <div className="space-y-4">
+              <div>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  className="w-full px-6 py-4 bg-gray-800/80 border border-gray-700 rounded-2xl text-white placeholder-gray-400 text-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                  placeholder="Email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  className="w-full px-6 py-4 bg-gray-800/80 border border-gray-700 rounded-2xl text-white placeholder-gray-400 text-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-4 px-6 bg-gradient-to-r from-purple-500 to-cyan-600 text-white text-lg font-semibold rounded-2xl hover:shadow-2xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:transform-none"
+            >
+              {loading ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Initializing...</span>
+                </div>
+              ) : (
+                'Initialize Sequence'
+              )}
+            </button>
+          </form>
+
+          <div className="mt-8 text-center">
+            <p className="text-gray-400">
+              Already have access?{' '}
+              <Link href="/sign-in" className="text-purple-400 hover:text-purple-300 font-semibold transition-colors duration-200">
+                Mission Control
+              </Link>
+            </p>
           </div>
+        </div>
 
-          <div>
-            <label htmlFor="password" className="sr-only">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="new-password"
-              required
-              className="relative block w-full px-3 py-2 border border-gray-600 bg-gray-700 placeholder-gray-400 text-white rounded-md focus:outline-none focus:ring-primary focus:border-primary"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-
-          <button
-            type="submit"
-            onClick={handleSignUp}
-            disabled={loading}
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-black bg-primary hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
-          >
-            {loading ? 'Initializing...' : 'Initialize Sequence'}
-          </button>
-
-          <div className="text-center">
-            <Link href="/sign-in" className="text-primary hover:text-blue-400">
-              Already have access? Mission Control
-            </Link>
-          </div>
-        </form>
-
-        <div className="text-center text-sm text-gray-400">
-          <p>By creating an account, you agree to optimize your wake performance with precision tracking and evidence-based recommendations.</p>
+        <div className="mt-8 text-center text-sm text-gray-500 max-w-xs mx-auto">
+          <p>By creating an account, you agree to optimize your wake performance with precision tracking.</p>
         </div>
       </div>
     </div>
