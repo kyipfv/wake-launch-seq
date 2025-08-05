@@ -122,13 +122,13 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-100">
       {/* Header */}
-      <div className="px-4 pt-14 pb-4">
-        <div className="flex items-center justify-between mb-1">
+      <div className="px-4 pt-12 pb-6">
+        <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-1">Summary</h1>
-            <p className="text-gray-600 text-base">
+            <h1 className="text-3xl font-bold text-black mb-1">Summary</h1>
+            <p className="text-gray-600 text-base font-medium">
               {new Date().toLocaleDateString('en-US', { 
                 weekday: 'long', 
                 month: 'long', 
@@ -136,88 +136,85 @@ export default function Home() {
               })}
             </p>
           </div>
-          <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-            <span className="text-white font-semibold">
+          <div className="w-9 h-9 bg-gray-500 rounded-full flex items-center justify-center">
+            <span className="text-white font-medium text-sm">
               {userName ? userName[0].toUpperCase() : 'U'}
             </span>
           </div>
         </div>
       </div>
 
-      <div className="px-4 pb-24 space-y-4">
+      <div className="px-4 pb-24 space-y-3">
         {/* Featured Large Cards */}
         {featuredCards.map((card) => (
           <button
             key={card.id}
             onClick={() => router.push(card.route as any)}
-            className="w-full bg-white rounded-2xl p-6 shadow-sm border border-gray-100 active:scale-[0.98] transition-transform duration-150 text-left"
+            className="w-full bg-white rounded-xl p-4 shadow-sm active:scale-[0.98] transition-transform duration-150 text-left"
           >
-            <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 ${card.color} rounded-lg flex items-center justify-center`}>
-                  <span className="text-white text-lg">{card.icon}</span>
+                <div className={`w-7 h-7 ${card.color} rounded-md flex items-center justify-center`}>
+                  <span className="text-white text-base">{card.icon}</span>
                 </div>
                 <div>
-                  <p className="font-semibold text-gray-900 text-base">{card.title}</p>
+                  <p className="font-semibold text-black text-base leading-tight">{card.title}</p>
                   <p className="text-gray-500 text-sm">{card.subtitle}</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">{card.detail}</p>
+                <p className="text-xs text-gray-400 uppercase tracking-wide font-medium">{card.detail}</p>
               </div>
             </div>
             
             <div className="flex items-baseline">
-              <span className="text-4xl font-bold text-gray-900">{card.value}</span>
-              {card.unit && <span className="text-xl text-gray-500 ml-1 font-medium">{card.unit}</span>}
+              <span className="text-3xl font-bold text-black">{card.value}</span>
+              {card.unit && <span className="text-lg text-gray-500 ml-1">{card.unit}</span>}
             </div>
           </button>
         ))}
 
         {/* Quick Access Grid */}
-        <div>
-          <h2 className="text-xl font-bold text-gray-900 mb-3 px-1">Quick Access</h2>
-          <div className="grid grid-cols-2 gap-3">
-            {quickAccessCards.map((card) => (
-              <button
-                key={card.id}
-                onClick={() => router.push(card.route as any)}
-                className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 active:scale-95 transition-transform duration-150 text-left h-24 flex flex-col justify-between"
-              >
-                <div className="flex items-center justify-between">
-                  <div className={`w-8 h-8 ${card.color} rounded-lg flex items-center justify-center`}>
-                    <span className="text-white text-lg">{card.icon}</span>
-                  </div>
+        <div className="grid grid-cols-2 gap-3 mt-4">
+          {quickAccessCards.map((card) => (
+            <button
+              key={card.id}
+              onClick={() => router.push(card.route as any)}
+              className="bg-white rounded-xl p-4 shadow-sm active:scale-95 transition-transform duration-150 text-left h-20 flex flex-col justify-between"
+            >
+              <div className="flex items-center justify-between">
+                <div className={`w-6 h-6 ${card.color} rounded-md flex items-center justify-center`}>
+                  <span className="text-white text-sm">{card.icon}</span>
                 </div>
-                <div>
-                  <p className="font-semibold text-gray-900 text-sm leading-tight">{card.title}</p>
-                  <p className="text-gray-500 text-xs">{card.subtitle}</p>
-                </div>
-              </button>
-            ))}
-          </div>
+              </div>
+              <div>
+                <p className="font-semibold text-black text-sm leading-tight">{card.title}</p>
+                <p className="text-gray-500 text-xs">{card.subtitle}</p>
+              </div>
+            </button>
+          ))}
         </div>
 
         {/* Today's Progress Summary */}
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold text-gray-900">Today's Goals</h3>
-            <div className="text-sm font-bold text-gray-900">
-              {(todayMetrics.reaction_ms && todayMetrics.mood_score) ? '2/2' : 
-               (todayMetrics.reaction_ms || todayMetrics.mood_score) ? '1/2' : '0/2'}
+        <div className="bg-white rounded-xl p-4 shadow-sm mt-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-base font-semibold text-black">Today's Goals</h3>
+            <div className="text-sm font-medium text-gray-500">
+              {(todayMetrics.reaction_ms && todayMetrics.mood_score) ? '2 of 2' : 
+               (todayMetrics.reaction_ms || todayMetrics.mood_score) ? '1 of 2' : '0 of 2'}
             </div>
           </div>
           
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-6 h-6 bg-blue-500 rounded-md flex items-center justify-center">
-                  <span className="text-white text-sm">⚡</span>
+                <div className="w-5 h-5 bg-blue-500 rounded-sm flex items-center justify-center">
+                  <span className="text-white text-xs">⚡</span>
                 </div>
-                <span className="text-gray-900 font-medium text-sm">Reaction Test</span>
+                <span className="text-black font-medium text-sm">Reaction Test</span>
               </div>
-              <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
-                todayMetrics.reaction_ms ? 'bg-green-500' : 'bg-gray-200'
+              <div className={`w-4 h-4 rounded-full flex items-center justify-center ${
+                todayMetrics.reaction_ms ? 'bg-green-500' : 'bg-gray-300'
               }`}>
                 {todayMetrics.reaction_ms && <span className="text-white text-xs">✓</span>}
               </div>
@@ -225,23 +222,23 @@ export default function Home() {
             
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-6 h-6 bg-green-500 rounded-md flex items-center justify-center">
-                  <span className="text-white text-sm">🧠</span>
+                <div className="w-5 h-5 bg-green-500 rounded-sm flex items-center justify-center">
+                  <span className="text-white text-xs">🧠</span>
                 </div>
-                <span className="text-gray-900 font-medium text-sm">Alertness Check</span>
+                <span className="text-black font-medium text-sm">Alertness Check</span>
               </div>
-              <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
-                todayMetrics.mood_score ? 'bg-green-500' : 'bg-gray-200'
+              <div className={`w-4 h-4 rounded-full flex items-center justify-center ${
+                todayMetrics.mood_score ? 'bg-green-500' : 'bg-gray-300'
               }`}>
                 {todayMetrics.mood_score && <span className="text-white text-xs">✓</span>}
               </div>
             </div>
           </div>
           
-          <div className="mt-4 pt-4 border-t border-gray-100">
-            <div className="w-full bg-gray-200 rounded-full h-1.5">
+          <div className="mt-3 pt-3 border-t border-gray-100">
+            <div className="w-full bg-gray-200 rounded-full h-1">
               <div 
-                className="bg-blue-500 h-1.5 rounded-full transition-all duration-300"
+                className="bg-blue-500 h-1 rounded-full transition-all duration-300"
                 style={{ 
                   width: `${((todayMetrics.reaction_ms ? 1 : 0) + (todayMetrics.mood_score ? 1 : 0)) * 50}%` 
                 }}
