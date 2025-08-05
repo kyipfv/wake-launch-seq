@@ -106,4 +106,46 @@ body {
     @apply text-base font-medium mb-6;
     color: var(--text-secondary);
   }
+  
+  .progress-ring {
+    transform: rotate(-90deg);
+  }
+  
+  .progress-ring-circle {
+    transition: stroke-dashoffset 0.5s ease-in-out;
+  }
+  
+  .metric-icon {
+    @apply w-12 h-12 rounded-2xl flex items-center justify-center mb-3;
+  }
+  
+  .visual-card {
+    @apply health-card-large relative overflow-hidden;
+    background: linear-gradient(135deg, var(--card-background) 0%, var(--secondary-background) 100%);
+  }
+  
+  .gradient-bg-blue {
+    background: linear-gradient(135deg, #007aff 0%, #0051d5 100%);
+  }
+  
+  .gradient-bg-green {
+    background: linear-gradient(135deg, #34c759 0%, #248a3d 100%);
+  }
+  
+  .gradient-bg-orange {
+    background: linear-gradient(135deg, #ff9500 0%, #cc7700 100%);
+  }
+  
+  .gradient-bg-purple {
+    background: linear-gradient(135deg, #af52de 0%, #8e44ad 100%);
+  }
+  
+  @keyframes pulse-ring {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.4); opacity: 0; }
+  }
+  
+  .pulse-animation {
+    animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+  }
 }

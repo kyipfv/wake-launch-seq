@@ -8,6 +8,7 @@ import ReactionTest from '@/components/ReactionTest';
 import MoodSlider from '@/components/MoodSlider';
 import PlanCard from '@/components/PlanCard';
 import ChartPanel from '@/components/ChartPanel';
+import ProgressRing from '@/components/ProgressRing';
 
 interface TodayMetrics {
   reaction_ms?: number;
@@ -74,88 +75,137 @@ export default function Dashboard() {
       
       <div className="max-w-6xl mx-auto px-4 py-6">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="section-header">Summary</h1>
-          <p className="section-subheader">
-            {hasCompletedToday 
-              ? "Today's metrics have been logged. Review your performance trends below." 
-              : "Complete your daily assessments to track your wake performance."
-            }
-          </p>
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
+            Today's Performance
+          </h1>
+          <div className="text-lg" style={{ color: 'var(--text-secondary)' }}>
+            {new Date().toLocaleDateString('en-US', { 
+              weekday: 'long', 
+              month: 'long', 
+              day: 'numeric' 
+            })}
+          </div>
         </div>
 
-        {/* Today's Metrics Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {/* Reaction Time Card */}
-          <div className="health-card">
-            <div className="text-center">
-              <div className="health-metric-label mb-1">Reaction Time</div>
-              <div className="health-metric-value">
-                {todayMetrics.reaction_ms ? todayMetrics.reaction_ms : '—'}
-              </div>
-              <div className="health-metric-unit">
-                {todayMetrics.reaction_ms ? 'ms' : 'No data'}
-              </div>
+        {/* Visual Performance Overview */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Reaction Time Visual Card */}
+          <div className="visual-card text-center">
+            <div className="flex items-center justify-center mb-4">
+              <ProgressRing 
+                progress={todayMetrics.reaction_ms ? Math.max(0, 100 - (todayMetrics.reaction_ms / 5)) : 0}
+                size={140}
+                strokeWidth={12}
+                color="#007aff"
+                backgroundColor="rgba(0, 122, 255, 0.1)"
+              >
+                <div>
+                  <div className="text-3xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>
+                    {todayMetrics.reaction_ms || '—'}
+                  </div>
+                  <div className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+                    {todayMetrics.reaction_ms ? 'ms' : 'no data'}
+                  </div>
+                </div>
+              </ProgressRing>
             </div>
+            
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <div className="w-8 h-8 gradient-bg-blue rounded-full flex items-center justify-center">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
+                Reaction Speed
+              </h3>
+            </div>
+            
+            {!todayMetrics.reaction_ms && (
+              <button 
+                onClick={() => document.getElementById('reaction-test')?.scrollIntoView({ behavior: 'smooth' })}
+                className="apple-button-primary mt-4"
+              >
+                Take Test
+              </button>
+            )}
           </div>
 
-          {/* Alertness Card */}
-          <div className="health-card">
-            <div className="text-center">
-              <div className="health-metric-label mb-1">Alertness</div>
-              <div className="health-metric-value">
-                {todayMetrics.mood_score ? todayMetrics.mood_score : '—'}
-              </div>
-              <div className="health-metric-unit">
-                {todayMetrics.mood_score ? '/10' : 'No data'}
-              </div>
+          {/* Alertness Visual Card */}
+          <div className="visual-card text-center">
+            <div className="flex items-center justify-center mb-4">
+              <ProgressRing 
+                progress={todayMetrics.mood_score ? (todayMetrics.mood_score * 10) : 0}
+                size={140}
+                strokeWidth={12}
+                color="#34c759"
+                backgroundColor="rgba(52, 199, 89, 0.1)"
+              >
+                <div>
+                  <div className="text-3xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>
+                    {todayMetrics.mood_score || '—'}
+                  </div>
+                  <div className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+                    {todayMetrics.mood_score ? '/10' : 'no data'}
+                  </div>
+                </div>
+              </ProgressRing>
             </div>
+            
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <div className="w-8 h-8 gradient-bg-green rounded-full flex items-center justify-center">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
+                Alertness Level
+              </h3>
+            </div>
+            
+            {!todayMetrics.mood_score && (
+              <button 
+                onClick={() => document.getElementById('mood-slider')?.scrollIntoView({ behavior: 'smooth' })}
+                className="apple-button-primary mt-4"
+              >
+                Log Mood
+              </button>
+            )}
           </div>
+        </div>
 
-          {/* Status Card */}
-          <div className="health-card">
-            <div className="text-center">
-              <div className="health-metric-label mb-1">Status</div>
-              <div className="text-sm font-medium mt-2">
-                {hasCompletedToday ? (
-                  <span className="text-green-500 flex items-center justify-center gap-1">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                    </svg>
-                    Complete
-                  </span>
-                ) : (
-                  <span className="text-orange-500 flex items-center justify-center gap-1">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11M11,9H13V7H11"/>
-                    </svg>
-                    Pending
-                  </span>
-                )}
+        {/* Completion Status */}
+        <div className="health-card mb-8 text-center">
+          <div className="flex items-center justify-center mb-4">
+            {hasCompletedToday ? (
+              <div className="relative">
+                <div className="w-16 h-16 gradient-bg-green rounded-full flex items-center justify-center">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                  </svg>
+                </div>
+                <div className="absolute inset-0 rounded-full border-4 border-green-500 pulse-animation"></div>
               </div>
-            </div>
-          </div>
-
-          {/* Quick Actions Card */}
-          <div className="health-card">
-            <div className="text-center">
-              <div className="health-metric-label mb-3">Quick Start</div>
-              <div className="space-y-2">
-                <button 
-                  onClick={() => document.getElementById('reaction-test')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="w-full text-xs py-2 px-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-                >
-                  Test
-                </button>
-                <button 
-                  onClick={() => document.getElementById('mood-slider')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="w-full text-xs py-2 px-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
-                >
-                  Log
-                </button>
+            ) : (
+              <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="#ff9500">
+                  <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11M11,9H13V7H11"/>
+                </svg>
               </div>
-            </div>
+            )}
           </div>
+          
+          <h2 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
+            {hasCompletedToday ? 'Daily Assessment Complete!' : 'Complete Your Assessment'}
+          </h2>
+          
+          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+            {hasCompletedToday 
+              ? 'Great job! Your performance metrics have been logged for today.' 
+              : 'Track your wake performance by completing both tests below.'
+            }
+          </p>
         </div>
 
         {/* Main Content Grid */}
