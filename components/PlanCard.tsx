@@ -123,11 +123,12 @@ export default function PlanCard() {
 
   if (loading) {
     return (
-      <div className="bg-gray-800/50 rounded-lg border border-gray-700 p-6">
+      <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
         <div className="animate-pulse">
-          <div className="h-4 bg-gray-700 rounded w-1/2 mb-4"></div>
-          <div className="h-8 bg-gray-700 rounded w-3/4 mb-2"></div>
-          <div className="h-4 bg-gray-700 rounded w-full"></div>
+          <div className="h-6 bg-gray-200 rounded-2xl w-1/2 mb-6"></div>
+          <div className="h-8 bg-gray-200 rounded-2xl w-3/4 mb-4"></div>
+          <div className="h-4 bg-gray-200 rounded-xl w-full mb-2"></div>
+          <div className="h-4 bg-gray-200 rounded-xl w-2/3"></div>
         </div>
       </div>
     );
@@ -135,28 +136,30 @@ export default function PlanCard() {
 
   if (error) {
     return (
-      <div className="bg-gray-800/50 rounded-lg border border-gray-700 p-6">
-        <div className="text-center">
-          <h3 className="text-lg font-semibold text-white mb-2">Tomorrow's Plan</h3>
-          <p className="text-red-400 text-sm mb-4">{error}</p>
-          <button
-            onClick={loadTomorrowsPlan}
-            className="bg-primary text-black px-4 py-2 rounded-lg hover:bg-blue-400 transition-colors"
-          >
-            Retry
-          </button>
+      <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center">
+        <div className="w-16 h-16 bg-red-100 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+          <span className="text-2xl">⚠️</span>
         </div>
+        <h3 className="text-xl font-bold text-gray-900 mb-2">Tomorrow's Plan</h3>
+        <p className="text-red-600 text-base mb-6 font-medium">{error}</p>
+        <button
+          onClick={loadTomorrowsPlan}
+          className="py-3 px-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-2xl hover:from-blue-700 hover:to-blue-800 hover:shadow-lg hover:scale-105 transition-all duration-200 shadow-md"
+        >
+          🔄 Retry
+        </button>
       </div>
     );
   }
 
   if (!plan) {
     return (
-      <div className="bg-gray-800/50 rounded-lg border border-gray-700 p-6">
-        <div className="text-center">
-          <h3 className="text-lg font-semibold text-white mb-2">Tomorrow's Plan</h3>
-          <p className="text-gray-400">No plan available</p>
+      <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center">
+        <div className="w-16 h-16 bg-gray-100 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+          <span className="text-2xl">📅</span>
         </div>
+        <h3 className="text-xl font-bold text-gray-900 mb-2">Tomorrow's Plan</h3>
+        <p className="text-gray-500 font-medium">No plan available</p>
       </div>
     );
   }
@@ -165,10 +168,18 @@ export default function PlanCard() {
   const isOutdoorAdvice = plan.advice.includes('Outdoor walk');
 
   return (
-    <div className="bg-gray-800/50 rounded-lg border border-gray-700 p-6">
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold text-white mb-1">Tomorrow's Launch Sequence</h3>
-        <p className="text-gray-400 text-sm">
+    <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 relative overflow-hidden">
+      {/* Background gradient */}
+      <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500 opacity-5 rounded-full -translate-y-4 translate-x-4"></div>
+      
+      <div className="mb-6 relative z-10">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-bold text-gray-900">Tomorrow's Launch Sequence</h3>
+          <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+            <span className="text-lg">🌅</span>
+          </div>
+        </div>
+        <p className="text-base text-gray-600 font-medium">
           {new Date(plan.date).toLocaleDateString('en-US', { 
             weekday: 'long', 
             month: 'short', 
@@ -178,49 +189,72 @@ export default function PlanCard() {
         </p>
       </div>
 
-      <div className="space-y-4">
-        <div className="bg-gray-700/50 rounded-lg p-4">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="text-2xl">
-              {isOutdoorAdvice ? '☀️' : '💡'}
+      <div className="space-y-6 relative z-10">
+        <div className="p-6 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-2xl border border-orange-100">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-2xl flex items-center justify-center shadow-lg">
+              <span className="text-2xl text-white">
+                {isOutdoorAdvice ? '☀️' : '💡'}
+              </span>
             </div>
             <div>
-              <div className="text-primary font-semibold">
+              <div className="text-xl font-bold text-gray-900 mb-1">
                 Sunrise: {sunriseTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </div>
-              <div className="text-gray-300 text-sm">
+              <div className="text-base text-gray-600 font-medium">
                 {plan.advice}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-blue-950/30 border border-blue-800/50 rounded-lg p-4">
-          <div className="text-sm text-blue-200">
-            <div className="font-semibold mb-1">Mission Parameters:</div>
-            <ul className="text-xs space-y-1 text-blue-300">
-              {isOutdoorAdvice ? (
-                <>
-                  <li>• Step outside within 5 minutes of sunrise</li>
-                  <li>• Face east for optimal light exposure</li>
-                  <li>• 10-15 minute walk recommended</li>
-                </>
-              ) : (
-                <>
-                  <li>• Use 10,000 lux light therapy device</li>
-                  <li>• Begin within 5 minutes of wake time</li>
-                  <li>• 20-30 minute exposure duration</li>
-                </>
-              )}
-            </ul>
+        <div className="p-6 bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-100 rounded-2xl">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-md">
+              <span className="text-lg text-white">🎯</span>
+            </div>
+            <div className="text-lg font-bold text-gray-900">Mission Parameters:</div>
           </div>
+          <ul className="text-base space-y-2 text-gray-700 font-medium">
+            {isOutdoorAdvice ? (
+              <>
+                <li className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  Step outside within 5 minutes of sunrise
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  Face east for optimal light exposure
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  10-15 minute walk recommended
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  Use 10,000 lux light therapy device
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  Begin within 5 minutes of wake time
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  20-30 minute exposure duration
+                </li>
+              </>
+            )}
+          </ul>
         </div>
 
         <button
           onClick={loadTomorrowsPlan}
-          className="w-full border border-primary text-primary py-2 px-4 rounded-lg hover:bg-primary hover:text-black transition-colors text-sm"
+          className="w-full py-3 px-6 bg-white border-2 border-orange-500 text-orange-600 font-semibold rounded-2xl hover:bg-orange-50 hover:scale-105 transition-all duration-200 shadow-sm"
         >
-          Refresh Plan
+          🔄 Refresh Plan
         </button>
       </div>
     </div>

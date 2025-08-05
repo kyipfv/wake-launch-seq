@@ -127,17 +127,17 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 pt-14 pb-6">
-        <div className="flex items-center justify-between mb-2">
+      <div className="bg-white px-6 pt-16 pb-8">
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <p className="text-gray-500 text-sm">Welcome back,</p>
-            <h1 className="text-3xl font-bold text-gray-900">{userName || 'User'}</h1>
+            <p className="text-gray-500 text-base font-medium">Good morning,</p>
+            <h1 className="text-4xl font-bold text-gray-900 -mt-1">{userName || 'User'}</h1>
           </div>
-          <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
             {userName ? userName[0].toUpperCase() : 'U'}
           </div>
         </div>
-        <p className="text-gray-600 mt-2">
+        <p className="text-gray-600 text-lg font-medium">
           {new Date().toLocaleDateString('en-US', { 
             weekday: 'long', 
             month: 'long', 
@@ -147,58 +147,100 @@ export default function Home() {
       </div>
 
       {/* Health Cards Grid */}
-      <div className="px-4 py-6">
+      <div className="px-6 pb-32">
         <div className="grid grid-cols-2 gap-4">
           {healthCards.map((card) => (
             <button
               key={card.id}
               onClick={() => router.push(card.route as any)}
-              className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200 text-left"
+              className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:shadow-lg hover:scale-105 transition-all duration-300 text-left relative overflow-hidden"
             >
-              <div className={`w-12 h-12 ${card.color} rounded-xl flex items-center justify-center text-2xl mb-3`}>
+              {/* Background gradient */}
+              <div className={`absolute top-0 right-0 w-20 h-20 ${card.color} opacity-5 rounded-full -translate-y-4 translate-x-4`}></div>
+              
+              <div className={`w-16 h-16 ${card.color} rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-lg relative z-10`}>
                 {card.icon}
               </div>
-              <div>
+              
+              <div className="relative z-10">
                 {card.value && (
-                  <div className="flex items-baseline mb-1">
-                    <span className="text-2xl font-bold text-gray-900">{card.value}</span>
-                    <span className="text-lg text-gray-600 ml-1">{card.unit}</span>
+                  <div className="flex items-baseline mb-2">
+                    <span className="text-3xl font-bold text-gray-900 leading-none">{card.value}</span>
+                    {card.unit && <span className="text-lg text-gray-500 ml-1 font-medium">{card.unit}</span>}
                   </div>
                 )}
-                <p className="text-sm font-medium text-gray-900">{card.title}</p>
-                <p className="text-xs text-gray-500">{card.subtitle}</p>
+                <p className="text-base font-semibold text-gray-900 mb-1">{card.title}</p>
+                <p className="text-sm text-gray-500 font-medium">{card.subtitle}</p>
               </div>
             </button>
           ))}
         </div>
       </div>
 
-      {/* Today's Summary */}
-      <div className="px-4 pb-24">
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">Today's Summary</h2>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <span className="text-sm">⚡</span>
+      {/* Today's Progress */}
+      <div className="px-6 pb-32">
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-gray-900">Today's Progress</h2>
+            <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+              <span className="text-lg">📊</span>
+            </div>
+          </div>
+          
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center shadow-md">
+                  <span className="text-xl text-white">⚡</span>
                 </div>
-                <span className="text-sm text-gray-600">Reaction Test</span>
+                <div>
+                  <p className="font-semibold text-gray-900">Reaction Test</p>
+                  <p className="text-sm text-gray-500">Measure response speed</p>
+                </div>
               </div>
-              <span className={`text-sm font-medium ${todayMetrics.reaction_ms ? 'text-green-600' : 'text-gray-400'}`}>
-                {todayMetrics.reaction_ms ? '✓ Complete' : 'Pending'}
+              <div className="flex items-center gap-2">
+                <span className={`w-3 h-3 rounded-full ${todayMetrics.reaction_ms ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+                <span className={`text-sm font-semibold ${todayMetrics.reaction_ms ? 'text-green-600' : 'text-gray-400'}`}>
+                  {todayMetrics.reaction_ms ? 'Complete' : 'Pending'}
+                </span>
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center shadow-md">
+                  <span className="text-xl text-white">🧠</span>
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900">Alertness Check</p>
+                  <p className="text-sm text-gray-500">Rate energy level</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className={`w-3 h-3 rounded-full ${todayMetrics.mood_score ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+                <span className={`text-sm font-semibold ${todayMetrics.mood_score ? 'text-green-600' : 'text-gray-400'}`}>
+                  {todayMetrics.mood_score ? 'Complete' : 'Pending'}
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Progress Bar */}
+          <div className="mt-6 pt-4 border-t border-gray-100">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-gray-700">Daily Goal</span>
+              <span className="text-sm font-bold text-gray-900">
+                {(todayMetrics.reaction_ms && todayMetrics.mood_score) ? '2/2' : 
+                 (todayMetrics.reaction_ms || todayMetrics.mood_score) ? '1/2' : '0/2'}
               </span>
             </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                  <span className="text-sm">🧠</span>
-                </div>
-                <span className="text-sm text-gray-600">Alertness Check</span>
-              </div>
-              <span className={`text-sm font-medium ${todayMetrics.mood_score ? 'text-green-600' : 'text-gray-400'}`}>
-                {todayMetrics.mood_score ? '✓ Complete' : 'Pending'}
-              </span>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div 
+                className="bg-gradient-to-r from-blue-500 to-green-500 h-2 rounded-full transition-all duration-500"
+                style={{ 
+                  width: `${((todayMetrics.reaction_ms ? 1 : 0) + (todayMetrics.mood_score ? 1 : 0)) * 50}%` 
+                }}
+              ></div>
             </div>
           </div>
         </div>

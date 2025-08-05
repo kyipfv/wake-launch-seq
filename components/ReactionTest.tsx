@@ -157,31 +157,44 @@ export default function ReactionTest({ onComplete }: { onComplete?: (result: Rea
   };
 
   return (
-    <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
-          Reaction Time Test
-        </h3>
-        <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+    <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 relative overflow-hidden">
+      {/* Background gradient */}
+      <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500 opacity-5 rounded-full -translate-y-4 translate-x-4"></div>
+      
+      <div className="mb-8 relative z-10">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-bold text-gray-900">
+            Reaction Time Test
+          </h3>
+          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+            <span className="text-lg">⚡</span>
+          </div>
+        </div>
+        <p className="text-base text-gray-600 font-medium">
           Tap the blue circles as quickly as possible. {totalTests} tests total.
         </p>
       </div>
 
       {!isRunning && !result && (
-        <button
-          onClick={startTest}
-          className="apple-button-primary w-full"
-        >
-          Start Test
-        </button>
+        <div className="relative z-10">
+          <button
+            onClick={startTest}
+            className="w-full py-4 px-8 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold text-lg rounded-3xl hover:from-blue-700 hover:to-blue-800 hover:shadow-lg hover:scale-105 transition-all duration-200 shadow-md"
+          >
+            <div className="flex items-center justify-center gap-3">
+              <span>⚡</span>
+              Start Test
+            </div>
+          </button>
+        </div>
       )}
 
       {isRunning && (
-        <div className="space-y-6">
-          <div className="flex justify-between text-sm" style={{ color: 'var(--text-secondary)' }}>
-            <span>Test {currentTest + 1} of {totalTests}</span>
-            <span className="font-medium">
-              {isWaiting ? 'Get ready...' : 'Tap the circle!'}
+        <div className="space-y-6 relative z-10">
+          <div className="flex justify-between items-center p-4 bg-gray-50 rounded-2xl">
+            <span className="text-base font-semibold text-gray-900">Test {currentTest + 1} of {totalTests}</span>
+            <span className="text-lg font-bold text-blue-600">
+              {isWaiting ? '🔄 Get ready...' : '🎯 Tap the circle!'}
             </span>
           </div>
           
@@ -190,49 +203,54 @@ export default function ReactionTest({ onComplete }: { onComplete?: (result: Rea
             width={400}
             height={300}
             onClick={handleCanvasClick}
-            className="w-full rounded-2xl cursor-crosshair border shadow-inner"
+            className="w-full rounded-3xl cursor-crosshair border border-gray-200 shadow-sm bg-gray-50"
             style={{ 
               maxWidth: '100%', 
               height: 'auto', 
-              aspectRatio: '4/3',
-              background: 'var(--secondary-background)',
-              borderColor: 'var(--border-color)'
+              aspectRatio: '4/3'
             }}
           />
           
-          <div className="w-full h-2 rounded-full" style={{ background: 'var(--secondary-background)' }}>
-            <div 
-              className="h-2 rounded-full transition-all duration-300"
-              style={{ 
-                width: `${(currentTest / totalTests) * 100}%`,
-                background: 'var(--accent-blue)'
-              }}
-            />
+          <div className="p-4 bg-gray-50 rounded-2xl">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-gray-700">Progress</span>
+              <span className="text-sm font-bold text-gray-900">{currentTest}/{totalTests}</span>
+            </div>
+            <div className="w-full h-3 bg-gray-200 rounded-full">
+              <div 
+                className="h-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full transition-all duration-300"
+                style={{ width: `${(currentTest / totalTests) * 100}%` }}
+              />
+            </div>
           </div>
         </div>
       )}
 
       {result && (
-        <div className="text-center space-y-6">
-          <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100">
-            <div className="text-4xl font-bold text-gray-900 mb-1">
-              {result.median}
+        <div className="text-center space-y-6 relative z-10">
+          <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-8 border border-green-100 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-16 h-16 bg-green-500 opacity-10 rounded-full -translate-y-2 translate-x-2"></div>
+            
+            <div className="relative z-10">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
+                <span className="text-2xl text-white">🎯</span>
+              </div>
+              <div className="text-5xl font-bold text-gray-900 mb-2">
+                {result.median}
+              </div>
+              <div className="text-xl text-gray-600 mb-1 font-semibold">milliseconds</div>
+              <div className="text-base text-gray-600 font-medium">Median Reaction Time</div>
             </div>
-            <div className="text-lg text-gray-600 mb-1">ms</div>
-            <div className="text-sm text-gray-600">Median Reaction Time</div>
           </div>
           
-          <div className="text-xs p-3 rounded-xl" style={{ 
-            color: 'var(--text-secondary)',
-            background: 'var(--secondary-background)'
-          }}>
-            <p>Individual times: {result.reactions.join('ms, ')}ms</p>
+          <div className="p-5 bg-gray-50 rounded-2xl">
+            <p className="text-sm text-gray-600 font-medium">Individual times: {result.reactions.join('ms, ')}ms</p>
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex gap-4">
             <button
               onClick={startTest}
-              className="apple-button-secondary flex-1"
+              className="flex-1 py-3 px-6 bg-white border-2 border-blue-600 text-blue-600 font-semibold rounded-2xl hover:bg-blue-50 hover:scale-105 transition-all duration-200 shadow-sm"
             >
               Test Again
             </button>
@@ -240,9 +258,9 @@ export default function ReactionTest({ onComplete }: { onComplete?: (result: Rea
             <button
               onClick={saveResult}
               disabled={saving}
-              className="apple-button-primary flex-1 disabled:opacity-50"
+              className="flex-1 py-3 px-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-2xl hover:from-blue-700 hover:to-blue-800 hover:shadow-lg hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:transform-none shadow-md"
             >
-              {saving ? 'Saving...' : 'Save Result'}
+              {saving ? '⏳ Saving...' : '💾 Save Result'}
             </button>
           </div>
         </div>

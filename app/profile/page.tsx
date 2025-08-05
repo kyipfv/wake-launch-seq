@@ -128,13 +128,16 @@ export default function ProfilePage() {
         {/* Sign Out Button */}
         <button
           onClick={() => signOut()}
-          className="mt-6 w-full bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:bg-gray-50 transition-colors"
+          className="mt-6 w-full bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:bg-red-50 hover:scale-105 transition-all duration-200"
         >
-          <div className="flex items-center justify-center gap-3">
-            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-              <span className="text-lg">🚪</span>
+          <div className="flex items-center justify-center gap-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg">
+              <span className="text-2xl text-white">🚪</span>
             </div>
-            <span className="font-medium text-red-600">Sign Out</span>
+            <div className="text-left">
+              <span className="text-lg font-bold text-red-600">Sign Out</span>
+              <p className="text-sm text-gray-500 font-medium">End your session</p>
+            </div>
           </div>
         </button>
 
