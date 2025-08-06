@@ -15,6 +15,8 @@ interface Plan {
   recommendation?: 'walk' | 'lightbox';
   completed?: boolean;
   completedAt?: string;
+  aqi?: number;
+  aqiCategory?: string;
 }
 
 export default function PlanCard() {
@@ -58,7 +60,27 @@ export default function PlanCard() {
     }
   };
 
-  const getSmartRecommendation = (sunriseTime: Date) => {
+  const getAQIData = (location: Location) => {
+    // Simulate AQI data (in production, would use real API)
+    const aqi = Math.floor(Math.random() * 200);
+    let category = '';
+    
+    if (aqi <= 50) {
+      category = 'Good';
+    } else if (aqi <= 100) {
+      category = 'Moderate';
+    } else if (aqi <= 150) {
+      category = 'Unhealthy for Sensitive Groups';
+    } else if (aqi <= 200) {
+      category = 'Unhealthy';
+    } else {
+      category = 'Very Unhealthy';
+    }
+    
+    return { aqi, category };
+  };
+
+  const getSmartRecommendation = (sunriseTime: Date, aqi: number) => {
     const hour = sunriseTime.getHours();
     
     // Simulate weather conditions (in real app, would use weather API)
@@ -69,7 +91,11 @@ export default function PlanCard() {
     let recommendation: 'walk' | 'lightbox' = 'walk';
     let reason = '';
     
-    if (hour < 6) {
+    // Check AQI first - if unhealthy, always recommend indoor
+    if (aqi > 100) {
+      recommendation = 'lightbox';
+      reason = `AQI ${aqi} - indoor light therapy recommended for health safety`;
+    } else if (hour < 6) {
       // Very early sunrise - walk is best
       recommendation = 'walk';
       reason = 'Early sunrise at ' + sunriseTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -143,12 +169,16 @@ export default function PlanCard() {
         }
       }
 
+      // Get AQI data for the location
+      const aqiData = getAQIData(location);
+
       // Generate today's plan
       const todayCompletedKey = `plan_completed_${todayDate}`;
       const todayCompletedData = localStorage.getItem(todayCompletedKey);
       
       const todaySunriseTime = getSunrise(today, location);
-      const { recommendation: todayRecommendation, reason: todayReason, weather: todayWeather } = getSmartRecommendation(todaySunriseTime);
+      console.log('Today sunrise:', todayDate, todaySunriseTime.toLocaleTimeString());
+      const { recommendation: todayRecommendation, reason: todayReason, weather: todayWeather } = getSmartRecommendation(todaySunriseTime, aqiData.aqi);
       
       const todayAdvice = todayRecommendation === 'walk' 
         ? '15 minute morning walk' 
@@ -162,7 +192,9 @@ export default function PlanCard() {
         weather: todayWeather,
         recommendation: todayRecommendation,
         completed: todayCompletedData ? JSON.parse(todayCompletedData).completed : false,
-        completedAt: todayCompletedData ? JSON.parse(todayCompletedData).completedAt : undefined
+        completedAt: todayCompletedData ? JSON.parse(todayCompletedData).completedAt : undefined,
+        aqi: aqiData.aqi,
+        aqiCategory: aqiData.category
       };
 
       // Generate tomorrow's plan
@@ -170,7 +202,8 @@ export default function PlanCard() {
       const tomorrowCompletedData = localStorage.getItem(tomorrowCompletedKey);
       
       const tomorrowSunriseTime = getSunrise(tomorrow, location);
-      const { recommendation: tomorrowRecommendation, reason: tomorrowReason, weather: tomorrowWeather } = getSmartRecommendation(tomorrowSunriseTime);
+      console.log('Tomorrow sunrise:', tomorrowDate, tomorrowSunriseTime.toLocaleTimeString());
+      const { recommendation: tomorrowRecommendation, reason: tomorrowReason, weather: tomorrowWeather } = getSmartRecommendation(tomorrowSunriseTime, aqiData.aqi);
       
       const tomorrowAdvice = tomorrowRecommendation === 'walk' 
         ? '15 minute morning walk' 
@@ -184,7 +217,9 @@ export default function PlanCard() {
         weather: tomorrowWeather,
         recommendation: tomorrowRecommendation,
         completed: tomorrowCompletedData ? JSON.parse(tomorrowCompletedData).completed : false,
-        completedAt: tomorrowCompletedData ? JSON.parse(tomorrowCompletedData).completedAt : undefined
+        completedAt: tomorrowCompletedData ? JSON.parse(tomorrowCompletedData).completedAt : undefined,
+        aqi: aqiData.aqi,
+        aqiCategory: aqiData.category
       };
 
       setTodayPlan(todaysPlan);
@@ -327,7 +362,66 @@ export default function PlanCard() {
             })}
             {userCity && ` • ${userCity}`}
           </p>
+          
+          {/* AQI Badge */}
+          {plan.aqi && (
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              marginTop: '8px',
+              padding: '6px 12px',
+              backgroundColor: plan.aqi <= 50 ? '#dcfce7' : plan.aqi <= 100 ? '#fef3c7' : '#fee2e2',
+              color: plan.aqi <= 50 ? '#166534' : plan.aqi <= 100 ? '#92400e' : '#991b1b',
+              borderRadius: '20px',
+              fontSize: '12px',
+              fontWeight: '600'
+            }}>
+              <span style={{
+                width: '6px',
+                height: '6px',
+                backgroundColor: plan.aqi <= 50 ? '#16a34a' : plan.aqi <= 100 ? '#f59e0b' : '#ef4444',
+                borderRadius: '50%'
+              }}></span>
+              AQI {plan.aqi} - {plan.aqiCategory}
+            </div>
+          )}
         </div>
+
+        {/* AQI Alert if unhealthy */}
+        {plan.aqi && plan.aqi > 100 && (
+          <div style={{
+            padding: '16px',
+            background: 'linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)',
+            borderRadius: '12px',
+            border: '1px solid #fecaca',
+            marginBottom: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
+          }}>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              backgroundColor: '#ef4444',
+              borderRadius: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: '0'
+            }}>
+              <span style={{color: 'white', fontSize: '20px'}}>⚠️</span>
+            </div>
+            <div>
+              <p style={{fontSize: '14px', fontWeight: '600', color: '#991b1b', marginBottom: '4px'}}>
+                Air Quality Alert: AQI {plan.aqi} ({plan.aqiCategory})
+              </p>
+              <p style={{fontSize: '13px', color: '#7f1d1d', fontWeight: '500'}}>
+                Indoor exercise recommended for your health safety
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Sunrise Card */}
         <div style={{

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import { supabase } from '@/lib/supabase';
 import BottomNav from '@/components/BottomNav';
+import Notepad from '@/components/Notepad';
 
 interface HealthCard {
   id: string;
@@ -22,6 +23,7 @@ export default function Home() {
   const { user } = useAuth();
   const [todayMetrics, setTodayMetrics] = useState<any>({});
   const [userName, setUserName] = useState('');
+  const [streak, setStreak] = useState(0);
 
   useEffect(() => {
     console.log('Home page useEffect - user:', user?.id, 'pathname:', window.location.pathname);
@@ -29,6 +31,7 @@ export default function Home() {
       console.log('User found on home page, loading data...');
       loadUserData();
       loadTodayMetrics();
+      calculateStreak();
     }
   }, [user, router]);
 
@@ -81,6 +84,44 @@ export default function Home() {
     } catch (error) {
       console.error('Error loading metrics:', error);
       setTodayMetrics({});
+    }
+  };
+
+  const calculateStreak = () => {
+    if (!user) return;
+    
+    if (user.id === 'demo-user') {
+      // Calculate streak for demo user from localStorage
+      const today = new Date();
+      let currentStreak = 0;
+      let checkDate = new Date();
+      
+      // Check backwards from today
+      while (true) {
+        const dateStr = checkDate.toISOString().split('T')[0];
+        const metricsKey = `demo_metrics_${dateStr}`;
+        const planKey = `plan_completed_${dateStr}`;
+        
+        const hasMetrics = localStorage.getItem(metricsKey);
+        const hasPlan = localStorage.getItem(planKey);
+        
+        // If either metric or plan completion exists for this day, count it
+        if (hasMetrics || hasPlan) {
+          currentStreak++;
+          checkDate.setDate(checkDate.getDate() - 1);
+        } else if (checkDate.toDateString() === today.toDateString()) {
+          // Today has no data yet, check yesterday
+          checkDate.setDate(checkDate.getDate() - 1);
+        } else {
+          // Streak broken
+          break;
+        }
+      }
+      
+      setStreak(currentStreak);
+    } else {
+      // For real users, would query database
+      setStreak(0);
     }
   };
 
@@ -232,7 +273,7 @@ export default function Home() {
             <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
               <div>
                 <p style={{fontSize: '14px', fontWeight: '500', color: '#6b7280', marginBottom: '8px'}}>Streak</p>
-                <p style={{fontSize: '32px', fontWeight: 'bold', color: '#111827', marginBottom: '4px'}}>7 days</p>
+                <p style={{fontSize: '32px', fontWeight: 'bold', color: '#111827', marginBottom: '4px'}}>{streak} {streak === 1 ? 'day' : 'days'}</p>
                 <p style={{fontSize: '14px', color: '#6b7280'}}>Current streak</p>
               </div>
               <div style={{width: '48px', height: '48px', backgroundColor: '#fed7aa', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
@@ -552,6 +593,12 @@ export default function Home() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Morning Notepad */}
+          <div style={{flex: '1', minWidth: '320px', marginTop: '32px'}}>
+            <h2 style={{fontSize: '18px', fontWeight: '600', color: '#111827', marginBottom: '16px'}}>Morning Thoughts</h2>
+            <Notepad />
           </div>
         </div>
       </div>
