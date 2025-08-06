@@ -11,39 +11,48 @@ interface Note {
   createdAt: string;
 }
 
-export default function Notepad() {
+interface NotepadProps {
+  selectedDate?: Date;
+}
+
+export default function Notepad({ selectedDate }: NotepadProps) {
   const [notes, setNotes] = useState<Note[]>([]);
   const [newNote, setNewNote] = useState('');
   const { user } = useAuth();
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  const currentDate = selectedDate || new Date();
+  const isToday = currentDate.toDateString() === new Date().toDateString();
 
   useEffect(() => {
     if (user) {
       loadNotes();
     }
-  }, [user]);
+  }, [user, selectedDate]);
 
   const loadNotes = () => {
     if (!user) return;
     
-    const today = new Date().toISOString().split('T')[0];
+    const dateStr = currentDate.toISOString().split('T')[0];
     const storageKey = user.id === 'demo-user' 
-      ? `demo_notes_${today}`
-      : `notes_${user.id}_${today}`;
+      ? `demo_notes_${dateStr}`
+      : `notes_${user.id}_${dateStr}`;
     
     const savedNotes = localStorage.getItem(storageKey);
     if (savedNotes) {
       setNotes(JSON.parse(savedNotes));
+    } else {
+      setNotes([]);
     }
   };
 
   const saveNotes = (updatedNotes: Note[]) => {
-    if (!user) return;
+    if (!user || !isToday) return; // Only save if viewing today
     
-    const today = new Date().toISOString().split('T')[0];
+    const dateStr = currentDate.toISOString().split('T')[0];
     const storageKey = user.id === 'demo-user' 
-      ? `demo_notes_${today}`
-      : `notes_${user.id}_${today}`;
+      ? `demo_notes_${dateStr}`
+      : `notes_${user.id}_${dateStr}`;
     
     localStorage.setItem(storageKey, JSON.stringify(updatedNotes));
   };
@@ -119,7 +128,14 @@ export default function Notepad() {
       
       <div style={{position: 'relative', zIndex: '10'}}>
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px'}}>
-          <h3 style={{fontSize: '20px', fontWeight: '700', color: '#111827'}}>Morning Notes</h3>
+          <div>
+            <h3 style={{fontSize: '20px', fontWeight: '700', color: '#111827', marginBottom: '4px'}}>Morning Notes</h3>
+            {!isToday && (
+              <p style={{fontSize: '14px', color: '#6b7280', fontWeight: '500'}}>
+                {currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} - Read Only
+              </p>
+            )}
+          </div>
           <div style={{
             width: '48px',
             height: '48px',
@@ -133,12 +149,13 @@ export default function Notepad() {
           </div>
         </div>
 
-        {/* Add new note */}
-        <div style={{
-          display: 'flex',
-          gap: '12px',
-          marginBottom: '20px'
-        }}>
+        {/* Add new note - only show for today */}
+        {isToday && (
+          <div style={{
+            display: 'flex',
+            gap: '12px',
+            marginBottom: '20px'
+          }}>
           <input
             type="text"
             value={newNote}
@@ -195,7 +212,8 @@ export default function Notepad() {
             <Plus style={{width: '18px', height: '18px'}} />
             Add
           </button>
-        </div>
+          </div>
+        )}
 
         {/* Notes list */}
         <div style={{
@@ -236,14 +254,15 @@ export default function Notepad() {
                   }}
                 >
                   <button
-                    onClick={() => toggleNote(note.id)}
+                    onClick={() => isToday && toggleNote(note.id)}
+                    disabled={!isToday}
                     style={{
                       width: '24px',
                       height: '24px',
                       borderRadius: '6px',
                       border: note.isChecked ? 'none' : '2px solid #d1d5db',
                       backgroundColor: note.isChecked ? '#10b981' : 'transparent',
-                      cursor: 'pointer',
+                      cursor: isToday ? 'pointer' : 'default',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -256,7 +275,8 @@ export default function Notepad() {
                   <input
                     type="text"
                     value={note.text}
-                    onChange={(e) => updateNoteText(note.id, e.target.value)}
+                    onChange={(e) => isToday && updateNoteText(note.id, e.target.value)}
+                    readOnly={!isToday}
                     style={{
                       flex: 1,
                       border: 'none',
@@ -268,8 +288,9 @@ export default function Notepad() {
                       fontWeight: '500'
                     }}
                   />
-                  <button
-                    onClick={() => deleteNote(note.id)}
+                  {isToday && (
+                    <button
+                      onClick={() => deleteNote(note.id)}
                     style={{
                       padding: '4px',
                       backgroundColor: 'transparent',
@@ -292,7 +313,8 @@ export default function Notepad() {
                     }}
                   >
                     <X style={{width: '16px', height: '16px'}} />
-                  </button>
+                    </button>
+                  )}
                 </div>
               ))}
             </div>

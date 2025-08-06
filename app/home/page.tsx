@@ -24,6 +24,7 @@ export default function Home() {
   const [todayMetrics, setTodayMetrics] = useState<any>({});
   const [userName, setUserName] = useState('');
   const [streak, setStreak] = useState(0);
+  const [planCompleted, setPlanCompleted] = useState(false);
 
   useEffect(() => {
     console.log('Home page useEffect - user:', user?.id, 'pathname:', window.location.pathname);
@@ -32,6 +33,7 @@ export default function Home() {
       loadUserData();
       loadTodayMetrics();
       calculateStreak();
+      checkPlanCompletion();
     }
   }, [user, router]);
 
@@ -122,6 +124,21 @@ export default function Home() {
     } else {
       // For real users, would query database
       setStreak(0);
+    }
+  };
+
+  const checkPlanCompletion = () => {
+    if (!user) return;
+    
+    const today = new Date().toISOString().split('T')[0];
+    const planKey = `plan_completed_${today}`;
+    const completedData = localStorage.getItem(planKey);
+    
+    if (completedData) {
+      const data = JSON.parse(completedData);
+      setPlanCompleted(data.completed === true);
+    } else {
+      setPlanCompleted(false);
     }
   };
 
@@ -257,9 +274,9 @@ export default function Home() {
           <div style={{backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e5e7eb', padding: '24px'}}>
             <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
               <div>
-                <p style={{fontSize: '14px', fontWeight: '500', color: '#6b7280', marginBottom: '8px'}}>Tests Completed</p>
+                <p style={{fontSize: '14px', fontWeight: '500', color: '#6b7280', marginBottom: '8px'}}>Activities Completed</p>
                 <p style={{fontSize: '32px', fontWeight: 'bold', color: '#111827', marginBottom: '4px'}}>
-                  {(todayMetrics.reaction_ms ? 1 : 0) + (todayMetrics.mood_score ? 1 : 0)}/2
+                  {(todayMetrics.reaction_ms ? 1 : 0) + (todayMetrics.mood_score ? 1 : 0) + (planCompleted ? 1 : 0)}/3
                 </p>
                 <p style={{fontSize: '14px', color: '#6b7280'}}>Today's progress</p>
               </div>
@@ -506,9 +523,11 @@ export default function Home() {
                 </div>
                 <h3 style={{fontWeight: '600', color: '#111827', marginBottom: '8px', fontSize: '16px'}}>Performance Status</h3>
                 <p style={{fontSize: '14px', color: '#6b7280'}}>
-                  {(todayMetrics.reaction_ms && todayMetrics.mood_score) 
-                    ? 'All assessments complete!' 
-                    : 'Some assessments pending'
+                  {(todayMetrics.reaction_ms && todayMetrics.mood_score && planCompleted) 
+                    ? 'All activities complete!' 
+                    : todayMetrics.reaction_ms || todayMetrics.mood_score || planCompleted
+                    ? 'Some activities pending'
+                    : 'No activities completed yet'
                   }
                 </p>
               </div>
@@ -567,13 +586,40 @@ export default function Home() {
                     {todayMetrics.mood_score ? 'Complete' : 'Pending'}
                   </div>
                 </div>
+
+                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                  <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+                    <div style={{
+                      width: '36px',
+                      height: '36px',
+                      background: 'linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%)',
+                      borderRadius: '10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <span style={{color: '#f59e0b', fontSize: '16px'}}>☀️</span>
+                    </div>
+                    <span style={{fontSize: '14px', fontWeight: '500', color: '#111827'}}>Sunrise Plan</span>
+                  </div>
+                  <div style={{
+                    padding: '6px 12px',
+                    borderRadius: '20px',
+                    fontSize: '12px',
+                    fontWeight: '500',
+                    backgroundColor: planCompleted ? '#dcfce7' : '#f3f4f6',
+                    color: planCompleted ? '#166534' : '#6b7280'
+                  }}>
+                    {planCompleted ? 'Complete' : 'Pending'}
+                  </div>
+                </div>
               </div>
 
               <div style={{marginTop: '24px', paddingTop: '16px', borderTop: '1px solid #f3f4f6'}}>
                 <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px'}}>
                   <span style={{fontSize: '14px', fontWeight: '500', color: '#374151'}}>Daily Progress</span>
                   <span style={{fontSize: '14px', fontWeight: '600', color: '#111827'}}>
-                    {Math.round(((todayMetrics.reaction_ms ? 1 : 0) + (todayMetrics.mood_score ? 1 : 0)) / 2 * 100)}%
+                    {Math.round(((todayMetrics.reaction_ms ? 1 : 0) + (todayMetrics.mood_score ? 1 : 0) + (planCompleted ? 1 : 0)) / 3 * 100)}%
                   </span>
                 </div>
                 <div style={{
@@ -588,7 +634,7 @@ export default function Home() {
                     height: '100%',
                     borderRadius: '10px',
                     transition: 'all 0.3s ease',
-                    width: `${((todayMetrics.reaction_ms ? 1 : 0) + (todayMetrics.mood_score ? 1 : 0)) * 50}%`
+                    width: `${((todayMetrics.reaction_ms ? 1 : 0) + (todayMetrics.mood_score ? 1 : 0) + (planCompleted ? 1 : 0)) * 33.33}%`
                   }}></div>
                 </div>
               </div>
@@ -597,7 +643,38 @@ export default function Home() {
 
           {/* Morning Notepad */}
           <div style={{flex: '1', minWidth: '320px', marginTop: '32px'}}>
-            <h2 style={{fontSize: '18px', fontWeight: '600', color: '#111827', marginBottom: '16px'}}>Morning Thoughts</h2>
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px'}}>
+              <h2 style={{fontSize: '18px', fontWeight: '600', color: '#111827'}}>Morning Thoughts</h2>
+              <button
+                onClick={() => router.push('/history' as any)}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: 'white',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  color: '#6b7280',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f9fafb';
+                  e.currentTarget.style.color = '#111827';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'white';
+                  e.currentTarget.style.color = '#6b7280';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                📅 View History
+              </button>
+            </div>
             <Notepad />
           </div>
         </div>
