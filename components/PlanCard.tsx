@@ -4,12 +4,17 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/components/AuthProvider';
 import { getSunrise, getWakeAdvice, getCurrentLocation, type Location } from '@/lib/getSunrise';
+import { Sun, Cloud, CloudRain, Loader } from 'lucide-react';
 
 interface Plan {
   id?: string;
   date: string;
   sunrise_time: string;
   advice: string;
+  weather?: 'sunny' | 'cloudy' | 'rainy';
+  recommendation?: 'walk' | 'lightbox';
+  completed?: boolean;
+  completedAt?: string;
 }
 
 export default function PlanCard() {
@@ -17,6 +22,7 @@ export default function PlanCard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [userCity, setUserCity] = useState<string>('');
+  const [saving, setSaving] = useState(false);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -28,6 +34,18 @@ export default function PlanCard() {
 
   const loadUserCity = async () => {
     if (!user) return;
+    
+    // Handle demo user
+    if (user.id === 'demo-user') {
+      const savedCity = localStorage.getItem('demo_user_city');
+      if (savedCity) {
+        const city = JSON.parse(savedCity);
+        setUserCity(city.name);
+      }
+      return;
+    }
+    
+    // Handle real users
     const { data: profile } = await supabase
       .from('profiles')
       .select('city_name')
@@ -37,6 +55,39 @@ export default function PlanCard() {
     if (profile?.city_name) {
       setUserCity(profile.city_name);
     }
+  };
+
+  const getSmartRecommendation = (sunriseTime: Date) => {
+    const hour = sunriseTime.getHours();
+    
+    // Simulate weather conditions (in real app, would use weather API)
+    const weatherConditions = ['sunny', 'cloudy', 'rainy'] as const;
+    const randomWeather = weatherConditions[Math.floor(Math.random() * weatherConditions.length)];
+    
+    // Smart recommendation logic
+    let recommendation: 'walk' | 'lightbox' = 'walk';
+    let reason = '';
+    
+    if (hour < 6) {
+      // Very early sunrise - walk is best
+      recommendation = 'walk';
+      reason = 'Early sunrise at ' + sunriseTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } else if (hour >= 7) {
+      // Late sunrise - light box might be better
+      recommendation = 'lightbox';
+      reason = 'Late sunrise - indoor light therapy recommended';
+    } else if (randomWeather === 'rainy') {
+      recommendation = 'lightbox';
+      reason = 'Rain predicted - indoor light therapy recommended';
+    } else if (randomWeather === 'cloudy') {
+      recommendation = 'lightbox';
+      reason = 'Cloudy conditions - brighter indoor light recommended';
+    } else {
+      recommendation = 'walk';
+      reason = 'Clear morning - perfect for outdoor light exposure';
+    }
+    
+    return { recommendation, reason, weather: randomWeather };
   };
 
   const loadTomorrowsPlan = async () => {
@@ -50,45 +101,26 @@ export default function PlanCard() {
       tomorrow.setDate(tomorrow.getDate() + 1);
       const tomorrowDate = tomorrow.toISOString().split('T')[0];
 
-      // Check if plan already exists (skip for demo user)
-      if (user.id !== 'demo-user') {
-        const { data: existingPlan } = await supabase
-          .from('plans')
-          .select('*')
-          .eq('user_id', user.id)
-          .eq('date', tomorrowDate)
-          .single();
-
-        if (existingPlan) {
-          setPlan(existingPlan);
-          setLoading(false);
-          return;
-        }
-      }
+      // Check localStorage for completed status (for demo user)
+      const completedKey = `plan_completed_${tomorrowDate}`;
+      const completedData = localStorage.getItem(completedKey);
 
       // Handle demo user
       let profile: any = null;
       let location: Location;
       
       if (user.id === 'demo-user') {
-        // For demo user, use default chronotype and check localStorage for location
-        profile = { chrono_window: 'dolphin' }; // Default chronotype
+        profile = { chrono_window: 'dolphin' };
         
         const savedCity = localStorage.getItem('demo_user_city');
         if (savedCity) {
           const city = JSON.parse(savedCity);
           location = { latitude: city.lat, longitude: city.lon };
         } else {
-          try {
-            location = await getCurrentLocation();
-          } catch (geoError) {
-            // Fallback to a default location (e.g., New York)
-            location = { latitude: 40.7128, longitude: -74.0060 };
-            setError('Please set your city in settings for accurate sunrise times');
-          }
+          location = { latitude: 40.7128, longitude: -74.0060 };
+          setError('Please set your city in settings for accurate sunrise times');
         }
       } else {
-        // Get user's chronotype and location from database
         const { data } = await supabase
           .from('profiles')
           .select('chrono_window, city_name, city_lat, city_lon')
@@ -103,49 +135,33 @@ export default function PlanCard() {
           return;
         }
 
-        // Get location - prioritize user's saved city, then geolocation, then default
         if (profile.city_lat && profile.city_lon) {
           location = { latitude: profile.city_lat, longitude: profile.city_lon };
         } else {
-          try {
-            location = await getCurrentLocation();
-          } catch (geoError) {
-            // Fallback to a default location (e.g., New York)
-            location = { latitude: 40.7128, longitude: -74.0060 };
-            setError('Please set your city in settings for accurate sunrise times');
-          }
+          location = { latitude: 40.7128, longitude: -74.0060 };
+          setError('Please set your city in settings for accurate sunrise times');
         }
       }
 
       const sunriseTime = getSunrise(tomorrow, location);
-      const advice = getWakeAdvice(profile.chrono_window.split('-')[0], sunriseTime);
+      const { recommendation, reason, weather } = getSmartRecommendation(sunriseTime);
+      
+      const advice = recommendation === 'walk' 
+        ? '15 minute morning walk' 
+        : '20-30 minute light therapy';
 
-      // Save the plan
       const newPlan = {
         user_id: user.id,
         date: tomorrowDate,
         sunrise_time: sunriseTime.toISOString(),
-        advice: advice,
+        advice: `${advice} - ${reason}`,
+        weather,
+        recommendation,
+        completed: completedData ? JSON.parse(completedData).completed : false,
+        completedAt: completedData ? JSON.parse(completedData).completedAt : undefined
       };
 
-      // Handle demo user
-      if (user.id === 'demo-user') {
-        // For demo user, just display the plan without saving to database
-        setPlan(newPlan);
-      } else {
-        // Save to database for real users
-        const { data: savedPlan, error: saveError } = await supabase
-          .from('plans')
-          .insert(newPlan)
-          .select()
-          .single();
-
-        if (saveError) {
-          throw saveError;
-        }
-
-        setPlan(savedPlan);
-      }
+      setPlan(newPlan);
     } catch (err) {
       console.error('Error loading plan:', err);
       setError('Failed to generate tomorrow\'s plan');
@@ -154,14 +170,58 @@ export default function PlanCard() {
     }
   };
 
+  const markAsCompleted = async () => {
+    if (!plan) return;
+    
+    setSaving(true);
+    const completedAt = new Date().toISOString();
+    
+    // Update local state
+    setPlan({
+      ...plan,
+      completed: true,
+      completedAt
+    });
+    
+    // Save to localStorage for demo user
+    if (user?.id === 'demo-user') {
+      const completedKey = `plan_completed_${plan.date}`;
+      localStorage.setItem(completedKey, JSON.stringify({
+        completed: true,
+        completedAt,
+        activity: plan.recommendation
+      }));
+      
+      // Also save to activity history for trends
+      const historyKey = 'demo_activity_history';
+      const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+      history.push({
+        date: plan.date,
+        type: plan.recommendation,
+        completedAt,
+        sunrise: plan.sunrise_time
+      });
+      localStorage.setItem(historyKey, JSON.stringify(history));
+    } else {
+      // Save to database for real users
+      // Would implement database save here
+    }
+    
+    setSaving(false);
+  };
+
   if (loading) {
     return (
-      <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-        <div className="animate-pulse">
-          <div className="h-6 bg-gray-200 rounded-2xl w-1/2 mb-6"></div>
-          <div className="h-8 bg-gray-200 rounded-2xl w-3/4 mb-4"></div>
-          <div className="h-4 bg-gray-200 rounded-xl w-full mb-2"></div>
-          <div className="h-4 bg-gray-200 rounded-xl w-2/3"></div>
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '16px',
+        padding: '32px',
+        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+        border: '1px solid #f3f4f6'
+      }}>
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px'}}>
+          <Loader style={{width: '20px', height: '20px', color: '#6b7280', animation: 'spin 1s linear infinite'}} />
+          <span style={{color: '#6b7280', fontSize: '16px'}}>Generating tomorrow's plan...</span>
         </div>
       </div>
     );
@@ -169,50 +229,68 @@ export default function PlanCard() {
 
   if (error) {
     return (
-      <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center">
-        <div className="w-16 h-16 bg-red-100 rounded-2xl mx-auto mb-4 flex items-center justify-center">
-          <span className="text-2xl">⚠️</span>
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '16px',
+        padding: '32px',
+        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+        border: '1px solid #f3f4f6',
+        textAlign: 'center'
+      }}>
+        <div style={{
+          width: '64px',
+          height: '64px',
+          backgroundColor: '#fee2e2',
+          borderRadius: '16px',
+          margin: '0 auto 16px auto',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <span style={{fontSize: '24px'}}>⚠️</span>
         </div>
-        <h3 className="text-xl font-bold text-gray-900 mb-2">Tomorrow's Plan</h3>
-        <p className="text-red-600 text-base mb-6 font-medium">{error}</p>
-        <button
-          onClick={loadTomorrowsPlan}
-          className="py-3 px-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-2xl hover:from-blue-700 hover:to-blue-800 hover:shadow-lg hover:scale-105 transition-all duration-200 shadow-md"
-        >
-          🔄 Retry
-        </button>
+        <h3 style={{fontSize: '20px', fontWeight: '700', color: '#111827', marginBottom: '8px'}}>Tomorrow's Plan</h3>
+        <p style={{color: '#dc2626', fontSize: '16px', marginBottom: '24px', fontWeight: '500'}}>{error}</p>
       </div>
     );
   }
 
-  if (!plan) {
-    return (
-      <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 text-center">
-        <div className="w-16 h-16 bg-gray-100 rounded-2xl mx-auto mb-4 flex items-center justify-center">
-          <span className="text-2xl">📅</span>
-        </div>
-        <h3 className="text-xl font-bold text-gray-900 mb-2">Tomorrow's Plan</h3>
-        <p className="text-gray-500 font-medium">No plan available</p>
-      </div>
-    );
-  }
+  if (!plan) return null;
 
   const sunriseTime = new Date(plan.sunrise_time);
-  const isOutdoorAdvice = plan.advice.includes('Outdoor walk');
+  const WeatherIcon = plan.weather === 'sunny' ? Sun : plan.weather === 'rainy' ? CloudRain : Cloud;
 
   return (
-    <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 relative overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500 opacity-5 rounded-full -translate-y-4 translate-x-4"></div>
-      
-      <div className="mb-6 relative z-10">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-bold text-gray-900">Tomorrow's Launch Sequence</h3>
-          <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-            <span className="text-lg">🌅</span>
-          </div>
+    <div style={{
+      backgroundColor: 'white',
+      borderRadius: '16px',
+      padding: '32px',
+      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+      border: '1px solid #f3f4f6',
+      position: 'relative',
+      overflow: 'hidden'
+    }}>
+      {/* Header */}
+      <div style={{marginBottom: '24px'}}>
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px'}}>
+          <h3 style={{fontSize: '20px', fontWeight: '700', color: '#111827'}}>Tomorrow's Launch Sequence</h3>
+          {plan.completed && (
+            <div style={{
+              padding: '6px 12px',
+              backgroundColor: '#dcfce7',
+              color: '#166534',
+              borderRadius: '20px',
+              fontSize: '12px',
+              fontWeight: '600',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}>
+              <span>✓</span> Completed
+            </div>
+          )}
         </div>
-        <p className="text-base text-gray-600 font-medium">
+        <p style={{fontSize: '16px', color: '#6b7280', fontWeight: '500'}}>
           {new Date(plan.date).toLocaleDateString('en-US', { 
             weekday: 'long', 
             month: 'short', 
@@ -222,74 +300,122 @@ export default function PlanCard() {
         </p>
       </div>
 
-      <div className="space-y-6 relative z-10">
-        <div className="p-6 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-2xl border border-orange-100">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-2xl flex items-center justify-center shadow-lg">
-              <span className="text-2xl text-white">
-                {isOutdoorAdvice ? '☀️' : '💡'}
-              </span>
+      {/* Sunrise Card */}
+      <div style={{
+        padding: '24px',
+        background: plan.recommendation === 'walk' 
+          ? 'linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%)'
+          : 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
+        borderRadius: '16px',
+        border: '1px solid ' + (plan.recommendation === 'walk' ? '#fed7aa' : '#bfdbfe'),
+        marginBottom: '24px'
+      }}>
+        <div style={{display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px'}}>
+          <div style={{
+            width: '64px',
+            height: '64px',
+            background: plan.recommendation === 'walk'
+              ? 'linear-gradient(135deg, #f59e0b 0%, #eab308 100%)'
+              : 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
+            borderRadius: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 4px 14px 0 rgba(0, 0, 0, 0.15)'
+          }}>
+            <span style={{fontSize: '28px', color: 'white'}}>
+              {plan.recommendation === 'walk' ? '☀️' : '💡'}
+            </span>
+          </div>
+          <div style={{flex: 1}}>
+            <div style={{fontSize: '20px', fontWeight: '700', color: '#111827', marginBottom: '4px'}}>
+              Sunrise: {sunriseTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </div>
-            <div>
-              <div className="text-xl font-bold text-gray-900 mb-1">
-                Sunrise: {sunriseTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </div>
-              <div className="text-base text-gray-600 font-medium">
-                {plan.advice}
-              </div>
+            <div style={{fontSize: '16px', color: '#6b7280', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '8px'}}>
+              <WeatherIcon style={{width: '16px', height: '16px'}} />
+              {plan.advice}
             </div>
           </div>
         </div>
 
-        <div className="p-6 bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-100 rounded-2xl">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-md">
-              <span className="text-lg text-white">🎯</span>
-            </div>
-            <div className="text-lg font-bold text-gray-900">Mission Parameters:</div>
-          </div>
-          <ul className="text-base space-y-2 text-gray-700 font-medium">
-            {isOutdoorAdvice ? (
+        {/* Mission Details */}
+        <div style={{
+          backgroundColor: 'rgba(255, 255, 255, 0.8)',
+          borderRadius: '12px',
+          padding: '16px'
+        }}>
+          <h4 style={{fontSize: '16px', fontWeight: '600', color: '#111827', marginBottom: '12px'}}>
+            Mission Parameters:
+          </h4>
+          <ul style={{fontSize: '14px', color: '#374151', fontWeight: '500', listStyle: 'none', padding: '0', margin: '0'}}>
+            {plan.recommendation === 'walk' ? (
               <>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  Step outside within 5 minutes of sunrise
+                <li style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px'}}>
+                  <div style={{width: '8px', height: '8px', backgroundColor: '#f59e0b', borderRadius: '50%'}}></div>
+                  15 minute morning walk
                 </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  Face east for optimal light exposure
+                <li style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px'}}>
+                  <div style={{width: '8px', height: '8px', backgroundColor: '#f59e0b', borderRadius: '50%'}}></div>
+                  Face east for optimal light
                 </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  10-15 minute walk recommended
+                <li style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                  <div style={{width: '8px', height: '8px', backgroundColor: '#f59e0b', borderRadius: '50%'}}></div>
+                  No sunglasses for full benefit
                 </li>
               </>
             ) : (
               <>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  Use 10,000 lux light therapy device
+                <li style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px'}}>
+                  <div style={{width: '8px', height: '8px', backgroundColor: '#3b82f6', borderRadius: '50%'}}></div>
+                  10,000 lux light therapy box
                 </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  Begin within 5 minutes of wake time
+                <li style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px'}}>
+                  <div style={{width: '8px', height: '8px', backgroundColor: '#3b82f6', borderRadius: '50%'}}></div>
+                  20-30 minutes exposure
                 </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  20-30 minute exposure duration
+                <li style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                  <div style={{width: '8px', height: '8px', backgroundColor: '#3b82f6', borderRadius: '50%'}}></div>
+                  12-16 inches from face
                 </li>
               </>
             )}
           </ul>
         </div>
-
-        <button
-          onClick={loadTomorrowsPlan}
-          className="w-full py-3 px-6 bg-white border-2 border-orange-500 text-orange-600 font-semibold rounded-2xl hover:bg-orange-50 hover:scale-105 transition-all duration-200 shadow-sm"
-        >
-          🔄 Refresh Plan
-        </button>
       </div>
+
+      {/* Complete Button */}
+      {!plan.completed && (
+        <button
+          onClick={markAsCompleted}
+          disabled={saving}
+          style={{
+            width: '100%',
+            padding: '16px',
+            backgroundColor: plan.recommendation === 'walk' ? '#f59e0b' : '#3b82f6',
+            color: 'white',
+            fontSize: '16px',
+            fontWeight: '600',
+            borderRadius: '12px',
+            border: 'none',
+            cursor: saving ? 'not-allowed' : 'pointer',
+            transition: 'all 0.2s ease',
+            boxShadow: '0 4px 14px 0 rgba(0, 0, 0, 0.15)',
+            opacity: saving ? 0.7 : 1
+          }}
+          onMouseEnter={(e) => {
+            if (!saving) {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 6px 20px 0 rgba(0, 0, 0, 0.2)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 4px 14px 0 rgba(0, 0, 0, 0.15)';
+          }}
+        >
+          {saving ? 'Saving...' : `Mark ${plan.recommendation === 'walk' ? 'Walk' : 'Light Therapy'} as Complete`}
+        </button>
+      )}
     </div>
   );
 }
