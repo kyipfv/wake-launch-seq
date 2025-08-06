@@ -124,6 +124,7 @@ export default function Settings() {
         const city = JSON.parse(savedCity);
         setSelectedCity(city);
         setCityQuery(`${city.name}, ${city.country}`);
+        setMessage(''); // Clear any messages
       }
       return;
     }
@@ -143,6 +144,7 @@ export default function Settings() {
         lon: data.city_lon
       });
       setCityQuery(data.city_name);
+      setMessage(''); // Clear any messages
     }
   };
 
@@ -150,6 +152,14 @@ export default function Settings() {
     if (cityQuery.length < 2) {
       setCities([]);
       setShowAllCities(false);
+      setMessage('');
+      return;
+    }
+
+    // Don't search if the query matches the selected city
+    if (selectedCity && cityQuery === `${selectedCity.name}, ${selectedCity.country}`) {
+      setCities([]);
+      setMessage('');
       return;
     }
 
@@ -166,6 +176,7 @@ export default function Settings() {
     if (filtered.length > 0) {
       setCities(filtered.slice(0, 10)); // Show max 10 results
       setShowAllCities(false);
+      setMessage('');
     } else {
       setMessage('No cities found. Try a different search or browse all cities.');
       setCities([]);
@@ -176,12 +187,19 @@ export default function Settings() {
 
   // Add useEffect to handle search as user types
   useEffect(() => {
+    // Don't search if we already have a selected city and the query matches it
+    if (selectedCity && cityQuery === `${selectedCity.name}, ${selectedCity.country}`) {
+      setMessage('');
+      setCities([]);
+      return;
+    }
+    
     const timer = setTimeout(() => {
       searchCities();
     }, 300); // Debounce search
     
     return () => clearTimeout(timer);
-  }, [cityQuery]);
+  }, [cityQuery, selectedCity]);
 
   const handleCitySelect = (city: City) => {
     setSelectedCity(city);
