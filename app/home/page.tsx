@@ -44,11 +44,41 @@ export default function Home() {
 
   const loadTodayMetrics = async () => {
     if (!user) return;
-    // For demo purposes, set some mock data
-    setTodayMetrics({
-      reaction_ms: 245,
-      mood_score: 8
-    });
+    
+    const today = new Date().toISOString().split('T')[0];
+    
+    // Handle demo user - load from localStorage
+    if (user.id === 'demo-user') {
+      // Load saved metrics from localStorage
+      const savedMetrics = localStorage.getItem(`demo_metrics_${today}`);
+      if (savedMetrics) {
+        const metrics = JSON.parse(savedMetrics);
+        setTodayMetrics(metrics);
+      } else {
+        // No data for today yet
+        setTodayMetrics({});
+      }
+      return;
+    }
+
+    // Handle real users - load from database
+    try {
+      const { data } = await supabase
+        .from('metrics')
+        .select('reaction_ms, mood_score')
+        .eq('user_id', user.id)
+        .eq('date', today)
+        .single();
+      
+      if (data) {
+        setTodayMetrics(data);
+      } else {
+        setTodayMetrics({});
+      }
+    } catch (error) {
+      console.error('Error loading metrics:', error);
+      setTodayMetrics({});
+    }
   };
 
   const allCards = [

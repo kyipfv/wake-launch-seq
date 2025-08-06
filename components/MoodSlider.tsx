@@ -29,6 +29,24 @@ export default function MoodSlider({ onSave }: { onSave?: (score: number) => voi
     setSaving(true);
     const today = new Date().toISOString().split('T')[0];
     
+    // Handle demo user - save to localStorage
+    if (user.id === 'demo-user') {
+      // Load existing metrics or create new object
+      const savedMetrics = localStorage.getItem(`demo_metrics_${today}`);
+      const metrics = savedMetrics ? JSON.parse(savedMetrics) : {};
+      
+      // Update mood score
+      metrics.mood_score = moodScore;
+      
+      // Save back to localStorage
+      localStorage.setItem(`demo_metrics_${today}`, JSON.stringify(metrics));
+      
+      onSave?.(moodScore);
+      setSaving(false);
+      return;
+    }
+
+    // Handle real users - save to database
     const { error } = await supabase
       .from('metrics')
       .upsert({
