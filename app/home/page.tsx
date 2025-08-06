@@ -25,6 +25,7 @@ export default function Home() {
   const [userName, setUserName] = useState('');
   const [streak, setStreak] = useState(0);
   const [planCompleted, setPlanCompleted] = useState(false);
+  const [todayAqi, setTodayAqi] = useState<{ aqi: number; category: string } | null>(null);
 
   useEffect(() => {
     console.log('Home page useEffect - user:', user?.id, 'pathname:', window.location.pathname);
@@ -34,6 +35,7 @@ export default function Home() {
       loadTodayMetrics();
       calculateStreak();
       checkPlanCompletion();
+      loadAQI();
     }
   }, [user, router]);
 
@@ -140,6 +142,26 @@ export default function Home() {
     } else {
       setPlanCompleted(false);
     }
+  };
+
+  const loadAQI = () => {
+    // Simulate AQI data (in production, would use real API)
+    const aqi = Math.floor(Math.random() * 200);
+    let category = '';
+    
+    if (aqi <= 50) {
+      category = 'Good';
+    } else if (aqi <= 100) {
+      category = 'Moderate';
+    } else if (aqi <= 150) {
+      category = 'Unhealthy for Sensitive Groups';
+    } else if (aqi <= 200) {
+      category = 'Unhealthy';
+    } else {
+      category = 'Very Unhealthy';
+    }
+    
+    setTodayAqi({ aqi, category });
   };
 
   const allCards = [
@@ -298,13 +320,42 @@ export default function Home() {
               </div>
             </div>
           </div>
+
+          <div style={{backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e5e7eb', padding: '24px'}}>
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+              <div>
+                <p style={{fontSize: '14px', fontWeight: '500', color: '#6b7280', marginBottom: '8px'}}>Air Quality</p>
+                <p style={{fontSize: '32px', fontWeight: 'bold', color: '#111827', marginBottom: '4px'}}>
+                  {todayAqi ? todayAqi.aqi : '—'}
+                </p>
+                <p style={{fontSize: '14px', color: todayAqi && todayAqi.aqi <= 50 ? '#16a34a' : todayAqi && todayAqi.aqi <= 100 ? '#f59e0b' : '#dc2626'}}>
+                  {todayAqi ? todayAqi.category : 'Loading...'}
+                </p>
+              </div>
+              <div style={{
+                width: '48px', 
+                height: '48px', 
+                backgroundColor: todayAqi && todayAqi.aqi <= 50 ? '#dcfce7' : todayAqi && todayAqi.aqi <= 100 ? '#fef3c7' : '#fee2e2', 
+                borderRadius: '8px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center'
+              }}>
+                <span style={{color: todayAqi && todayAqi.aqi <= 50 ? '#16a34a' : todayAqi && todayAqi.aqi <= 100 ? '#f59e0b' : '#dc2626', fontSize: '20px'}}>
+                  {todayAqi && todayAqi.aqi <= 50 ? '✓' : todayAqi && todayAqi.aqi <= 100 ? '⚠️' : '⚠️'}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Dashboard Grid */}
-        <div style={{display: 'flex', gap: '32px', flexDirection: 'row', flexWrap: 'wrap'}}>
-          {/* Quick Actions */}
-          <div style={{flex: '2', minWidth: '300px'}}>
-            <h2 style={{fontSize: '18px', fontWeight: '600', color: '#111827', marginBottom: '16px'}}>Quick Actions</h2>
+        <div style={{display: 'flex', gap: '32px', flexDirection: 'column'}}>
+          {/* Quick Actions and Today's Summary Row */}
+          <div style={{display: 'flex', gap: '32px', flexWrap: 'wrap'}}>
+            {/* Quick Actions */}
+            <div style={{flex: '2', minWidth: '300px'}}>
+              <h2 style={{fontSize: '18px', fontWeight: '600', color: '#111827', marginBottom: '16px'}}>Quick Actions</h2>
             <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px'}}>
               <button
                 onClick={() => router.push('/reaction-test' as any)}
@@ -639,10 +690,11 @@ export default function Home() {
                 </div>
               </div>
             </div>
+            </div>
           </div>
 
           {/* Morning Notepad */}
-          <div style={{flex: '1', minWidth: '320px', marginTop: '32px'}}>
+          <div style={{width: '100%'}}>
             <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px'}}>
               <h2 style={{fontSize: '18px', fontWeight: '600', color: '#111827'}}>Morning Thoughts</h2>
               <button

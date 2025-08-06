@@ -1,12 +1,122 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, TrendingUp, TrendingDown } from 'lucide-react';
+import { useAuth } from '@/components/AuthProvider';
 import ChartPanel from '@/components/ChartPanel';
 import BottomNav from '@/components/BottomNav';
 
 export default function TrendsPage() {
   const router = useRouter();
+  const { user } = useAuth();
+  const [avgReaction, setAvgReaction] = useState<number | null>(null);
+  const [avgAlertness, setAvgAlertness] = useState<number | null>(null);
+  const [reactionTrend, setReactionTrend] = useState<number>(0);
+  const [alertnessTrend, setAlertnessTrend] = useState<number>(0);
+  const [actualStreak, setActualStreak] = useState<number>(0);
+
+  useEffect(() => {
+    if (user) {
+      calculateAverages();
+    }
+  }, [user]);
+
+  const calculateAverages = () => {
+    if (!user) return;
+
+    const today = new Date();
+    const fourteenDaysAgo = new Date();
+    fourteenDaysAgo.setDate(today.getDate() - 14);
+    
+    let reactionSum = 0;
+    let reactionCount = 0;
+    let alertnessSum = 0;
+    let alertnessCount = 0;
+    let currentStreak = 0;
+    
+    // Calculate averages for last 14 days
+    const allReactions: number[] = [];
+    const allAlertness: number[] = [];
+    
+    for (let d = new Date(fourteenDaysAgo); d <= today; d.setDate(d.getDate() + 1)) {
+      const dateStr = d.toISOString().split('T')[0];
+      
+      if (user.id === 'demo-user') {
+        const savedMetrics = localStorage.getItem(`demo_metrics_${dateStr}`);
+        if (savedMetrics) {
+          const metrics = JSON.parse(savedMetrics);
+          if (metrics.reaction_ms) {
+            allReactions.push(metrics.reaction_ms);
+            reactionSum += metrics.reaction_ms;
+            reactionCount++;
+          }
+          if (metrics.mood_score) {
+            allAlertness.push(metrics.mood_score);
+            alertnessSum += metrics.mood_score;
+            alertnessCount++;
+          }
+        }
+      }
+    }
+    
+    // Calculate averages
+    if (reactionCount > 0) {
+      setAvgReaction(Math.round(reactionSum / reactionCount));
+    }
+    if (alertnessCount > 0) {
+      setAvgAlertness(Number((alertnessSum / alertnessCount).toFixed(1)));
+    }
+    
+    // Calculate trends (compare first half to second half)
+    if (allReactions.length >= 4) {
+      const midPoint = Math.floor(allReactions.length / 2);
+      const firstHalf = allReactions.slice(0, midPoint);
+      const secondHalf = allReactions.slice(midPoint);
+      
+      const firstAvg = firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length;
+      const secondAvg = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
+      
+      // Lower reaction time is better
+      const improvement = ((firstAvg - secondAvg) / firstAvg) * 100;
+      setReactionTrend(Math.round(improvement));
+    }
+    
+    if (allAlertness.length >= 4) {
+      const midPoint = Math.floor(allAlertness.length / 2);
+      const firstHalf = allAlertness.slice(0, midPoint);
+      const secondHalf = allAlertness.slice(midPoint);
+      
+      const firstAvg = firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length;
+      const secondAvg = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
+      
+      // Higher alertness is better
+      const improvement = ((secondAvg - firstAvg) / firstAvg) * 100;
+      setAlertnessTrend(Math.round(improvement));
+    }
+    
+    // Calculate streak
+    let checkDate = new Date();
+    while (true) {
+      const dateStr = checkDate.toISOString().split('T')[0];
+      const metricsKey = `demo_metrics_${dateStr}`;
+      const planKey = `plan_completed_${dateStr}`;
+      
+      const hasMetrics = localStorage.getItem(metricsKey);
+      const hasPlan = localStorage.getItem(planKey);
+      
+      if (hasMetrics || hasPlan) {
+        currentStreak++;
+        checkDate.setDate(checkDate.getDate() - 1);
+      } else if (checkDate.toDateString() === today.toDateString()) {
+        checkDate.setDate(checkDate.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+    
+    setActualStreak(currentStreak);
+  };
 
   return (
     <div style={{minHeight: '100vh', backgroundColor: '#f9fafb'}}>
@@ -133,9 +243,18 @@ export default function TrendsPage() {
               </div>
               <TrendingUp style={{width: '20px', height: '20px', color: '#16a34a'}} />
             </div>
-            <p style={{fontSize: '28px', fontWeight: '700', color: '#111827', marginBottom: '4px'}}>235ms</p>
+            <p style={{fontSize: '28px', fontWeight: '700', color: '#111827', marginBottom: '4px'}}>
+              {avgReaction ? `${avgReaction}ms` : '—'}
+            </p>
             <p style={{fontSize: '14px', color: '#6b7280', fontWeight: '500'}}>Avg Reaction</p>
-            <p style={{fontSize: '14px', color: '#16a34a', marginTop: '8px', fontWeight: '600'}}>↓ 8% improvement</p>
+            <p style={{
+              fontSize: '14px', 
+              color: reactionTrend > 0 ? '#16a34a' : reactionTrend < 0 ? '#dc2626' : '#6b7280', 
+              marginTop: '8px', 
+              fontWeight: '600'
+            }}>
+              {reactionTrend !== 0 ? `${reactionTrend > 0 ? '↓' : '↑'} ${Math.abs(reactionTrend)}% ${reactionTrend > 0 ? 'improvement' : 'slower'}` : 'No trend data'}
+            </p>
           </div>
 
           <div style={{
@@ -187,9 +306,18 @@ export default function TrendsPage() {
               </div>
               <TrendingUp style={{width: '20px', height: '20px', color: '#16a34a'}} />
             </div>
-            <p style={{fontSize: '28px', fontWeight: '700', color: '#111827', marginBottom: '4px'}}>7.8</p>
+            <p style={{fontSize: '28px', fontWeight: '700', color: '#111827', marginBottom: '4px'}}>
+              {avgAlertness !== null ? avgAlertness : '—'}
+            </p>
             <p style={{fontSize: '14px', color: '#6b7280', fontWeight: '500'}}>Avg Alertness</p>
-            <p style={{fontSize: '14px', color: '#16a34a', marginTop: '8px', fontWeight: '600'}}>↑ 12% increase</p>
+            <p style={{
+              fontSize: '14px', 
+              color: alertnessTrend > 0 ? '#16a34a' : alertnessTrend < 0 ? '#dc2626' : '#6b7280', 
+              marginTop: '8px', 
+              fontWeight: '600'
+            }}>
+              {alertnessTrend !== 0 ? `${alertnessTrend > 0 ? '↑' : '↓'} ${Math.abs(alertnessTrend)}% ${alertnessTrend > 0 ? 'increase' : 'decrease'}` : 'No trend data'}
+            </p>
           </div>
         </div>
 
@@ -298,7 +426,9 @@ export default function TrendsPage() {
                 </div>
                 <div>
                   <p style={{fontSize: '16px', fontWeight: '600', color: '#111827', margin: '0'}}>Consistency Streak</p>
-                  <p style={{fontSize: '14px', color: '#6b7280', marginTop: '4px', fontWeight: '500', margin: '4px 0 0 0'}}>7 days of morning assessments completed</p>
+                  <p style={{fontSize: '14px', color: '#6b7280', marginTop: '4px', fontWeight: '500', margin: '4px 0 0 0'}}>
+                    {actualStreak} {actualStreak === 1 ? 'day' : 'days'} of morning assessments completed
+                  </p>
                 </div>
               </div>
               
