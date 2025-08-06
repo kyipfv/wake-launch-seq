@@ -145,8 +145,20 @@ export default function Home() {
   };
 
   const loadAQI = () => {
-    // Simulate AQI data (in production, would use real API)
-    const aqi = Math.floor(Math.random() * 200);
+    const today = new Date().toISOString().split('T')[0];
+    const aqiKey = `aqi_${today}`;
+    
+    // Check if we already have AQI for today
+    const savedAqi = localStorage.getItem(aqiKey);
+    if (savedAqi) {
+      setTodayAqi(JSON.parse(savedAqi));
+      return;
+    }
+    
+    // Generate new AQI for today and save it
+    // Use date as seed for consistent generation per day
+    const seed = today.replace(/-/g, '');
+    const aqi = Math.floor((parseInt(seed.slice(-3)) / 999) * 200);
     let category = '';
     
     if (aqi <= 50) {
@@ -161,7 +173,9 @@ export default function Home() {
       category = 'Very Unhealthy';
     }
     
-    setTodayAqi({ aqi, category });
+    const aqiData = { aqi, category };
+    localStorage.setItem(aqiKey, JSON.stringify(aqiData));
+    setTodayAqi(aqiData);
   };
 
   const allCards = [

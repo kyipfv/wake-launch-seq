@@ -60,9 +60,19 @@ export default function PlanCard() {
     }
   };
 
-  const getAQIData = (location: Location) => {
-    // Simulate AQI data (in production, would use real API)
-    const aqi = Math.floor(Math.random() * 200);
+  const getAQIData = (location: Location, dateStr: string) => {
+    const aqiKey = `aqi_${dateStr}`;
+    
+    // Check if we already have AQI for this date
+    const savedAqi = localStorage.getItem(aqiKey);
+    if (savedAqi) {
+      return JSON.parse(savedAqi);
+    }
+    
+    // Generate new AQI for this date and save it
+    // Use date as seed for consistent generation per day
+    const seed = dateStr.replace(/-/g, '');
+    const aqi = Math.floor((parseInt(seed.slice(-3)) / 999) * 200);
     let category = '';
     
     if (aqi <= 50) {
@@ -77,7 +87,10 @@ export default function PlanCard() {
       category = 'Very Unhealthy';
     }
     
-    return { aqi, category };
+    const aqiData = { aqi, category };
+    localStorage.setItem(aqiKey, JSON.stringify(aqiData));
+    
+    return aqiData;
   };
 
   const getSmartRecommendation = (sunriseTime: Date, aqi: number) => {
@@ -169,8 +182,9 @@ export default function PlanCard() {
         }
       }
 
-      // Get AQI data for the location
-      const aqiData = getAQIData(location);
+      // Get AQI data for today only (both plans use the same AQI for today)
+      const todayAqiData = getAQIData(location, todayDate);
+      const tomorrowAqiData = getAQIData(location, tomorrowDate);
 
       // Generate today's plan
       const todayCompletedKey = `plan_completed_${todayDate}`;
@@ -178,7 +192,7 @@ export default function PlanCard() {
       
       const todaySunriseTime = getSunrise(today, location);
       console.log('Today sunrise:', todayDate, todaySunriseTime.toLocaleTimeString());
-      const { recommendation: todayRecommendation, reason: todayReason, weather: todayWeather } = getSmartRecommendation(todaySunriseTime, aqiData.aqi);
+      const { recommendation: todayRecommendation, reason: todayReason, weather: todayWeather } = getSmartRecommendation(todaySunriseTime, todayAqiData.aqi);
       
       const todayAdvice = todayRecommendation === 'walk' 
         ? '15 minute morning walk' 
@@ -193,8 +207,8 @@ export default function PlanCard() {
         recommendation: todayRecommendation,
         completed: todayCompletedData ? JSON.parse(todayCompletedData).completed : false,
         completedAt: todayCompletedData ? JSON.parse(todayCompletedData).completedAt : undefined,
-        aqi: aqiData.aqi,
-        aqiCategory: aqiData.category
+        aqi: todayAqiData.aqi,
+        aqiCategory: todayAqiData.category
       };
 
       // Generate tomorrow's plan
@@ -203,7 +217,7 @@ export default function PlanCard() {
       
       const tomorrowSunriseTime = getSunrise(tomorrow, location);
       console.log('Tomorrow sunrise:', tomorrowDate, tomorrowSunriseTime.toLocaleTimeString());
-      const { recommendation: tomorrowRecommendation, reason: tomorrowReason, weather: tomorrowWeather } = getSmartRecommendation(tomorrowSunriseTime, aqiData.aqi);
+      const { recommendation: tomorrowRecommendation, reason: tomorrowReason, weather: tomorrowWeather } = getSmartRecommendation(tomorrowSunriseTime, tomorrowAqiData.aqi);
       
       const tomorrowAdvice = tomorrowRecommendation === 'walk' 
         ? '15 minute morning walk' 
@@ -218,8 +232,8 @@ export default function PlanCard() {
         recommendation: tomorrowRecommendation,
         completed: tomorrowCompletedData ? JSON.parse(tomorrowCompletedData).completed : false,
         completedAt: tomorrowCompletedData ? JSON.parse(tomorrowCompletedData).completedAt : undefined,
-        aqi: aqiData.aqi,
-        aqiCategory: aqiData.category
+        aqi: tomorrowAqiData.aqi,
+        aqiCategory: tomorrowAqiData.category
       };
 
       setTodayPlan(todaysPlan);
