@@ -244,28 +244,125 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Dashboard Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-              <p className="text-gray-600 mt-1">
-                {new Date().toLocaleDateString('en-US', { 
-                  weekday: 'long', 
-                  month: 'long', 
-                  day: 'numeric',
-                  year: 'numeric'
-                })}
-              </p>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="text-right">
-                <p className="text-sm text-gray-500">
-                  Welcome back, <span className="font-semibold text-gray-900">{userName || 'User'}</span>
+      <div style={{
+        backgroundColor: 'white',
+        borderBottom: '1px solid #e5e7eb',
+        padding: '24px',
+        background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)'
+      }}>
+        <div style={{maxWidth: '1200px', margin: '0 auto'}}>
+          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+            <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+              {/* iOS-style App Logo */}
+              <div style={{
+                width: '48px',
+                height: '48px',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                borderRadius: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 20px 0 rgba(102, 126, 234, 0.3)',
+                position: 'relative',
+                overflow: 'hidden'
+              }}>
+                {/* Inner glow effect */}
+                <div style={{
+                  position: 'absolute',
+                  top: '6px',
+                  left: '6px',
+                  right: '6px',
+                  height: '12px',
+                  background: 'linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 100%)',
+                  borderRadius: '6px 6px 12px 12px'
+                }}></div>
+                <span style={{
+                  fontSize: '20px',
+                  color: 'white',
+                  fontWeight: '700',
+                  textShadow: '0 1px 2px rgba(0,0,0,0.2)',
+                  position: 'relative',
+                  zIndex: '1'
+                }}>
+                  🚀
+                </span>
+              </div>
+              <div>
+                <div style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px'}}>
+                  <h1 style={{
+                    fontSize: '24px', 
+                    fontWeight: '700', 
+                    color: '#111827',
+                    margin: '0',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}>
+                    DayLaunchOS
+                  </h1>
+                  <div style={{
+                    padding: '2px 6px',
+                    backgroundColor: '#dbeafe',
+                    color: '#1d4ed8',
+                    borderRadius: '4px',
+                    fontSize: '10px',
+                    fontWeight: '600'
+                  }}>
+                    v1.0
+                  </div>
+                </div>
+                <p style={{
+                  fontSize: '14px',
+                  color: '#6b7280',
+                  margin: '0',
+                  fontWeight: '500'
+                }}>
+                  {new Date().toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    month: 'long', 
+                    day: 'numeric',
+                    year: 'numeric'
+                  })}
                 </p>
               </div>
-              <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-semibold text-sm">
+            </div>
+            <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+              <div style={{textAlign: 'right'}}>
+                <p style={{
+                  fontSize: '14px',
+                  color: '#6b7280',
+                  margin: '0 0 2px 0',
+                  fontWeight: '500'
+                }}>
+                  Welcome back,
+                </p>
+                <p style={{
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  color: '#111827',
+                  margin: '0'
+                }}>
+                  {userName || 'User'}
+                </p>
+              </div>
+              <div style={{
+                width: '44px',
+                height: '44px',
+                background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                borderRadius: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 14px 0 rgba(59, 130, 246, 0.25)',
+                border: '2px solid rgba(255, 255, 255, 0.8)'
+              }}>
+                <span style={{
+                  color: 'white',
+                  fontWeight: '700',
+                  fontSize: '16px',
+                  textShadow: '0 1px 2px rgba(0,0,0,0.2)'
+                }}>
                   {userName === 'Demo' ? 'D' : userName ? userName[0].toUpperCase() : 'U'}
                 </span>
               </div>

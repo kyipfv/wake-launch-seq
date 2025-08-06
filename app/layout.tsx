@@ -3,13 +3,13 @@ import './globals.css';
 import { AuthProvider } from '@/components/AuthProvider';
 
 export const metadata: Metadata = {
-  title: 'Wake Launch Sequence',
+  title: 'DayLaunchOS',
   description: 'Optimize your wake-up performance with bio-hacker precision',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Wake Launch Sequence',
+    title: 'DayLaunchOS',
   },
 };
 
