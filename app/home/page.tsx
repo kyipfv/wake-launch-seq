@@ -558,6 +558,53 @@ export default function Home() {
                   <span style={{fontSize: '12px'}}>→</span>
                 </div>
               </button>
+
+              <button
+                onClick={() => router.push('/bedtime' as any)}
+                style={{
+                  backgroundColor: 'white',
+                  borderRadius: '12px',
+                  border: '1px solid #e5e7eb',
+                  padding: '20px',
+                  textAlign: 'left',
+                  boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+                  transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                  cursor: 'pointer',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)';
+                }}
+              >
+                <div style={{display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px'}}>
+                  <div style={{
+                    width: '52px',
+                    height: '52px',
+                    background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                    borderRadius: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 14px 0 rgba(99, 102, 241, 0.25)'
+                  }}>
+                    <span style={{color: 'white', fontSize: '24px'}}>🌙</span>
+                  </div>
+                  <div>
+                    <h3 style={{fontWeight: '600', color: '#111827', margin: '0 0 4px 0', fontSize: '16px'}}>Sleep Calculator</h3>
+                    <p style={{fontSize: '14px', color: '#6b7280', margin: '0'}}>Find optimal bedtime</p>
+                  </div>
+                </div>
+                <div style={{fontSize: '14px', color: '#6366f1', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '4px'}}>
+                  Calculate
+                  <span style={{fontSize: '12px'}}>→</span>
+                </div>
+              </button>
             </div>
           </div>
 
