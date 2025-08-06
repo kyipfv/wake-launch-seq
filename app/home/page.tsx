@@ -34,11 +34,14 @@ export default function Home() {
 
   const loadUserData = async () => {
     if (!user) return;
-    // Use email directly from auth session instead of querying database
-    if (user.email) {
+    // Handle demo user
+    if (user.id === 'demo-user') {
+      setUserName('Demo');
+    } else if (user.email) {
+      // Use email for real users
       setUserName(user.email.split('@')[0]);
     } else {
-      setUserName('Demo');
+      setUserName('User');
     }
   };
 
@@ -168,7 +171,7 @@ export default function Home() {
               </div>
               <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
                 <span className="text-white font-semibold text-sm">
-                  {userName ? userName[0].toUpperCase() : 'U'}
+                  {userName === 'Demo' ? 'D' : userName ? userName[0].toUpperCase() : 'U'}
                 </span>
               </div>
             </div>
