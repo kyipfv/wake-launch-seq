@@ -1,12 +1,46 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, MapPin, Sun, Clock } from 'lucide-react';
 import PlanCard from '@/components/PlanCard';
 import BottomNav from '@/components/BottomNav';
+import { useAuth } from '@/components/AuthProvider';
+import { supabase } from '@/lib/supabase';
 
 export default function SunrisePlanPage() {
   const router = useRouter();
+  const { user } = useAuth();
+  const [userLocation, setUserLocation] = useState<string>('Not set');
+
+  useEffect(() => {
+    loadUserLocation();
+  }, [user]);
+
+  const loadUserLocation = async () => {
+    if (!user) return;
+
+    // Handle demo user
+    if (user.id === 'demo-user') {
+      const savedCity = localStorage.getItem('demo_user_city');
+      if (savedCity) {
+        const city = JSON.parse(savedCity);
+        setUserLocation(`${city.name}, ${city.country}`);
+      }
+      return;
+    }
+
+    // Handle real users
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('city_name')
+      .eq('id', user.id)
+      .single();
+    
+    if (profile?.city_name) {
+      setUserLocation(profile.city_name);
+    }
+  };
 
   return (
     <div style={{minHeight: '100vh', backgroundColor: '#f9fafb'}}>
@@ -250,8 +284,12 @@ export default function SunrisePlanPage() {
               <MapPin style={{width: '32px', height: '32px', color: 'white'}} />
             </div>
             <div style={{flex: '1'}}>
-              <p style={{fontSize: '16px', fontWeight: '700', color: '#111827', margin: '0'}}>Set your location</p>
-              <p style={{fontSize: '14px', color: '#6b7280', fontWeight: '500', marginTop: '4px', margin: '4px 0 0 0'}}>Get accurate sunrise times for your city</p>
+              <p style={{fontSize: '16px', fontWeight: '700', color: '#111827', margin: '0'}}>
+                {userLocation === 'Not set' ? 'Set your location' : 'Your location'}
+              </p>
+              <p style={{fontSize: '14px', color: '#6b7280', fontWeight: '500', marginTop: '4px', margin: '4px 0 0 0'}}>
+                {userLocation === 'Not set' ? 'Get accurate sunrise times for your city' : userLocation}
+              </p>
             </div>
             <button 
               onClick={() => router.push('/settings')}
@@ -273,7 +311,7 @@ export default function SunrisePlanPage() {
                 e.currentTarget.style.backgroundColor = '#8b5cf6';
               }}
             >
-              Settings
+              {userLocation === 'Not set' ? 'Settings' : 'Change'}
             </button>
           </div>
         </div>
