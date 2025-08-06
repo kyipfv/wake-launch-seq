@@ -9,6 +9,7 @@ import BottomNav from '@/components/BottomNav';
 export default function ReactionTestPage() {
   const router = useRouter();
   const [testComplete, setTestComplete] = useState(false);
+  const [testResult, setTestResult] = useState<any>(null);
 
   return (
     <div style={{minHeight: '100vh', backgroundColor: '#f9fafb'}}>
@@ -148,7 +149,10 @@ export default function ReactionTestPage() {
           border: '1px solid #f3f4f6',
           overflow: 'hidden'
         }}>
-          <ReactionTest onComplete={() => setTestComplete(true)} />
+          <ReactionTest onComplete={(result) => {
+            setTestComplete(true);
+            setTestResult(result);
+          }} />
         </div>
 
         {/* Results History */}
@@ -230,7 +234,9 @@ export default function ReactionTestPage() {
                     </div>
                   </div>
                   <div style={{textAlign: 'right'}}>
-                    <p style={{fontSize: '24px', fontWeight: '700', color: '#111827', margin: '0'}}>247ms</p>
+                    <p style={{fontSize: '24px', fontWeight: '700', color: '#111827', margin: '0'}}>
+                      {testResult?.median || 0}ms
+                    </p>
                     <p style={{
                       fontSize: '14px',
                       color: '#16a34a',
@@ -241,7 +247,7 @@ export default function ReactionTestPage() {
                       margin: '4px 0 0 0',
                       justifyContent: 'flex-end'
                     }}>
-                      <span>↓</span> 12ms improvement
+                      <span>✓</span> Test completed
                     </p>
                   </div>
                 </div>
