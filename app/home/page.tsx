@@ -166,8 +166,9 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-4">
               <div className="text-right">
-                <p className="text-sm text-gray-500">Welcome back,</p>
-                <p className="font-semibold text-gray-900">{userName || 'User'}</p>
+                <p className="text-sm text-gray-500">
+                  Welcome back, <span className="font-semibold text-gray-900">{userName || 'User'}</span>
+                </p>
               </div>
               <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
                 <span className="text-white font-semibold text-sm">
