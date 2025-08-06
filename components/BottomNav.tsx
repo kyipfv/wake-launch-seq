@@ -23,7 +23,7 @@ export default function BottomNav() {
   return (
     <>
       {/* Safe area spacer */}
-      <div className="h-20"></div>
+      <div style={{height: '80px'}}></div>
       
       {/* Bottom Navigation */}
       <div style={{
@@ -34,7 +34,8 @@ export default function BottomNav() {
         backgroundColor: 'rgba(255, 255, 255, 0.95)',
         backdropFilter: 'blur(20px)',
         borderTop: '1px solid rgba(229, 231, 235, 0.8)',
-        boxShadow: '0 -4px 16px 0 rgba(0, 0, 0, 0.1)'
+        boxShadow: '0 -4px 16px 0 rgba(0, 0, 0, 0.1)',
+        zIndex: '50'
       }}>
         <div style={{
           display: 'flex',
