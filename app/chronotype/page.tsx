@@ -20,6 +20,15 @@ export default function ChronotypePage() {
 
   const loadChronotype = async () => {
     if (!user) return;
+    
+    // Handle demo user
+    if (user.id === 'demo-user') {
+      // Set a default chronotype for demo user
+      setChronoWindow('06:30-07:30');
+      return;
+    }
+    
+    // Handle real users
     const { data } = await supabase
       .from('profiles')
       .select('chrono_window')
@@ -62,83 +71,228 @@ export default function ChronotypePage() {
   const info = chronoWindow ? getChronotypeInfo(chronoWindow) : null;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{minHeight: '100vh', backgroundColor: '#f9fafb'}}>
       {/* Header */}
-      <div className="bg-white px-6 pt-16 pb-8">
-        <div className="flex items-center gap-4 mb-6">
-          <button 
-            onClick={() => router.push('/profile')}
-            className="p-3 -ml-3 hover:bg-gray-100 rounded-full transition-all duration-200 hover:scale-105"
-          >
-            <ArrowLeft className="w-6 h-6 text-gray-900" />
-          </button>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Chronotype</h1>
-            <p className="text-gray-500 text-lg font-medium mt-1">Your biological sleep-wake preference</p>
+      <div style={{
+        backgroundColor: 'white',
+        borderBottom: '1px solid #e5e7eb',
+        padding: '24px 24px 32px 24px',
+        paddingTop: '64px'
+      }}>
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto'
+        }}>
+          <div style={{display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px'}}>
+            <button 
+              onClick={() => router.push('/profile')}
+              style={{
+                padding: '12px',
+                marginLeft: '-12px',
+                backgroundColor: 'transparent',
+                border: 'none',
+                borderRadius: '50%',
+                transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#f3f4f6';
+                e.currentTarget.style.transform = 'scale(1.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
+              <ArrowLeft style={{width: '24px', height: '24px', color: '#111827'}} />
+            </button>
+            <div>
+              <h1 style={{fontSize: '28px', fontWeight: '700', color: '#111827', margin: '0'}}>Chronotype</h1>
+              <p style={{color: '#6b7280', fontSize: '16px', fontWeight: '500', marginTop: '4px', margin: '4px 0 0 0'}}>Your biological sleep-wake preference</p>
+            </div>
           </div>
-        </div>
-        
-        {/* Icon Display */}
-        <div className="flex items-center justify-center mb-2">
-          <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-3xl flex items-center justify-center shadow-lg">
-            <span className="text-4xl text-white">🌙</span>
+          
+          {/* Icon Display */}
+          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px'}}>
+            <div style={{
+              width: '80px',
+              height: '80px',
+              background: 'linear-gradient(135deg, #818cf8 0%, #6366f1 100%)',
+              borderRadius: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 10px 25px -3px rgba(99, 102, 241, 0.3), 0 4px 6px -2px rgba(99, 102, 241, 0.05)'
+            }}>
+              <span style={{fontSize: '40px', color: 'white'}}>🌙</span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="px-6 pb-32">
+      <div style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '32px 24px 128px 24px'
+      }}>
         {info && (
           <>
             {/* Chronotype Card */}
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 mb-6 relative overflow-hidden">
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '16px',
+              padding: '32px',
+              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+              border: '1px solid #f3f4f6',
+              marginBottom: '24px',
+              position: 'relative',
+              overflow: 'hidden',
+              background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)'
+            }}>
               {/* Background gradient */}
-              <div className={`absolute top-0 right-0 w-32 h-32 ${info.color.replace('100', '500')} opacity-5 rounded-full -translate-y-8 translate-x-8`}></div>
+              <div style={{
+                position: 'absolute',
+                top: '0',
+                right: '0',
+                width: '96px',
+                height: '96px',
+                backgroundColor: info.type === 'Lark' ? '#f59e0b' : info.type === 'Third Bird' ? '#eab308' : '#6366f1',
+                opacity: '0.03',
+                borderRadius: '50%',
+                transform: 'translate(16px, -16px)'
+              }}></div>
               
-              <div className="text-center relative z-10">
-                <div className={`w-28 h-28 bg-gradient-to-br ${info.color.includes('orange') ? 'from-orange-500 to-yellow-500' : info.color.includes('yellow') ? 'from-yellow-500 to-orange-500' : 'from-indigo-500 to-purple-500'} rounded-3xl mx-auto mb-6 flex items-center justify-center shadow-lg`}>
-                  <span className="text-6xl text-white">{info.icon}</span>
+              <div style={{textAlign: 'center', position: 'relative', zIndex: '10'}}>
+                <div style={{
+                  width: '112px',
+                  height: '112px',
+                  background: info.type === 'Lark' 
+                    ? 'linear-gradient(135deg, #f59e0b 0%, #eab308 100%)'
+                    : info.type === 'Third Bird'
+                    ? 'linear-gradient(135deg, #eab308 0%, #f59e0b 100%)'
+                    : 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                  borderRadius: '24px',
+                  margin: '0 auto 24px auto',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 10px 25px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+                }}>
+                  <span style={{fontSize: '56px', color: 'white'}}>{info.icon}</span>
                 </div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-3">{info.type}</h2>
-                <p className="text-base text-gray-600 mb-6 font-medium">{info.description}</p>
-                <div className="bg-gray-50 rounded-2xl p-6">
-                  <p className="text-sm text-gray-500 mb-2 font-medium">Optimal Wake Window</p>
-                  <p className="text-2xl font-bold text-gray-900">{chronoWindow}</p>
+                <h2 style={{fontSize: '28px', fontWeight: '700', color: '#111827', marginBottom: '12px'}}>{info.type}</h2>
+                <p style={{fontSize: '16px', color: '#6b7280', marginBottom: '24px', fontWeight: '500'}}>{info.description}</p>
+                <div style={{
+                  backgroundColor: '#f9fafb',
+                  borderRadius: '16px',
+                  padding: '24px',
+                  border: '1px solid #f3f4f6'
+                }}>
+                  <p style={{fontSize: '14px', color: '#6b7280', marginBottom: '8px', fontWeight: '500'}}>Optimal Wake Window</p>
+                  <p style={{fontSize: '24px', fontWeight: '700', color: '#111827'}}>{chronoWindow}</p>
                 </div>
               </div>
             </div>
 
             {/* Characteristics */}
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 mb-6 relative overflow-hidden">
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '16px',
+              padding: '32px',
+              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+              border: '1px solid #f3f4f6',
+              marginBottom: '24px',
+              position: 'relative',
+              overflow: 'hidden',
+              background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)'
+            }}>
               {/* Background gradient */}
-              <div className="absolute top-0 right-0 w-20 h-20 bg-blue-500 opacity-5 rounded-full -translate-y-4 translate-x-4"></div>
+              <div style={{
+                position: 'absolute',
+                top: '0',
+                right: '0',
+                width: '80px',
+                height: '80px',
+                backgroundColor: '#3b82f6',
+                opacity: '0.03',
+                borderRadius: '50%',
+                transform: 'translate(16px, -16px)'
+              }}></div>
               
-              <div className="relative z-10">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold text-gray-900">Your Characteristics</h3>
-                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                    <span className="text-lg">📊</span>
+              <div style={{position: 'relative', zIndex: '10'}}>
+                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px'}}>
+                  <h3 style={{fontSize: '20px', fontWeight: '700', color: '#111827'}}>Your Characteristics</h3>
+                  <div style={{
+                    width: '48px',
+                    height: '48px',
+                    background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <span style={{fontSize: '18px'}}>📊</span>
                   </div>
                 </div>
                 
-                <div className="space-y-5">
-                  <div className="flex items-start gap-4 p-5 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl border border-blue-100">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
-                      <span className="text-lg text-white">⏰</span>
+                <div style={{display: 'flex', flexDirection: 'column', gap: '20px'}}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '16px',
+                    padding: '20px',
+                    background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
+                    borderRadius: '16px',
+                    border: '1px solid #bfdbfe'
+                  }}>
+                    <div style={{
+                      width: '48px',
+                      height: '48px',
+                      background: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
+                      borderRadius: '12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: '0',
+                      boxShadow: '0 4px 14px 0 rgba(59, 130, 246, 0.25)'
+                    }}>
+                      <span style={{fontSize: '18px', color: 'white'}}>⏰</span>
                     </div>
                     <div>
-                      <p className="text-base font-semibold text-gray-900">Wake Time</p>
-                      <p className="text-sm text-gray-600 mt-1 font-medium">Naturally wakes {chronoWindow}</p>
+                      <p style={{fontSize: '16px', fontWeight: '600', color: '#111827', marginBottom: '4px'}}>Wake Time</p>
+                      <p style={{fontSize: '14px', color: '#6b7280', fontWeight: '500'}}>Naturally wakes {chronoWindow}</p>
                     </div>
                   </div>
                   
-                  <div className="flex items-start gap-4 p-5 bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl border border-green-100">
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
-                      <span className="text-lg text-white">⚡</span>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '16px',
+                    padding: '20px',
+                    background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
+                    borderRadius: '16px',
+                    border: '1px solid #bbf7d0'
+                  }}>
+                    <div style={{
+                      width: '48px',
+                      height: '48px',
+                      background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                      borderRadius: '12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: '0',
+                      boxShadow: '0 4px 14px 0 rgba(16, 185, 129, 0.25)'
+                    }}>
+                      <span style={{fontSize: '18px', color: 'white'}}>⚡</span>
                     </div>
                     <div>
-                      <p className="text-base font-semibold text-gray-900">Peak Performance</p>
-                      <p className="text-sm text-gray-600 mt-1 font-medium">
+                      <p style={{fontSize: '16px', fontWeight: '600', color: '#111827', marginBottom: '4px'}}>Peak Performance</p>
+                      <p style={{fontSize: '14px', color: '#6b7280', fontWeight: '500'}}>
                         {info.type === 'Lark' ? '2-4 hours after waking' : 
                          info.type === 'Owl' ? 'Late afternoon to evening' : 
                          'Mid-morning to early afternoon'}
@@ -146,13 +300,31 @@ export default function ChronotypePage() {
                     </div>
                   </div>
                   
-                  <div className="flex items-start gap-4 p-5 bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl border border-purple-100">
-                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
-                      <span className="text-lg text-white">💤</span>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '16px',
+                    padding: '20px',
+                    background: 'linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%)',
+                    borderRadius: '16px',
+                    border: '1px solid #e9d5ff'
+                  }}>
+                    <div style={{
+                      width: '48px',
+                      height: '48px',
+                      background: 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)',
+                      borderRadius: '12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: '0',
+                      boxShadow: '0 4px 14px 0 rgba(139, 92, 246, 0.25)'
+                    }}>
+                      <span style={{fontSize: '18px', color: 'white'}}>💤</span>
                     </div>
                     <div>
-                      <p className="text-base font-semibold text-gray-900">Ideal Bedtime</p>
-                      <p className="text-sm text-gray-600 mt-1 font-medium">
+                      <p style={{fontSize: '16px', fontWeight: '600', color: '#111827', marginBottom: '4px'}}>Ideal Bedtime</p>
+                      <p style={{fontSize: '14px', color: '#6b7280', fontWeight: '500'}}>
                         {info.type === 'Lark' ? '9:00-10:00 PM' : 
                          info.type === 'Owl' ? '12:00-1:00 AM' : 
                          '10:30-11:30 PM'}
@@ -164,34 +336,61 @@ export default function ChronotypePage() {
             </div>
 
             {/* Optimization Tips */}
-            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 relative overflow-hidden">
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '16px',
+              padding: '32px',
+              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+              border: '1px solid #f3f4f6',
+              position: 'relative',
+              overflow: 'hidden',
+              background: 'linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)'
+            }}>
               {/* Background gradient */}
-              <div className="absolute top-0 right-0 w-20 h-20 bg-green-500 opacity-5 rounded-full -translate-y-4 translate-x-4"></div>
+              <div style={{
+                position: 'absolute',
+                top: '0',
+                right: '0',
+                width: '80px',
+                height: '80px',
+                backgroundColor: '#10b981',
+                opacity: '0.03',
+                borderRadius: '50%',
+                transform: 'translate(16px, -16px)'
+              }}></div>
               
-              <div className="relative z-10">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold text-gray-900">Optimization Tips</h3>
-                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                    <span className="text-lg">🎯</span>
+              <div style={{position: 'relative', zIndex: '10'}}>
+                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px'}}>
+                  <h3 style={{fontSize: '20px', fontWeight: '700', color: '#111827'}}>Optimization Tips</h3>
+                  <div style={{
+                    width: '48px',
+                    height: '48px',
+                    background: 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <span style={{fontSize: '18px'}}>🎯</span>
                   </div>
                 </div>
                 
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl">
-                    <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                    <p className="text-base text-gray-700 font-medium">Schedule important tasks during your peak hours</p>
+                <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+                  <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', backgroundColor: '#f9fafb', borderRadius: '16px'}}>
+                    <div style={{width: '8px', height: '8px', backgroundColor: '#10b981', borderRadius: '50%', flexShrink: '0'}}></div>
+                    <p style={{fontSize: '16px', color: '#374151', fontWeight: '500'}}>Schedule important tasks during your peak hours</p>
                   </div>
-                  <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl">
-                    <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                    <p className="text-base text-gray-700 font-medium">Maintain consistent sleep-wake times</p>
+                  <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', backgroundColor: '#f9fafb', borderRadius: '16px'}}>
+                    <div style={{width: '8px', height: '8px', backgroundColor: '#10b981', borderRadius: '50%', flexShrink: '0'}}></div>
+                    <p style={{fontSize: '16px', color: '#374151', fontWeight: '500'}}>Maintain consistent sleep-wake times</p>
                   </div>
-                  <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl">
-                    <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                    <p className="text-base text-gray-700 font-medium">Get morning light exposure within your wake window</p>
+                  <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', backgroundColor: '#f9fafb', borderRadius: '16px'}}>
+                    <div style={{width: '8px', height: '8px', backgroundColor: '#10b981', borderRadius: '50%', flexShrink: '0'}}></div>
+                    <p style={{fontSize: '16px', color: '#374151', fontWeight: '500'}}>Get morning light exposure within your wake window</p>
                   </div>
-                  <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl">
-                    <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                    <p className="text-base text-gray-700 font-medium">Avoid screens 2 hours before your ideal bedtime</p>
+                  <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', backgroundColor: '#f9fafb', borderRadius: '16px'}}>
+                    <div style={{width: '8px', height: '8px', backgroundColor: '#10b981', borderRadius: '50%', flexShrink: '0'}}></div>
+                    <p style={{fontSize: '16px', color: '#374151', fontWeight: '500'}}>Avoid screens 2 hours before your ideal bedtime</p>
                   </div>
                 </div>
               </div>
@@ -202,15 +401,45 @@ export default function ChronotypePage() {
         {/* Retake Assessment */}
         <button
           onClick={() => router.push('/onboarding')}
-          className="mt-6 w-full bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:bg-gray-50 hover:scale-105 transition-all duration-200"
+          style={{
+            marginTop: '24px',
+            width: '100%',
+            backgroundColor: 'white',
+            borderRadius: '16px',
+            padding: '24px',
+            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+            border: '1px solid #f3f4f6',
+            transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+            cursor: 'pointer',
+            position: 'relative',
+            overflow: 'hidden',
+            background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)';
+          }}
         >
-          <div className="flex items-center justify-center gap-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg">
-              <span className="text-2xl text-white">🔄</span>
+          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px'}}>
+            <div style={{
+              width: '64px',
+              height: '64px',
+              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+              borderRadius: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 14px 0 rgba(99, 102, 241, 0.25)'
+            }}>
+              <span style={{fontSize: '24px', color: 'white'}}>🔄</span>
             </div>
-            <div className="text-left">
-              <span className="text-lg font-bold text-indigo-600">Retake Assessment</span>
-              <p className="text-sm text-gray-500 font-medium">Update your chronotype profile</p>
+            <div style={{textAlign: 'left'}}>
+              <span style={{fontSize: '18px', fontWeight: '700', color: '#6366f1'}}>Retake Assessment</span>
+              <p style={{fontSize: '14px', color: '#6b7280', fontWeight: '500', margin: '4px 0 0 0'}}>Update your chronotype profile</p>
             </div>
           </div>
         </button>
