@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/components/AuthProvider';
 import { getSunrise, getWakeAdvice, getCurrentLocation, type Location } from '@/lib/getSunrise';
+import { fetchRealAQI, type AQIData } from '@/lib/aqiAPI';
 import { Sun, Cloud, CloudRain, Loader } from 'lucide-react';
 
 interface Plan {
@@ -60,37 +61,8 @@ export default function PlanCard() {
     }
   };
 
-  const getAQIData = (location: Location, dateStr: string) => {
-    const aqiKey = `aqi_${dateStr}`;
-    
-    // Check if we already have AQI for this date
-    const savedAqi = localStorage.getItem(aqiKey);
-    if (savedAqi) {
-      return JSON.parse(savedAqi);
-    }
-    
-    // Generate new AQI for this date and save it
-    // Use date as seed for consistent generation per day
-    const seed = dateStr.replace(/-/g, '');
-    const aqi = Math.floor((parseInt(seed.slice(-3)) / 999) * 200);
-    let category = '';
-    
-    if (aqi <= 50) {
-      category = 'Good';
-    } else if (aqi <= 100) {
-      category = 'Moderate';
-    } else if (aqi <= 150) {
-      category = 'Unhealthy for Sensitive Groups';
-    } else if (aqi <= 200) {
-      category = 'Unhealthy';
-    } else {
-      category = 'Very Unhealthy';
-    }
-    
-    const aqiData = { aqi, category };
-    localStorage.setItem(aqiKey, JSON.stringify(aqiData));
-    
-    return aqiData;
+  const getAQIData = async (location: Location, dateStr: string): Promise<AQIData> => {
+    return await fetchRealAQI(location, dateStr);
   };
 
   const getSmartRecommendation = (sunriseTime: Date, aqi: number) => {
@@ -182,9 +154,9 @@ export default function PlanCard() {
         }
       }
 
-      // Get AQI data for today only (both plans use the same AQI for today)
-      const todayAqiData = getAQIData(location, todayDate);
-      const tomorrowAqiData = getAQIData(location, tomorrowDate);
+      // Get AQI data for today and tomorrow
+      const todayAqiData = await getAQIData(location, todayDate);
+      const tomorrowAqiData = await getAQIData(location, tomorrowDate);
 
       // Generate today's plan
       const todayCompletedKey = `plan_completed_${todayDate}`;

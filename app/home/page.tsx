@@ -144,38 +144,42 @@ export default function Home() {
     }
   };
 
-  const loadAQI = () => {
+  const loadAQI = async () => {
+    if (!user) return;
+    
     const today = new Date().toISOString().split('T')[0];
-    const aqiKey = `aqi_${today}`;
     
-    // Check if we already have AQI for today
-    const savedAqi = localStorage.getItem(aqiKey);
-    if (savedAqi) {
-      setTodayAqi(JSON.parse(savedAqi));
-      return;
+    try {
+      // Get user location
+      let location = { latitude: 40.7128, longitude: -74.0060 }; // Default NYC
+      
+      if (user.id === 'demo-user') {
+        const savedCity = localStorage.getItem('demo_user_city');
+        if (savedCity) {
+          const city = JSON.parse(savedCity);
+          location = { latitude: city.lat, longitude: city.lon };
+        }
+      } else {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('city_lat, city_lon')
+          .eq('id', user.id)
+          .single();
+        
+        if (profile?.city_lat && profile?.city_lon) {
+          location = { latitude: profile.city_lat, longitude: profile.city_lon };
+        }
+      }
+      
+      // Import and use real AQI API
+      const { fetchRealAQI } = await import('@/lib/aqiAPI');
+      const aqiData = await fetchRealAQI(location, today);
+      setTodayAqi(aqiData);
+    } catch (error) {
+      console.error('Failed to load AQI:', error);
+      // Fallback to a reasonable default
+      setTodayAqi({ aqi: 45, category: 'Good' });
     }
-    
-    // Generate new AQI for today and save it
-    // Use date as seed for consistent generation per day
-    const seed = today.replace(/-/g, '');
-    const aqi = Math.floor((parseInt(seed.slice(-3)) / 999) * 200);
-    let category = '';
-    
-    if (aqi <= 50) {
-      category = 'Good';
-    } else if (aqi <= 100) {
-      category = 'Moderate';
-    } else if (aqi <= 150) {
-      category = 'Unhealthy for Sensitive Groups';
-    } else if (aqi <= 200) {
-      category = 'Unhealthy';
-    } else {
-      category = 'Very Unhealthy';
-    }
-    
-    const aqiData = { aqi, category };
-    localStorage.setItem(aqiKey, JSON.stringify(aqiData));
-    setTodayAqi(aqiData);
   };
 
   const allCards = [
