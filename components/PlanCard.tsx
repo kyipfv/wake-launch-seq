@@ -50,44 +50,70 @@ export default function PlanCard() {
       tomorrow.setDate(tomorrow.getDate() + 1);
       const tomorrowDate = tomorrow.toISOString().split('T')[0];
 
-      // Check if plan already exists
-      const { data: existingPlan } = await supabase
-        .from('plans')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('date', tomorrowDate)
-        .single();
+      // Check if plan already exists (skip for demo user)
+      if (user.id !== 'demo-user') {
+        const { data: existingPlan } = await supabase
+          .from('plans')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('date', tomorrowDate)
+          .single();
 
-      if (existingPlan) {
-        setPlan(existingPlan);
-        setLoading(false);
-        return;
+        if (existingPlan) {
+          setPlan(existingPlan);
+          setLoading(false);
+          return;
+        }
       }
 
-      // Get user's chronotype and location
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('chrono_window, city_name, city_lat, city_lon')
-        .eq('id', user.id)
-        .single();
-
-      if (!profile?.chrono_window) {
-        setError('Please complete your chronotype assessment first');
-        setLoading(false);
-        return;
-      }
-
-      // Get location - prioritize user's saved city, then geolocation, then default
+      // Handle demo user
+      let profile: any = null;
       let location: Location;
-      if (profile.city_lat && profile.city_lon) {
-        location = { latitude: profile.city_lat, longitude: profile.city_lon };
+      
+      if (user.id === 'demo-user') {
+        // For demo user, use default chronotype and check localStorage for location
+        profile = { chrono_window: 'dolphin' }; // Default chronotype
+        
+        const savedCity = localStorage.getItem('demo_user_city');
+        if (savedCity) {
+          const city = JSON.parse(savedCity);
+          location = { latitude: city.lat, longitude: city.lon };
+        } else {
+          try {
+            location = await getCurrentLocation();
+          } catch (geoError) {
+            // Fallback to a default location (e.g., New York)
+            location = { latitude: 40.7128, longitude: -74.0060 };
+            setError('Please set your city in settings for accurate sunrise times');
+          }
+        }
       } else {
-        try {
-          location = await getCurrentLocation();
-        } catch (geoError) {
-          // Fallback to a default location (e.g., New York)
-          location = { latitude: 40.7128, longitude: -74.0060 };
-          setError('Please set your city in settings for accurate sunrise times');
+        // Get user's chronotype and location from database
+        const { data } = await supabase
+          .from('profiles')
+          .select('chrono_window, city_name, city_lat, city_lon')
+          .eq('id', user.id)
+          .single();
+        
+        profile = data;
+        
+        if (!profile?.chrono_window) {
+          setError('Please complete your chronotype assessment first');
+          setLoading(false);
+          return;
+        }
+
+        // Get location - prioritize user's saved city, then geolocation, then default
+        if (profile.city_lat && profile.city_lon) {
+          location = { latitude: profile.city_lat, longitude: profile.city_lon };
+        } else {
+          try {
+            location = await getCurrentLocation();
+          } catch (geoError) {
+            // Fallback to a default location (e.g., New York)
+            location = { latitude: 40.7128, longitude: -74.0060 };
+            setError('Please set your city in settings for accurate sunrise times');
+          }
         }
       }
 
@@ -102,17 +128,24 @@ export default function PlanCard() {
         advice: advice,
       };
 
-      const { data: savedPlan, error: saveError } = await supabase
-        .from('plans')
-        .insert(newPlan)
-        .select()
-        .single();
+      // Handle demo user
+      if (user.id === 'demo-user') {
+        // For demo user, just display the plan without saving to database
+        setPlan(newPlan);
+      } else {
+        // Save to database for real users
+        const { data: savedPlan, error: saveError } = await supabase
+          .from('plans')
+          .insert(newPlan)
+          .select()
+          .single();
 
-      if (saveError) {
-        throw saveError;
+        if (saveError) {
+          throw saveError;
+        }
+
+        setPlan(savedPlan);
       }
-
-      setPlan(savedPlan);
     } catch (err) {
       console.error('Error loading plan:', err);
       setError('Failed to generate tomorrow\'s plan');

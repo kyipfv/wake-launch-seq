@@ -116,6 +116,19 @@ export default function Settings() {
   const loadUserSettings = async () => {
     if (!user) return;
 
+    // Check if we're using demo user
+    if (user.id === 'demo-user') {
+      // Load from localStorage for demo user
+      const savedCity = localStorage.getItem('demo_user_city');
+      if (savedCity) {
+        const city = JSON.parse(savedCity);
+        setSelectedCity(city);
+        setCityQuery(`${city.name}, ${city.country}`);
+      }
+      return;
+    }
+
+    // Load from database for real users
     const { data } = await supabase
       .from('profiles')
       .select('city_name, city_lat, city_lon')
@@ -184,23 +197,39 @@ export default function Settings() {
     setSaving(true);
     setMessage('');
 
-    const { error } = await supabase
-      .from('profiles')
-      .update({
-        city_name: selectedCity.name,
-        city_lat: selectedCity.lat,
-        city_lon: selectedCity.lon,
-      })
-      .eq('id', user.id);
+    try {
+      // Handle demo user
+      if (user.id === 'demo-user') {
+        // Save to localStorage for demo user
+        localStorage.setItem('demo_user_city', JSON.stringify(selectedCity));
+        setMessage('Settings saved successfully!');
+        setTimeout(() => {
+          router.push('/home');
+        }, 1500);
+      } else {
+        // Save to database for real users
+        const { error } = await supabase
+          .from('profiles')
+          .update({
+            city_name: selectedCity.name,
+            city_lat: selectedCity.lat,
+            city_lon: selectedCity.lon,
+          })
+          .eq('id', user.id);
 
-    if (error) {
+        if (error) {
+          setMessage('Error saving settings. Please try again.');
+          console.error('Error saving settings:', error);
+        } else {
+          setMessage('Settings saved successfully!');
+          setTimeout(() => {
+            router.push('/home');
+          }, 1500);
+        }
+      }
+    } catch (error) {
       setMessage('Error saving settings. Please try again.');
       console.error('Error saving settings:', error);
-    } else {
-      setMessage('Settings saved successfully!');
-      setTimeout(() => {
-        router.push('/home');
-      }, 1500);
     }
 
     setSaving(false);
