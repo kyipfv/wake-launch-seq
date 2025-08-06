@@ -36,20 +36,65 @@ export default function ChartPanel() {
     setLoading(true);
 
     try {
-      const fourteenDaysAgo = new Date();
-      fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
-      const startDate = fourteenDaysAgo.toISOString().split('T')[0];
+      let metrics: MetricData[] = [];
 
-      const { data: metrics, error } = await supabase
-        .from('metrics')
-        .select('date, reaction_ms, mood_score')
-        .eq('user_id', user.id)
-        .gte('date', startDate)
-        .order('date', { ascending: true });
+      // Handle demo user - load from localStorage
+      if (user.id === 'demo-user') {
+        // Collect metrics from localStorage for the last 14 days
+        for (let i = 13; i >= 0; i--) {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          const dateStr = date.toISOString().split('T')[0];
+          
+          const savedMetrics = localStorage.getItem(`demo_metrics_${dateStr}`);
+          if (savedMetrics) {
+            const dayMetrics = JSON.parse(savedMetrics);
+            metrics.push({
+              date: dateStr,
+              reaction_ms: dayMetrics.reaction_ms,
+              mood_score: dayMetrics.mood_score
+            });
+          }
+        }
+        
+        // Add some sample historical data for demonstration if no data exists
+        if (metrics.length === 0) {
+          // Generate sample data for the last 7 days
+          for (let i = 7; i >= 1; i--) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            const dateStr = date.toISOString().split('T')[0];
+            
+            // Generate realistic sample data with some variation
+            const baseReaction = 250 + (Math.random() - 0.5) * 60; // 220-280ms range
+            const baseMood = 6.5 + (Math.random() - 0.5) * 3; // 5-8 range
+            
+            metrics.push({
+              date: dateStr,
+              reaction_ms: Math.round(baseReaction),
+              mood_score: Math.round(baseMood * 10) / 10
+            });
+          }
+        }
+      } else {
+        // Handle real users - load from database
+        const fourteenDaysAgo = new Date();
+        fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
+        const startDate = fourteenDaysAgo.toISOString().split('T')[0];
 
-      if (error) {
-        console.error('Error loading metrics:', error);
-        return;
+        const { data: dbMetrics, error } = await supabase
+          .from('metrics')
+          .select('date, reaction_ms, mood_score')
+          .eq('user_id', user.id)
+          .gte('date', startDate)
+          .order('date', { ascending: true });
+
+        if (error) {
+          console.error('Error loading metrics:', error);
+          return;
+        }
+
+        metrics = dbMetrics || [];
       }
 
       // Create array of last 14 days
@@ -104,11 +149,17 @@ export default function ChartPanel() {
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-lg">
-          <p className="text-gray-900 font-bold mb-2">{label}</p>
+        <div style={{
+          backgroundColor: 'white',
+          border: '1px solid #e5e7eb',
+          borderRadius: '12px',
+          padding: '16px',
+          boxShadow: '0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+        }}>
+          <p style={{color: '#111827', fontWeight: '700', marginBottom: '8px'}}>{label}</p>
           {payload.map((entry: any, index: number) => (
-            <p key={index} className="font-semibold" style={{ color: entry.color }}>
-              {entry.dataKey === 'reactionTime' ? '⚡ Reaction Time: ' : '🧠 Mood: '}
+            <p key={index} style={{fontWeight: '600', color: entry.color}}>
+              {entry.dataKey === 'reactionTime' ? '⚡ Reaction Time: ' : '🧠 Alertness: '}
               {entry.value}
               {entry.dataKey === 'reactionTime' ? 'ms' : '/10'}
             </p>
@@ -121,11 +172,35 @@ export default function ChartPanel() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-        <div className="animate-pulse">
-          <div className="h-6 bg-gray-200 rounded-2xl w-1/3 mb-6"></div>
-          <div className="h-64 bg-gray-200 rounded-2xl"></div>
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '16px',
+        padding: '32px',
+        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+        border: '1px solid #f3f4f6'
+      }}>
+        <div>
+          <div style={{
+            height: '24px',
+            backgroundColor: '#e5e7eb',
+            borderRadius: '12px',
+            width: '33%',
+            marginBottom: '24px',
+            animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+          }}></div>
+          <div style={{
+            height: '256px',
+            backgroundColor: '#e5e7eb',
+            borderRadius: '12px',
+            animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+          }}></div>
         </div>
+        <style jsx>{`
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+          }
+        `}</style>
       </div>
     );
   }
@@ -133,20 +208,59 @@ export default function ChartPanel() {
   const hasData = data.some(d => d.reactionTime || d.mood);
 
   return (
-    <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 relative overflow-hidden">
+    <div style={{
+      backgroundColor: 'white',
+      borderRadius: '16px',
+      padding: '32px',
+      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+      border: '1px solid #f3f4f6',
+      position: 'relative',
+      overflow: 'hidden',
+      background: 'linear-gradient(135deg, #ffffff 0%, #faf5ff 100%)'
+    }}>
       {/* Background gradient */}
-      <div className="absolute top-0 right-0 w-20 h-20 bg-purple-500 opacity-5 rounded-full -translate-y-4 translate-x-4"></div>
+      <div style={{
+        position: 'absolute',
+        top: '0',
+        right: '0',
+        width: '80px',
+        height: '80px',
+        backgroundColor: '#8b5cf6',
+        opacity: '0.05',
+        borderRadius: '50%',
+        transform: 'translate(16px, -16px)'
+      }}></div>
       
-      <div className="flex justify-between items-center mb-8 relative z-10">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-            <span className="text-lg">📈</span>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '32px',
+        position: 'relative',
+        zIndex: '10'
+      }}>
+        <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            background: 'linear-gradient(135deg, #e9d5ff 0%, #ddd6fe 100%)',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <span style={{fontSize: '18px'}}>📈</span>
           </div>
-          <h3 className="text-xl font-bold text-gray-900">Performance Metrics</h3>
+          <h3 style={{fontSize: '20px', fontWeight: '700', color: '#111827'}}>Performance Metrics</h3>
         </div>
-        {streak >= 5 && (
-          <div className="bg-gradient-to-r from-orange-100 to-red-100 border border-orange-200 rounded-2xl px-4 py-2">
-            <span className="text-orange-600 font-bold text-sm">
+        {streak >= 2 && (
+          <div style={{
+            background: 'linear-gradient(135deg, #fed7aa 0%, #fbbf24 100%)',
+            border: '1px solid #fdba74',
+            borderRadius: '12px',
+            padding: '8px 16px'
+          }}>
+            <span style={{color: '#ea580c', fontWeight: '700', fontSize: '14px'}}>
               🔥 {streak} day streak!
             </span>
           </div>
@@ -154,15 +268,24 @@ export default function ChartPanel() {
       </div>
 
       {!hasData ? (
-        <div className="text-center py-16 relative z-10">
-          <div className="w-20 h-20 bg-gray-100 rounded-3xl mx-auto mb-6 flex items-center justify-center">
-            <span className="text-4xl">📈</span>
+        <div style={{textAlign: 'center', padding: '64px 0', position: 'relative', zIndex: '10'}}>
+          <div style={{
+            width: '80px',
+            height: '80px',
+            backgroundColor: '#f3f4f6',
+            borderRadius: '16px',
+            margin: '0 auto 24px auto',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <span style={{fontSize: '32px'}}>📈</span>
           </div>
-          <p className="text-xl font-bold text-gray-900 mb-2">No performance data yet</p>
-          <p className="text-base text-gray-500 font-medium">Complete your daily tests to see trends</p>
+          <p style={{fontSize: '20px', fontWeight: '700', color: '#111827', marginBottom: '8px'}}>No performance data yet</p>
+          <p style={{fontSize: '16px', color: '#6b7280', fontWeight: '500'}}>Complete your daily tests to see trends</p>
         </div>
       ) : (
-        <div style={{ width: '100%', height: 300 }} className="relative z-10">
+        <div style={{ width: '100%', height: 300, position: 'relative', zIndex: '10' }}>
           <ResponsiveContainer>
             <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
@@ -207,7 +330,7 @@ export default function ChartPanel() {
                 strokeWidth={3}
                 dot={{ fill: '#10B981', strokeWidth: 3, r: 5 }}
                 connectNulls={false}
-                name="🧠 Mood (0-10)"
+                name="🧠 Alertness (0-10)"
               />
             </LineChart>
           </ResponsiveContainer>
