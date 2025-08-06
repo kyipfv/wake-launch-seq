@@ -7,6 +7,7 @@ import { useAuth } from '@/components/AuthProvider';
 export default function MoodSlider({ onSave }: { onSave?: (score: number) => void }) {
   const [moodScore, setMoodScore] = useState(5);
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
   const { user } = useAuth();
 
   const moodLabels = [
@@ -42,6 +43,7 @@ export default function MoodSlider({ onSave }: { onSave?: (score: number) => voi
       localStorage.setItem(`demo_metrics_${today}`, JSON.stringify(metrics));
       
       onSave?.(moodScore);
+      setSaved(true);
       setSaving(false);
       return;
     }
@@ -59,84 +61,191 @@ export default function MoodSlider({ onSave }: { onSave?: (score: number) => voi
       console.error('Error saving mood score:', error);
     } else {
       onSave?.(moodScore);
+      setSaved(true);
     }
     
     setSaving(false);
   };
 
   return (
-    <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 relative overflow-hidden">
+    <div style={{
+      backgroundColor: 'white',
+      borderRadius: '16px',
+      padding: '32px',
+      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+      border: '1px solid #f3f4f6',
+      position: 'relative',
+      overflow: 'hidden',
+      background: 'linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)'
+    }}>
       {/* Background gradient */}
-      <div className="absolute top-0 right-0 w-20 h-20 bg-green-500 opacity-5 rounded-full -translate-y-4 translate-x-4"></div>
+      <div style={{
+        position: 'absolute',
+        top: '0',
+        right: '0',
+        width: '80px',
+        height: '80px',
+        backgroundColor: '#10b981',
+        opacity: '0.05',
+        borderRadius: '50%',
+        transform: 'translate(16px, -16px)'
+      }}></div>
       
-      <div className="mb-8 relative z-10">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-bold text-gray-900">Alertness Check-In</h3>
-          <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-            <span className="text-lg">🧠</span>
+      <div style={{marginBottom: '32px', position: 'relative', zIndex: '10'}}>
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px'}}>
+          <h3 style={{fontSize: '20px', fontWeight: '700', color: '#111827'}}>Alertness Check-In</h3>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            background: 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <span style={{fontSize: '18px'}}>🧠</span>
           </div>
         </div>
-        <p className="text-base text-gray-600 font-medium">
+        <p style={{fontSize: '16px', color: '#6b7280', fontWeight: '500'}}>
           How alert do you feel 10 minutes after waking?
         </p>
       </div>
 
-      <div className="space-y-8 relative z-10">
-        <div className="p-6 bg-gray-50 rounded-2xl">
-          <div className="relative mb-6">
+      <div style={{display: 'flex', flexDirection: 'column', gap: '32px', position: 'relative', zIndex: '10'}}>
+        <div style={{
+          padding: '24px',
+          backgroundColor: '#f9fafb',
+          borderRadius: '16px'
+        }}>
+          <div style={{position: 'relative', marginBottom: '24px'}}>
             <input
               type="range"
               min="0"
               max="10"
               value={moodScore}
               onChange={(e) => setMoodScore(Number(e.target.value))}
-              className="w-full h-3 bg-gray-200 rounded-full appearance-none cursor-pointer slider"
+              style={{
+                width: '100%',
+                height: '12px',
+                backgroundColor: '#e5e7eb',
+                borderRadius: '6px',
+                appearance: 'none',
+                cursor: 'pointer',
+                background: 'linear-gradient(to right, #ef4444 0%, #f59e0b 50%, #10b981 100%)'
+              }}
             />
-            <div className="flex justify-between text-sm text-gray-500 mt-3 font-medium">
+            <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: '#6b7280', marginTop: '12px', fontWeight: '500'}}>
               <span>0</span>
               <span>5</span>
               <span>10</span>
             </div>
           </div>
 
-          <div className="text-center p-6 bg-white rounded-2xl border border-gray-100">
-            <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
-              <span className="text-2xl text-white">🧠</span>
+          <div style={{
+            textAlign: 'center',
+            padding: '24px',
+            backgroundColor: 'white',
+            borderRadius: '16px',
+            border: '1px solid #f3f4f6'
+          }}>
+            <div style={{
+              width: '64px',
+              height: '64px',
+              background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+              borderRadius: '16px',
+              margin: '0 auto 16px auto',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 14px 0 rgba(16, 185, 129, 0.25)'
+            }}>
+              <span style={{fontSize: '24px', color: 'white'}}>🧠</span>
             </div>
-            <div className="text-4xl font-bold text-gray-900 mb-2">
+            <div style={{fontSize: '48px', fontWeight: '700', color: '#111827', marginBottom: '8px'}}>
               {moodScore}/10
             </div>
-            <div className="text-base text-gray-600 font-medium">
+            <div style={{fontSize: '16px', color: '#6b7280', fontWeight: '500'}}>
               {moodLabels[moodScore]}
             </div>
           </div>
         </div>
 
-        <button
-          onClick={saveMood}
-          disabled={saving}
-          className="w-full py-4 px-8 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-lg rounded-3xl hover:from-green-700 hover:to-emerald-700 hover:shadow-lg hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:transform-none shadow-md"
-        >
-          {saving ? (
-            <div className="flex items-center justify-center gap-3">
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              Saving...
-            </div>
-          ) : (
-            <div className="flex items-center justify-center gap-3">
-              <span>📊</span>
-              Log Alertness
-            </div>
-          )}
-        </button>
+        {!saved ? (
+          <button
+            onClick={saveMood}
+            disabled={saving}
+            style={{
+              width: '100%',
+              padding: '16px',
+              backgroundColor: '#10b981',
+              color: 'white',
+              fontSize: '16px',
+              fontWeight: '600',
+              borderRadius: '12px',
+              border: 'none',
+              cursor: saving ? 'not-allowed' : 'pointer',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 4px 14px 0 rgba(0, 0, 0, 0.15)',
+              opacity: saving ? 0.5 : 1
+            }}
+            onMouseEnter={(e) => {
+              if (!saving) {
+                e.currentTarget.style.backgroundColor = '#059669';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 6px 20px 0 rgba(0, 0, 0, 0.2)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!saving) {
+                e.currentTarget.style.backgroundColor = '#10b981';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 14px 0 rgba(0, 0, 0, 0.15)';
+              }
+            }}
+          >
+            {saving ? (
+              <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px'}}>
+                <div style={{
+                  width: '20px',
+                  height: '20px',
+                  border: '2px solid white',
+                  borderTopColor: 'transparent',
+                  borderRadius: '50%',
+                  animation: 'spin 1s linear infinite'
+                }}></div>
+                Saving...
+              </div>
+            ) : (
+              <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px'}}>
+                <span>📊</span>
+                Log Alertness
+              </div>
+            )}
+          </button>
+        ) : (
+          <div style={{
+            width: '100%',
+            padding: '16px',
+            background: 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)',
+            color: '#166534',
+            fontSize: '16px',
+            fontWeight: '600',
+            borderRadius: '12px',
+            border: '1px solid #bbf7d0',
+            textAlign: 'center',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '12px'
+          }}>
+            <span>✓</span>
+            Alertness Logged
+          </div>
+        )}
       </div>
 
       <style jsx>{`
-        .slider {
-          background: linear-gradient(to right, #ef4444 0%, #f59e0b 50%, #10b981 100%) !important;
-        }
-        
-        .slider::-webkit-slider-thumb {
+        input[type="range"]::-webkit-slider-thumb {
           appearance: none;
           height: 24px;
           width: 24px;
@@ -148,12 +257,12 @@ export default function MoodSlider({ onSave }: { onSave?: (score: number) => voi
           transition: all 0.2s ease;
         }
         
-        .slider::-webkit-slider-thumb:hover {
+        input[type="range"]::-webkit-slider-thumb:hover {
           transform: scale(1.1);
           box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
         }
 
-        .slider::-moz-range-thumb {
+        input[type="range"]::-moz-range-thumb {
           height: 24px;
           width: 24px;
           border-radius: 50%;
@@ -161,6 +270,11 @@ export default function MoodSlider({ onSave }: { onSave?: (score: number) => voi
           cursor: pointer;
           border: 3px solid #ffffff;
           box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
       `}</style>
     </div>
