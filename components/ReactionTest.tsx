@@ -157,31 +157,80 @@ export default function ReactionTest({ onComplete }: { onComplete?: (result: Rea
   };
 
   return (
-    <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 relative overflow-hidden">
+    <div style={{
+      backgroundColor: 'white',
+      borderRadius: '16px',
+      padding: '32px',
+      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+      border: '1px solid #f3f4f6',
+      position: 'relative',
+      overflow: 'hidden',
+      background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)'
+    }}>
       {/* Background gradient */}
-      <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500 opacity-5 rounded-full -translate-y-4 translate-x-4"></div>
+      <div style={{
+        position: 'absolute',
+        top: '0',
+        right: '0',
+        width: '96px',
+        height: '96px',
+        backgroundColor: '#3b82f6',
+        opacity: '0.03',
+        borderRadius: '50%',
+        transform: 'translate(16px, -16px)'
+      }}></div>
       
-      <div className="mb-8 relative z-10">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-bold text-gray-900">
+      <div style={{marginBottom: '32px', position: 'relative', zIndex: '10'}}>
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px'}}>
+          <h3 style={{fontSize: '20px', fontWeight: '700', color: '#111827'}}>
             Reaction Time Test
           </h3>
-          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-            <span className="text-lg">⚡</span>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <span style={{fontSize: '18px'}}>⚡</span>
           </div>
         </div>
-        <p className="text-base text-gray-600 font-medium">
+        <p style={{fontSize: '16px', color: '#6b7280', fontWeight: '500'}}>
           Tap the blue circles as quickly as possible. {totalTests} tests total.
         </p>
       </div>
 
       {!isRunning && !result && (
-        <div className="relative z-10">
+        <div style={{position: 'relative', zIndex: '10'}}>
           <button
             onClick={startTest}
-            className="w-full py-4 px-8 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold text-lg rounded-3xl hover:from-blue-700 hover:to-blue-800 hover:shadow-lg hover:scale-105 transition-all duration-200 shadow-md"
+            style={{
+              width: '100%',
+              padding: '16px',
+              backgroundColor: '#3b82f6',
+              color: 'white',
+              fontSize: '16px',
+              fontWeight: '600',
+              borderRadius: '12px',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 4px 14px 0 rgba(0, 0, 0, 0.15)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 6px 20px 0 rgba(0, 0, 0, 0.2)';
+              e.currentTarget.style.backgroundColor = '#2563eb';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 14px 0 rgba(0, 0, 0, 0.15)';
+              e.currentTarget.style.backgroundColor = '#3b82f6';
+            }}
           >
-            <div className="flex items-center justify-center gap-3">
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px'}}>
               <span>⚡</span>
               Start Test
             </div>
@@ -190,10 +239,19 @@ export default function ReactionTest({ onComplete }: { onComplete?: (result: Rea
       )}
 
       {isRunning && (
-        <div className="space-y-6 relative z-10">
-          <div className="flex justify-between items-center p-4 bg-gray-50 rounded-2xl">
-            <span className="text-base font-semibold text-gray-900">Test {currentTest + 1} of {totalTests}</span>
-            <span className="text-lg font-bold text-blue-600">
+        <div style={{display: 'flex', flexDirection: 'column', gap: '24px', position: 'relative', zIndex: '10'}}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '16px',
+            backgroundColor: '#f9fafb',
+            borderRadius: '12px'
+          }}>
+            <span style={{fontSize: '16px', fontWeight: '600', color: '#111827'}}>
+              Test {currentTest + 1} of {totalTests}
+            </span>
+            <span style={{fontSize: '18px', fontWeight: '700', color: '#3b82f6'}}>
               {isWaiting ? '🔄 Get ready...' : '🎯 Tap the circle!'}
             </span>
           </div>
@@ -203,23 +261,42 @@ export default function ReactionTest({ onComplete }: { onComplete?: (result: Rea
             width={400}
             height={300}
             onClick={handleCanvasClick}
-            className="w-full rounded-3xl cursor-crosshair border border-gray-200 shadow-sm bg-gray-50"
-            style={{ 
-              maxWidth: '100%', 
-              height: 'auto', 
+            style={{
+              width: '100%',
+              borderRadius: '16px',
+              cursor: 'crosshair',
+              border: '1px solid #e5e7eb',
+              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+              backgroundColor: '#f9fafb',
+              maxWidth: '100%',
+              height: 'auto',
               aspectRatio: '4/3'
             }}
           />
           
-          <div className="p-4 bg-gray-50 rounded-2xl">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700">Progress</span>
-              <span className="text-sm font-bold text-gray-900">{currentTest}/{totalTests}</span>
+          <div style={{
+            padding: '16px',
+            backgroundColor: '#f9fafb',
+            borderRadius: '12px'
+          }}>
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px'}}>
+              <span style={{fontSize: '14px', fontWeight: '500', color: '#374151'}}>Progress</span>
+              <span style={{fontSize: '14px', fontWeight: '700', color: '#111827'}}>{currentTest}/{totalTests}</span>
             </div>
-            <div className="w-full h-3 bg-gray-200 rounded-full">
+            <div style={{
+              width: '100%',
+              height: '12px',
+              backgroundColor: '#e5e7eb',
+              borderRadius: '6px'
+            }}>
               <div 
-                className="h-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full transition-all duration-300"
-                style={{ width: `${(currentTest / totalTests) * 100}%` }}
+                style={{
+                  height: '12px',
+                  background: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
+                  borderRadius: '6px',
+                  transition: 'all 0.3s ease',
+                  width: `${(currentTest / totalTests) * 100}%`
+                }}
               />
             </div>
           </div>
@@ -227,30 +304,84 @@ export default function ReactionTest({ onComplete }: { onComplete?: (result: Rea
       )}
 
       {result && (
-        <div className="text-center space-y-6 relative z-10">
-          <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-8 border border-green-100 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-16 h-16 bg-green-500 opacity-10 rounded-full -translate-y-2 translate-x-2"></div>
+        <div style={{textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '24px', position: 'relative', zIndex: '10'}}>
+          <div style={{
+            background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
+            borderRadius: '16px',
+            padding: '32px',
+            border: '1px solid #bbf7d0',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              position: 'absolute',
+              top: '0',
+              right: '0',
+              width: '64px',
+              height: '64px',
+              backgroundColor: '#10b981',
+              opacity: '0.1',
+              borderRadius: '50%',
+              transform: 'translate(8px, -8px)'
+            }}></div>
             
-            <div className="relative z-10">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <span className="text-2xl text-white">🎯</span>
+            <div style={{position: 'relative', zIndex: '10'}}>
+              <div style={{
+                width: '64px',
+                height: '64px',
+                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                borderRadius: '16px',
+                margin: '0 auto 16px auto',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 14px 0 rgba(16, 185, 129, 0.25)'
+              }}>
+                <span style={{fontSize: '24px', color: 'white'}}>🎯</span>
               </div>
-              <div className="text-5xl font-bold text-gray-900 mb-2">
+              <div style={{fontSize: '48px', fontWeight: '700', color: '#111827', marginBottom: '8px'}}>
                 {result.median}
               </div>
-              <div className="text-xl text-gray-600 mb-1 font-semibold">milliseconds</div>
-              <div className="text-base text-gray-600 font-medium">Median Reaction Time</div>
+              <div style={{fontSize: '20px', color: '#6b7280', marginBottom: '4px', fontWeight: '600'}}>milliseconds</div>
+              <div style={{fontSize: '16px', color: '#6b7280', fontWeight: '500'}}>Median Reaction Time</div>
             </div>
           </div>
           
-          <div className="p-5 bg-gray-50 rounded-2xl">
-            <p className="text-sm text-gray-600 font-medium">Individual times: {result.reactions.join('ms, ')}ms</p>
+          <div style={{
+            padding: '20px',
+            backgroundColor: '#f9fafb',
+            borderRadius: '12px'
+          }}>
+            <p style={{fontSize: '14px', color: '#6b7280', fontWeight: '500'}}>
+              Individual times: {result.reactions.join('ms, ')}ms
+            </p>
           </div>
 
-          <div className="flex gap-4">
+          <div style={{display: 'flex', gap: '16px'}}>
             <button
               onClick={startTest}
-              className="flex-1 py-3 px-6 bg-white border-2 border-blue-600 text-blue-600 font-semibold rounded-2xl hover:bg-blue-50 hover:scale-105 transition-all duration-200 shadow-sm"
+              style={{
+                flex: '1',
+                padding: '12px 24px',
+                backgroundColor: 'white',
+                border: '2px solid #3b82f6',
+                color: '#3b82f6',
+                fontWeight: '600',
+                borderRadius: '12px',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#eff6ff';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 4px 14px 0 rgba(59, 130, 246, 0.15)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'white';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)';
+              }}
             >
               Test Again
             </button>
@@ -258,7 +389,33 @@ export default function ReactionTest({ onComplete }: { onComplete?: (result: Rea
             <button
               onClick={saveResult}
               disabled={saving}
-              className="flex-1 py-3 px-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-2xl hover:from-blue-700 hover:to-blue-800 hover:shadow-lg hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:transform-none shadow-md"
+              style={{
+                flex: '1',
+                padding: '12px 24px',
+                backgroundColor: '#3b82f6',
+                color: 'white',
+                fontWeight: '600',
+                borderRadius: '12px',
+                border: 'none',
+                cursor: saving ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s ease',
+                boxShadow: '0 4px 14px 0 rgba(0, 0, 0, 0.15)',
+                opacity: saving ? 0.5 : 1
+              }}
+              onMouseEnter={(e) => {
+                if (!saving) {
+                  e.currentTarget.style.backgroundColor = '#2563eb';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 6px 20px 0 rgba(0, 0, 0, 0.2)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!saving) {
+                  e.currentTarget.style.backgroundColor = '#3b82f6';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 14px 0 rgba(0, 0, 0, 0.15)';
+                }
+              }}
             >
               {saving ? '⏳ Saving...' : '💾 Save Result'}
             </button>
