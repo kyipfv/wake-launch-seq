@@ -9,6 +9,7 @@ import MoodSlider from '@/components/MoodSlider';
 import PlanCard from '@/components/PlanCard';
 import ChartPanel from '@/components/ChartPanel';
 import ProgressRing from '@/components/ProgressRing';
+import MoodTracker from '@/components/MoodTracker';
 
 interface TodayMetrics {
   reaction_ms?: number;
@@ -87,6 +88,13 @@ export default function Dashboard() {
               day: 'numeric' 
             })}
           </p>
+        </div>
+      </section>
+
+      {/* Mood Tracker Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-6">
+          <MoodTracker />
         </div>
       </section>
 
